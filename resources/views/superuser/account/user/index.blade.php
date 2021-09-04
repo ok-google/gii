@@ -1,0 +1,1 @@
+@extends('superuser.app')

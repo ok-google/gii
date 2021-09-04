@@ -1,0 +1,45 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateMarketplaceReceiptTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('marketplace_receipt', function (Blueprint $table) {
+            $table->bigIncrements('id');
+
+            $table->string('code');
+
+            $table->double('total');
+            $table->double('payment');
+
+            $table->double('cost_1')->nullable();
+            $table->double('cost_2')->nullable();
+            $table->double('cost_3')->nullable();
+
+            $table->integer('status');
+            
+            $table->integer('created_by');
+            
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('marketplace_receipt');
+    }
+}
