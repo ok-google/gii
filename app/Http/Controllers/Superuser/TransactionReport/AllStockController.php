@@ -91,6 +91,7 @@ class AllStockController extends Controller
             ->leftJoin('mutation_detail', 'mutation_detail.mutation_id', '=', 'mutation.id')
             ->leftJoin('receiving_detail_colly', 'receiving_detail_colly.id', '=', 'mutation_detail.receiving_detail_colly_id')
             ->leftJoin('receiving_detail', 'receiving_detail.id', '=', 'receiving_detail_colly.receiving_detail_id')
+            ->whereNotNull('receiving_detail.product_id')
             ->groupBy(['mutation.warehouse_id', 'receiving_detail.product_id'])
             ->get();
 
