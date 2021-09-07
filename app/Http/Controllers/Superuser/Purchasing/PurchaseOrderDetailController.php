@@ -33,8 +33,11 @@ class PurchaseOrderDetailController extends Controller
                 'unit_price' => 'nullable|numeric',
                 'local_freight_cost' => 'nullable|numeric',
                 'kurs' => 'nullable|numeric',
+                'cbm' => 'nullable|numeric',
+                'tarif' => 'nullable|numeric',
                 'sea_freight' => 'nullable|numeric',
                 'local_freight' => 'nullable|numeric',
+                'komisi' => 'nullable|numeric',
             ]);
 
             if ($validator->fails()) {
@@ -66,8 +69,11 @@ class PurchaseOrderDetailController extends Controller
                 $purchase_order_detail->total_price_rmb = ($request->quantity * $request->unit_price) + $request->local_freight_cost;
 
                 $purchase_order_detail->kurs = $request->kurs;
+                $purchase_order_detail->cbm = $request->cbm;
+                $purchase_order_detail->tarif = $request->tarif;
                 $purchase_order_detail->sea_freight = $request->sea_freight;
                 $purchase_order_detail->local_freight = $request->local_freight;
+                $purchase_order_detail->komisi = $request->komisi;
 
                 $purchase_order_detail->order_date = $request->order_date;
 
@@ -127,8 +133,11 @@ class PurchaseOrderDetailController extends Controller
                 'unit_price' => 'nullable|numeric',
                 'local_freight_cost' => 'nullable|numeric',
                 'kurs' => 'nullable|numeric',
+                'cbm' => 'nullable|numeric',
+                'tarif' => 'nullable|numeric',
                 'sea_freight' => 'nullable|numeric',
                 'local_freight' => 'nullable|numeric',
+                'komisi' => 'nullable|numeric',
             ]);
 
             if ($validator->fails()) {
@@ -158,8 +167,11 @@ class PurchaseOrderDetailController extends Controller
                 $purchase_order_detail->total_price_rmb = ($request->quantity * $request->unit_price) + $request->local_freight_cost;
 
                 $purchase_order_detail->kurs = $request->kurs;
+                $purchase_order_detail->cbm = $request->cbm;
+                $purchase_order_detail->tarif = $request->tarif;
                 $purchase_order_detail->sea_freight = $request->sea_freight;
                 $purchase_order_detail->local_freight = $request->local_freight;
+                $purchase_order_detail->komisi = $request->komisi;
                 
                 $purchase_order_detail->order_date = $request->order_date;
 
