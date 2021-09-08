@@ -9,6 +9,8 @@ use App\Entities\Accounting\JournalSaldo;
 use App\Entities\Account\Superuser;
 use App\Http\Controllers\Controller;
 use App\Repositories\MasterRepo;
+use App\Exports\Accounting\BalanceSheetExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Facades\Auth;
@@ -52,6 +54,11 @@ class BalanceSheetController extends Controller
         $data['collect'] = $this->grab_data($id);
         
         return view('superuser.report.balance_sheet.show', $data);
+    }
+
+    public function export()
+    {
+        return (new BalanceSheetExport)->download('BS.xlsx');
     }
 
     private function grab_data($id) {
