@@ -79,7 +79,7 @@
     <table id="datatable" class="table table-striped table-vcenter table-responsive">
       <thead>
         <tr>
-          <th class="text-center"></th>
+          <th class="text-center">#</th>
           <th class="text-center">Created at</th>
           <th class="text-center">Code</th>
           <th class="text-center">Customer</th>
