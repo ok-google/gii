@@ -55,6 +55,7 @@ class SalesReportTable extends Table
             ->leftJoin('sale_return_detail', 'sale_return.id', '=', 'sale_return_detail.sale_return_id')
 
             ->selectRaw('
+                sales_order.id as id,
                 sales_order.created_at as create_date,
                 sales_order.order_date as order_date,
                 sales_order.kode_pelunasan,
@@ -149,15 +150,19 @@ class SalesReportTable extends Table
         $table = Table::of($this->query($request));
 
         $table->editColumn('detail', function (SalesOrder $model) {
+            // PAYMENT HISTORY
             $detail_html = '<table class="table table-dark" style="margin-top: -5px;margin-bottom: -5px;">
                 <thead class="thead-light">
-                  <tr>
-                    <th class="w-20">Date</th>
-                    <th class="w-20">COA</th>
-                    <th class="w-20">Account</th>
-                    <th class="w-20">Debet</th>
-                    <th class="w-20">Credit</th>
-                  </tr>
+                    <tr>
+                        <th class="w-100" colspan="5">Payment History</th>
+                    </tr>
+                    <tr>
+                        <th class="w-20">Date</th>
+                        <th class="w-20">COA</th>
+                        <th class="w-20">Account</th>
+                        <th class="w-20">Debet</th>
+                        <th class="w-20">Credit</th>
+                    </tr>
                 </thead>
                 <tbody>';
 
@@ -177,6 +182,46 @@ class SalesReportTable extends Table
             } else {
                 $detail_html .= '<tr>
                     <td colspan="5">Nothing payment history</td>
+                  </tr>';
+            }
+
+            $detail_html .= '</tbody>
+                </table>';
+
+            // RETURN HISTORY
+            $detail_html .= '<table class="table table-dark" style="margin-top: -5px;margin-bottom: -5px;">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="w-100" colspan="6">Return History</th>
+                    </tr>
+                    <tr>
+                        <th class="w-20">Date</th>
+                        <th class="w-20">Code</th>
+                        <th class="w-20">SKU</th>
+                        <th class="w-20">Qty</th>
+                        <th class="w-20">Price</th>
+                        <th class="w-20">SubTotal</th>
+                    </tr>
+                </thead>
+                <tbody>';
+
+            if (count($model->return_history())) {
+                foreach ($model->return_history() as $key => $history) {
+                    $price = $history['price'] ? 'Rp. ' . number_format($history['price'], 2, ',', '.') : '';
+                    $subtotal =  $history['subtotal'] ? 'Rp. ' . number_format($history['subtotal'], 2, ',', '.') : '';
+
+                    $detail_html .= '<tr>
+                        <td>' . Carbon::parse($history['date'])->format('d/m/Y') . '</td>
+                        <td>' . $history['code'] . '</td>
+                        <td>' . $history['sku'] . '</td>
+                        <td>' . $history['qty'] . '</td>
+                        <td>' . $price . '</td>
+                        <td>' . $subtotal . '</td>
+                      </tr>';
+                }
+            } else {
+                $detail_html .= '<tr>
+                    <td colspan="6">Nothing return history</td>
                   </tr>';
             }
 

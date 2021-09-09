@@ -39,6 +39,7 @@ Route::group([
     Route::resource('hpp_report', 'HppReportController');
 
     Route::group(['as' => 'receiving_report.', 'prefix' => '/receiving_report'], function () {
+        Route::post('/export', 'ReceivingReportController@export')->name('export');
     });
     Route::resource('receiving_report', 'ReceivingReportController');
 
@@ -47,6 +48,7 @@ Route::group([
     Route::resource('gudang_utama_report', 'GudangUtamaReportController');
 
     Route::group(['as' => 'stock_valuation.', 'prefix' => '/stock_valuation'], function () {
+        Route::post('/export', 'StockValuationReportController@export')->name('export');
     });
     Route::resource('stock_valuation', 'StockValuationReportController');
 

@@ -23,10 +23,6 @@ Route::group([
     });
     Route::resource('journal', 'JournalController');
 
-    Route::group(['as' => 'journal_entry.', 'prefix' => '/journal_entry'], function () {
-    });
-    Route::resource('journal_entry', 'JournalEntryController');
-
     // Route::group(['as' => 'general_ledger.', 'prefix' => '/general_ledger'], function () {
     //     Route::get('/create/pdf/{data?}/{protect?}', 'GeneralLedgerController@pdf')->name('pdf');
     // });

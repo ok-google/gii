@@ -9,8 +9,6 @@ use App\Entities\Accounting\JournalSaldo;
 use App\Entities\Account\Superuser;
 use App\Http\Controllers\Controller;
 use App\Repositories\MasterRepo;
-use App\Exports\Accounting\BalanceSheetExport;
-use Maatwebsite\Excel\Facades\Excel;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Facades\Auth;
@@ -56,11 +54,6 @@ class BalanceSheetController extends Controller
         return view('superuser.report.balance_sheet.show', $data);
     }
 
-    public function export()
-    {
-        return Excel::download(new BalanceSheetExport, 'BS.xlsx');
-    }
-
     private function grab_data($id) {
 
         $journal_periode = JournalPeriode::find($id);
@@ -73,20 +66,26 @@ class BalanceSheetController extends Controller
 
         // A1
         $A1 = Journal::select('coa_id', DB::raw('SUM(debet) as total_debet'), DB::raw('SUM(credit) as total_credit'))
-            ->whereHas('coa', function ($query) use ($superuser) {
-                $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
-                    ->where('code', 'like', '11%')
-                    ->where('group', 1);
+            ->leftJoin('master_coa', function ($join) {
+                $join->on('journal.coa_id', '=', 'master_coa.id');
             })
-            ->whereBetween('created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->orderBy('coa_id', 'ASC')
+            // ->whereHas('coa', function ($query) use ($superuser) {
+            //     $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
+            //         ->where('code', 'like', '11%')
+            //         ->where('group', 1);
+            // })
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
+            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->where('master_coa.code', 'like', '11%')
+            ->where('master_coa.group', 1)
+            ->orderBy('master_coa.code', 'ASC')
             ->groupBy('coa_id')
             ->get();
         
         $collect['A1'] = [];
         foreach ($A1 as $item) {
             $collect['A1'][$item->coa_id] = [
-                'name' => $item->coa->name,
+                'name' => $item->coa->code.'/'. $item->coa->name,
                 'saldo' => $item->total_debet - $item->total_credit,
             ];
 
@@ -106,21 +105,30 @@ class BalanceSheetController extends Controller
 
         // A2
         $A2 = Journal::select('coa_id', DB::raw('SUM(debet) as total_debet'), DB::raw('SUM(credit) as total_credit'))
-            ->whereHas('coa', function ($query) use ($superuser) {
-                $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
-                    ->where('code', 'like', '12.01%')
-                    ->orWhere('code', 'like', '12.02%')
-                    ->where('group', 1);
+            ->leftJoin('master_coa', function ($join) {
+                $join->on('journal.coa_id', '=', 'master_coa.id');
             })
-            ->whereBetween('created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->orderBy('coa_id', 'ASC')
+            // ->whereHas('coa', function ($query) use ($superuser) {
+            //     $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
+            //         ->where('code', 'like', '12.01%')
+            //         ->orWhere('code', 'like', '12.02%')
+            //         ->where('group', 1);
+            // })
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
+            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->where('master_coa.group', 1)
+            ->where(function ($query) {
+                $query->where('master_coa.code', 'like', '12.01%')
+                ->orWhere('master_coa.code', 'like', '12.02%');
+            })
+            ->orderBy('master_coa.code', 'ASC')
             ->groupBy('coa_id')
             ->get();
 
         $collect['A2'] = [];    
         foreach ($A2 as $item) {
             $collect['A2'][$item->coa_id] = [
-                'name' => $item->coa->name,
+                'name' => $item->coa->code.'/'. $item->coa->name,
                 'saldo' => $item->total_debet - $item->total_credit,
             ];
 
@@ -140,20 +148,26 @@ class BalanceSheetController extends Controller
 
         // A3
         $A3 = Journal::select('coa_id', DB::raw('SUM(debet) as total_debet'), DB::raw('SUM(credit) as total_credit'))
-            ->whereHas('coa', function ($query) use ($superuser) {
-                $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
-                    ->where('code', 'like', '12.03%')
-                    ->where('group', 1);
+            ->leftJoin('master_coa', function ($join) {
+                $join->on('journal.coa_id', '=', 'master_coa.id');
             })
-            ->whereBetween('created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->orderBy('coa_id', 'ASC')
+            // ->whereHas('coa', function ($query) use ($superuser) {
+            //     $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
+            //         ->where('code', 'like', '12.03%')
+            //         ->where('group', 1);
+            // })
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
+            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->where('master_coa.code', 'like', '12.03%')
+            ->where('master_coa.group', 1)
+            ->orderBy('master_coa.code', 'ASC')
             ->groupBy('coa_id')
             ->get();
 
         $collect['A3'] = [];    
         foreach ($A3 as $item) {
             $collect['A3'][$item->coa_id] = [
-                'name' => $item->coa->name,
+                'name' => $item->coa->code.'/'. $item->coa->name,
                 'saldo' => $item->total_debet - $item->total_credit,
             ];
 
@@ -173,21 +187,30 @@ class BalanceSheetController extends Controller
 
         // A4
         $A4 = Journal::select('coa_id', DB::raw('SUM(debet) as total_debet'), DB::raw('SUM(credit) as total_credit'))
-            ->whereHas('coa', function ($query) use ($superuser) {
-                $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
-                    ->where('code', 'like', '13%')
-                    ->orWhere('code', 'like', '14%')
-                    ->where('group', 1);
+            ->leftJoin('master_coa', function ($join) {
+                $join->on('journal.coa_id', '=', 'master_coa.id');
             })
-            ->whereBetween('created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->orderBy('coa_id', 'ASC')
+            // ->whereHas('coa', function ($query) use ($superuser) {
+            //     $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
+            //         ->where('code', 'like', '13%')
+            //         ->orWhere('code', 'like', '14%')
+            //         ->where('group', 1);
+            // })
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
+            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->where('master_coa.group', 1)
+            ->where(function ($query) {
+                $query->where('master_coa.code', 'like', '13%')
+                ->orWhere('master_coa.code', 'like', '14%');
+            })
+            ->orderBy('master_coa.code', 'ASC')
             ->groupBy('coa_id')
             ->get();
         
         $collect['A4'] = [];
         foreach ($A4 as $item) {
             $collect['A4'][$item->coa_id] = [
-                'name' => $item->coa->name,
+                'name' => $item->coa->code.'/'. $item->coa->name,
                 'saldo' => $item->total_debet - $item->total_credit,
             ];
 
@@ -207,20 +230,26 @@ class BalanceSheetController extends Controller
 
         // P1
         $P1 = Journal::select('coa_id', DB::raw('SUM(debet) as total_debet'), DB::raw('SUM(credit) as total_credit'))
-            ->whereHas('coa', function ($query) use ($superuser) {
-                $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
-                    ->where('code', 'like', '21%')
-                    ->where('group', 2);
+            ->leftJoin('master_coa', function ($join) {
+                $join->on('journal.coa_id', '=', 'master_coa.id');
             })
-            ->whereBetween('created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->orderBy('coa_id', 'ASC')
+            // ->whereHas('coa', function ($query) use ($superuser) {
+            //     $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
+            //         ->where('code', 'like', '21%')
+            //         ->where('group', 2);
+            // })
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
+            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->where('master_coa.code', 'like', '21%')
+            ->where('master_coa.group', 2)
+            ->orderBy('master_coa.code', 'ASC')
             ->groupBy('coa_id')
             ->get();
 
         $collect['P1'] = [];    
         foreach ($P1 as $item) {
             $collect['P1'][$item->coa_id] = [
-                'name' => $item->coa->name,
+                'name' => $item->coa->code.'/'. $item->coa->name,
                 'saldo' => $item->total_debet - $item->total_credit,
             ];
 
@@ -240,20 +269,26 @@ class BalanceSheetController extends Controller
 
         // P2
         $P2 = Journal::select('coa_id', DB::raw('SUM(debet) as total_debet'), DB::raw('SUM(credit) as total_credit'))
-            ->whereHas('coa', function ($query) use ($superuser) {
-                $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
-                    ->where('code', 'like', '22%')
-                    ->where('group', 2);
+            ->leftJoin('master_coa', function ($join) {
+                $join->on('journal.coa_id', '=', 'master_coa.id');
             })
-            ->whereBetween('created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->orderBy('coa_id', 'ASC')
+            // ->whereHas('coa', function ($query) use ($superuser) {
+            //     $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
+            //         ->where('code', 'like', '22%')
+            //         ->where('group', 2);
+            // })
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
+            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->where('master_coa.code', 'like', '22%')
+            ->where('master_coa.group', 2)
+            ->orderBy('master_coa.code', 'ASC')
             ->groupBy('coa_id')
             ->get();
         
         $collect['P2'] = [];
         foreach ($P2 as $item) {
             $collect['P2'][$item->coa_id] = [
-                'name' => $item->coa->name,
+                'name' => $item->coa->code.'/'. $item->coa->name,
                 'saldo' => $item->total_debet - $item->total_credit,
             ];
 
@@ -273,21 +308,30 @@ class BalanceSheetController extends Controller
 
         // P3
         $P3 = Journal::select('coa_id', DB::raw('SUM(debet) as total_debet'), DB::raw('SUM(credit) as total_credit'))
-            ->whereHas('coa', function ($query) use ($superuser) {
-                $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
-                    ->where('code', 'like', '31%')
-                    ->orWhere('code', 'like', '32%')
-                    ->where('group', 3);
+            ->leftJoin('master_coa', function ($join) {
+                $join->on('journal.coa_id', '=', 'master_coa.id');
             })
-            ->whereBetween('created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->orderBy('coa_id', 'ASC')
+            // ->whereHas('coa', function ($query) use ($superuser) {
+            //     $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
+            //         ->where('code', 'like', '31%')
+            //         ->orWhere('code', 'like', '32%')
+            //         ->where('group', 3);
+            // })
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
+            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->where('master_coa.group', 3)
+            ->where(function($query) {
+                $query->where('master_coa.code', 'like', '31%')
+                ->orWhere('master_coa.code', 'like', '32%');
+            })
+            ->orderBy('master_coa.code', 'ASC')
             ->groupBy('coa_id')
             ->get();
          
         $collect['P3'] = [];
         foreach ($P3 as $item) {
             $collect['P3'][$item->coa_id] = [
-                'name' => $item->coa->name,
+                'name' => $item->coa->code.'/'. $item->coa->name,
                 'saldo' => $item->total_debet - $item->total_credit,
             ];
 
@@ -307,20 +351,26 @@ class BalanceSheetController extends Controller
 
         // P4
         $P4 = Journal::select('coa_id', DB::raw('SUM(debet) as total_debet'), DB::raw('SUM(credit) as total_credit'))
-            ->whereHas('coa', function ($query) use ($superuser) {
-                $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
-                    ->where('code', 'like', '33%')
-                    ->where('group', 3);
+            ->leftJoin('master_coa', function ($join) {
+                $join->on('journal.coa_id', '=', 'master_coa.id');
             })
-            ->whereBetween('created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->orderBy('coa_id', 'ASC')
+            // ->whereHas('coa', function ($query) use ($superuser) {
+            //     $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)
+            //         ->where('code', 'like', '33%')
+            //         ->where('group', 3);
+            // })
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
+            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->where('master_coa.code', 'like', '33%')
+            ->where('master_coa.group', 3)
+            ->orderBy('master_coa.code', 'ASC')
             ->groupBy('coa_id')
             ->get();
             
         $collect['P4'] = [];
         foreach ($P4 as $item) {
             $collect['P4'][$item->coa_id] = [
-                'name' => $item->coa->name,
+                'name' => $item->coa->code.'/'. $item->coa->name,
                 'saldo' => $item->total_debet - $item->total_credit,
             ];
 

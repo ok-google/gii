@@ -51,19 +51,6 @@
   </div>
 </div>
 <div class="block">
-  {{-- <div class="block-content">
-    <div class="form-group row">
-      <label class="col-md-1 col-form-label text-left" for="s_from_date">Period</label>
-      <div class="col-md-3">
-        <input class="form-control" type="date" id="s_from_date" value="{{ $from_date }}" {{ $min_date ? 'min='.$min_date : '' }} {{ $to_date ? 'max='.$to_date : '' }}>
-      </div>
-      <label class="col-md-1 col-form-label text-center" for="s_to_date">To</label>
-      <div class="col-md-3">
-        <input class="form-control" type="date" id="s_to_date" value="{{ $to_date }}" {{ $min_date ? 'min='.$min_date : '' }} {{ $to_date ? 'max='.$to_date : '' }}>
-      </div>
-    </div>
-  </div> --}}
-  {{-- <hr class="my-20"> --}}
   <div class="block-content block-content-full">
     <table id="datatable" class="table table-striped table-vcenter table-responsive">
       <thead>
@@ -87,12 +74,7 @@
   <div class="block-content pt-0">
     <div class="form-group row">
       <div class="col-md-6">
-          <a href="{{ route('superuser.accounting.journal_entry.index') }}">
-            <button type="button" class="btn bg-gd-corporate border-0 text-white">
-              Journal Entry <i class="fa fa-arrow-right ml-10"></i>
-            </button>
-          </a>
-          <a id="posting" href="{{ route('superuser.accounting.journal_entry.index') }}">
+          <a id="posting" href="{{ route('superuser.accounting.journal.index') }}">
             <button type="button" class="btn bg-gd-sea border-0 text-white">
               Posting <i class="fa fa-sticky-note-o ml-10"></i>
             </button>
@@ -135,6 +117,11 @@ $(document).ready(function() {
   });
 
   var datatable = $('#datatable').DataTable({
+    "language": {
+          "processing": "<span class='fa-stack fa-lg'>\n\
+                                <i class='fa fa-spinner fa-spin fa-stack-2x fa-fw'></i>\n\
+                           </span>",
+        },
     processing: true,
     serverSide: true,
     ajax: {
@@ -166,13 +153,16 @@ $(document).ready(function() {
     ],
     "columns": [
       {
-        data: 'created_at'
+        data: 'created_date',
+        name: 'journal.created_at'
       },
       {
-        data: 'coa'
+        data: 'code',
+        name: 'master_coa.code'
       },
       {
-        data: 'transaction'
+        data: 'transaction',
+        name: 'journal.name'
       },
       {
         data: 'debet'
@@ -181,10 +171,10 @@ $(document).ready(function() {
         data: 'credit'
       },
     ],
-    paging: true,
-    info: false,
-    ordering: false,
-    searching: false,
+    // paging: true,
+    // info: true,
+    // ordering: true,
+    // searching: true,
     pageLength: 10,
     lengthMenu: [
       [10, 25, 50, 100],
@@ -197,47 +187,6 @@ $(document).ready(function() {
       $( api.column( 3 ).footer() ).html(totalDebet);
       $( api.column( 4 ).footer() ).html(totalCredit);
     }
-    // "footerCallback": function ( row, data, start, end, display ) {
-    //   var api = this.api(), data;
-      
-    //   // Remove the formatting to get integer data for summation
-    //   var intVal = function ( i ) {
-    //       return typeof i === 'string' ?
-    //           i.replace(/[\Rp.,]/g, '')*1 :
-    //           typeof i === 'number' ?
-    //               i : 0;
-    //   };
-
-    //   debet_total = api
-    //       .column( 5 )
-    //       .data()
-    //       .reduce( function (a, b) {
-    //           return intVal(a) + intVal(b);
-    //       }, 0 );
-
-    //   credit_total = api
-    //       .column( 6 )
-    //       .data()
-    //       .reduce( function (a, b) {
-    //           return intVal(a) + intVal(b);
-    //       }, 0 );
-
-    //   var from_date = $('#from_date').val();
-    //   var to_date   = $('#to_date').val();
-
-    //   var numFormat = $.fn.dataTable.render.number( '\.', ',', 2).display;
-    //   // Update footer
-    //   $( '#debet_total' ).html('Rp. '+numFormat(debet_total));
-    //   $( '#credit_total' ).html('Rp. '+numFormat(credit_total));
-
-    //   if(debet_total && debet_total == credit_total) {
-    //     $('#from_date').val( $('#s_from_date').val() );
-    //     $('#to_date').val( $('#s_to_date').val() );
-    //     $('#posting').show();
-
-    //     $('#posting').attr("href", 'javascript:saveConfirmation(\'{{ route('superuser.accounting.journal.posting') }}?from_date='+$('#s_from_date').val()+'&to_date='+$('#s_to_date').val()+'\')');
-    //   }
-    // }
   });
 
   $('.js-select2').on('select2:select', function (e) {

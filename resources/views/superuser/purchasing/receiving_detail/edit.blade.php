@@ -40,6 +40,12 @@
         </div>
       </div>
       <div class="form-group row">
+        <label class="col-md-3 col-form-label text-right" for="delivery_cost">Delivery Cost</label>
+        <div class="col-md-4">
+          <input type="number" class="form-control" id="delivery_cost" name="delivery_cost" min="0" value="{{ $receiving_detail->delivery_cost }}" step="any">
+        </div>
+      </div>
+      <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="description">Note</label>
         <div class="col-md-4">
           <textarea class="form-control" id="description" name="description">{{ $receiving_detail->description }}</textarea>

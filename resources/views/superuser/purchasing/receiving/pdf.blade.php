@@ -42,7 +42,7 @@
             <td class="border-full">Supplier</td>
             <td class="border-full">PPB No</td>
             <td class="border-full">SKU</td>
-            <td class="border-full">Product</td>
+            <td class="border-full">Note</td>
             <td class="border-full">PPB Qty</td>
             <td class="border-full">RI Qty</td>
             <td class="border-full">Colly Qty</td>
@@ -52,7 +52,7 @@
             <td class="border-full">{{ $detail->purchase_order->supplier->name }}</td>
             <td class="border-full">{{ $detail->purchase_order->code }}</td>
             <td class="border-full">{{ $detail->product->code }}</td>
-            <td class="border-full">{{ $detail->product->name }}</td>
+            <td class="border-full">{{ $detail->description }}</td>
             <td class="border-full">{{ $detail->quantity }}</td>
             <td class="border-full">{{ $detail->total_quantity_ri }}</td>
             <td class="border-full">{{ $detail->total_quantity_colly }}</td>

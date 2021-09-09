@@ -122,6 +122,11 @@
     let firstDatatableUrl = datatableUrl+'?from_date={{ $from_date }}&to_date={{ $to_date }}';
   
     var datatable = $('#datatable').DataTable({
+      "language": {
+          "processing": "<span class='fa-stack fa-lg'>\n\
+                                <i class='fa fa-spinner fa-spin fa-stack-2x fa-fw'></i>\n\
+                           </span>",
+        },
       processing: true,
       serverSide: true,
       ajax: {
@@ -143,13 +148,16 @@
       ],
       "columns": [
         {
-          data: 'created_at'
+          data: 'created_date',
+          name: 'journal.created_at'
         },
         {
-          data: 'coa'
+          data: 'code',
+          name: 'master_coa.code'
         },
         {
-          data: 'transaction'
+          data: 'transaction',
+          name: 'journal.name'
         },
         {
           data: 'debet'
@@ -158,10 +166,10 @@
           data: 'credit'
         },
       ],
-      paging: true,
-      info: false,
-      ordering: false,
-      searching: false,
+      // paging: true,
+      // info: false,
+      // ordering: false,
+      // searching: false,
       pageLength: 10,
       lengthMenu: [
         [10, 25, 50, 100],

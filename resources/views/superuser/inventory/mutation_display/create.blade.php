@@ -110,8 +110,7 @@
         paging: false,
         bInfo: false,
         searching: false,
-        columns: [
-          {
+        columns: [{
             name: 'counter',
             "visible": false
           },

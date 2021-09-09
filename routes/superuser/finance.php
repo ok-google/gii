@@ -46,4 +46,12 @@ Route::group([
     Route::group(['as' => 'secret_setting.', 'prefix' => '/secret_setting'], function () {
     });
     Route::resource('secret_setting', 'SecretSettingController');
+
+    Route::group(['as' => 'journal_entry.', 'prefix' => '/journal_entry'], function () {
+    });
+    Route::resource('journal_entry', 'JournalEntryController');
+
+    Route::group(['as' => 'journal_setting.', 'prefix' => '/journal_setting'], function () {
+    });
+    Route::resource('journal_setting', 'JournalSettingController');
 });

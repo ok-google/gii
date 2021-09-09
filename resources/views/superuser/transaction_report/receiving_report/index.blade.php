@@ -17,47 +17,52 @@
     </div>
   @endif
 
-  <div class="form-group row">
-    <div class="col-md-9">
-      <div class="block">
-        <div class="block-content">
-          <div class="form-group row">
-            <label class="col-md-2 col-form-label text-left" for="supplier">Supplier :</label>
-            <div class="col-md-4">
-              <select class="js-select2 form-control" id="supplier" name="supplier" data-placeholder="Select Supplier">
-                <option value="all">All</option>
-                @foreach ($supplier as $item)
-                  <option value="{{ $item->supplier_id }}">{{ $item->supplier->name }}</option>
-                @endforeach
-              </select>
+  <form id="form" target="_blank" action="{{ route('superuser.transaction_report.receiving_report.export') }}"
+    enctype="multipart/form-data" method="POST">
+    @csrf
+    <input type="hidden" name="download_type" id="download_type" value="">
+    <div class="form-group row">
+      <div class="col-md-9">
+        <div class="block">
+          <div class="block-content">
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label text-left" for="supplier">Supplier :</label>
+              <div class="col-md-4">
+                <select class="js-select2 form-control" id="supplier" name="supplier" data-placeholder="Select Supplier">
+                  <option value="all">All</option>
+                  @foreach ($supplier as $item)
+                    <option value="{{ $item->supplier_id }}">{{ $item->supplier->name }}</option>
+                  @endforeach
+                </select>
+              </div>
+              <label class="col-md-2 col-form-label text-left" for="product">SKU :</label>
+              <div class="col-md-4">
+                <select class="js-select2 form-control" id="product" name="product" data-placeholder="Select SKU">
+                  <option value="all">All</option>
+                  @foreach ($products as $item)
+                    <option value="{{ $item->id }}">{{ $item->code }}</option>
+                  @endforeach
+                </select>
+              </div>
             </div>
-            <label class="col-md-2 col-form-label text-left" for="product">SKU :</label>
-            <div class="col-md-4">
-              <select class="js-select2 form-control" id="product" name="product" data-placeholder="Select SKU">
-                <option value="all">All</option>
-                @foreach ($products as $item)
-                  <option value="{{ $item->id }}">{{ $item->code }}</option>
-                @endforeach
-              </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="block">
+          <div class="block-content">
+            <div class="form-group row">
+              <div class="col-md-12 text-center">
+                <a href="#" id="btn-filter" class="btn bg-gd-corporate border-0 text-white pl-50 pr-50">
+                  Filter <i class="fa fa-search ml-10"></i>
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="block">
-        <div class="block-content">
-          <div class="form-group row">
-            <div class="col-md-12 text-center">
-              <a href="#" id="btn-filter" class="btn bg-gd-corporate border-0 text-white pl-50 pr-50">
-                Filter <i class="fa fa-search ml-10"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  </form>
 
   <div class="block">
     <div class="block-content block-content-full">
@@ -66,11 +71,13 @@
           <tr>
             <th class="text-center">Supplier</th>
             <th class="text-center">PPB No</th>
+            <th class="text-center">PBM No</th>
             <th class="text-center">Notes</th>
             <th class="text-center">SKU</th>
             <th class="text-center">Product</th>
             <th class="text-center">PPB Qty</th>
             <th class="text-center">RI Qty</th>
+            <th class="text-center">Incoming</th>
             <th class="text-center">Colly Qty</th>
             <th class="text-center">HPP</th>
           </tr>
@@ -128,6 +135,10 @@
             name: 'ppb.code'
           },
           {
+            data: 'pbm',
+            name: 'receiving.code'
+          },
+          {
             data: 'description',
             name: 'ppb.description'
           },
@@ -145,6 +156,10 @@
           },
           {
             data: 'ri_qty',
+            searchable: false
+          },
+          {
+            data: 'incoming',
             searchable: false
           },
           {
@@ -174,21 +189,19 @@
           "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         @if($superuser->can('receiving report-print'))
         buttons: [{
-            extend: 'pdfHtml5',
             text: '<i class="fa fa-file-pdf-o"></i>',
-            titleAttr: 'PDF',
-            title: 'Receiving Report',
-            orientation: 'landscape',
-            pageSize: 'LEGAL',
-            "action": newexportaction
+            action: function(e, dt, node, config) {
+              $('#download_type').val('pdf');
+              $('#form').submit();
+            }
           },
           {
-            extend: 'excelHtml5',
             text: '<i class="fa fa-file-excel-o"></i>',
-            titleAttr: 'Excel',
-            title: 'Receiving Report',
-            "action": newexportaction
-          }
+            action: function(e, dt, node, config) {
+              $('#download_type').val('excel');
+              $('#form').submit();
+            }
+          },
         ]
         @else
         buttons: []

@@ -22,7 +22,7 @@
       <div class="block-content">
         <div class="form-group row">
           <div class="col-md-6">
-            <select id="select_coa" class="js-select2 form-control" id="coa" name="coa" data-placeholder="Select Coa">
+            <select id="select_coa" class="js-select2 form-control" id="coa" name="coa[]" data-placeholder="Select Coa" multiple>
               <option value="all">ALL</option>
               @foreach($general_ledger as $key => $item)
               <option value="{{ $key }}">{{ $item['title'] }}</option>
@@ -116,6 +116,8 @@
 $(document).ready(function() {
   $('.js-select2').select2()
 
+  $('#select_coa').val('all').trigger('change');
+
   $('.datatable').DataTable({
     order: [
       [0, 'asc']
@@ -137,12 +139,39 @@ $(document).ready(function() {
     ],
   });
 
+  // $('#select_coa').on('select2:select', function (e) {
+  //   if($(this).val() == 'all') {
+  //     $('.ledger').show();
+  //   } else {
+  //     $('.ledger').hide();
+  //     $('#ledger-'+$(this).val()).show();
+  //   }
+  // });
+
   $('#select_coa').on('select2:select', function (e) {
-    if($(this).val() == 'all') {
-      $('.ledger').show();
-    } else {
       $('.ledger').hide();
-      $('#ledger-'+$(this).val()).show();
+      var data = e.params.data.id;
+      if(data == 'all') {
+        $('.ledger').show();
+        $(this).val('all').trigger('change');
+      } else {
+        var all = $(this).val();
+        const index = all.indexOf('all');
+        if (index > -1) {
+          all.splice(index, 1);
+        }
+        for (item of all) {
+          $('#ledger-'+item).show();
+        }
+        $(this).val(all).trigger('change');
+      }
+  });
+
+  $('#select_coa').on('select2:unselect', function (e) {
+    $('.ledger').hide();
+    var all = $(this).val();
+    for (item of all) {
+      $('#ledger-'+item).show();
     }
   });
 

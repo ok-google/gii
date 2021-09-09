@@ -57,7 +57,9 @@ class PermissionHelper
             'cash/bank payment',
             'cash/bank payment (inv)',
             'marketplace receipt',
-            'setting finance'
+            'setting finance',
+            'journal entry',
+            'journal setting'
         ],
         'TRANSACTION REPORT' => [
             'purchase report',

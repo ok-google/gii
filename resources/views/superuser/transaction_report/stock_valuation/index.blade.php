@@ -17,47 +17,63 @@
     </div>
   @endif
 
-  <div class="form-group row">
-    <div class="col-md-9">
-      <div class="block">
-        <div class="block-content">
-          <div class="form-group row">
-            <label class="col-md-2 col-form-label text-left" for="period">Period :</label>
-            <div class="col-md-4">
-              <div class="input-group">
-                <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-calendar"
-                      aria-hidden="true"></i></span></div><input type="text" class="form-control pull-right"
-                  id="datesearch" name="datesearch" placeholder="Select period"
-                  value="{{ \Carbon\Carbon::now()->format('d/m/Y') }} - {{ \Carbon\Carbon::now()->format('d/m/Y') }}">
+  <form id="form" target="_blank" action="{{ route('superuser.transaction_report.stock_valuation.export') }}"
+    enctype="multipart/form-data" method="POST">
+    @csrf
+    <input type="hidden" name="download_type" id="download_type" value="">
+    <div class="form-group row">
+      <div class="col-md-9">
+        <div class="block">
+          <div class="block-content">
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label text-left" for="period">Period :</label>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-calendar"
+                        aria-hidden="true"></i></span></div><input type="text" class="form-control pull-right"
+                    id="datesearch" name="datesearch" placeholder="Select period"
+                    value="{{ \Carbon\Carbon::now()->format('d/m/Y') }} - {{ \Carbon\Carbon::now()->format('d/m/Y') }}">
+                </div>
+              </div>
+              <label class="col-md-2 col-form-label text-left" for="category">Category :</label>
+              <div class="col-md-3">
+                <select class="js-select2 form-control" id="category" name="category[]" data-placeholder="Select Category" multiple="multiple" required>
+                  <option value="all">All</option>
+                  @foreach($categories as $category)
+                  <option value="{{ $category->id }}">{{ $category->name }}</option>
+                  @endforeach
+                </select>
               </div>
             </div>
-            <label class="col-md-2 col-form-label text-left" for="category">Category :</label>
-            <div class="col-md-3">
-              <select class="js-select2 form-control" id="category" name="category" data-placeholder="Select Category">
-                <option value="all">All Category</option>
-                @foreach($categories as $category)
-                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @endforeach
-              </select>
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label text-left" for="warehouse">Warehouse :</label>
+              <div class="col-md-4">
+                <select class="js-select2 form-control" id="warehouse" name="warehouse[]" data-placeholder="Select Warehouse" multiple="multiple" required>
+                  <option value="all">All</option>
+                  @foreach ($warehouses as $item)
+                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="block">
+          <div class="block-content">
+            <div class="form-group row">
+              <div class="col-md-12 text-center">
+                <a href="#" id="btn-filter" class="btn bg-gd-corporate border-0 text-white pl-50 pr-50">
+                  Filter <i class="fa fa-search ml-10"></i>
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-3">
-      <div class="block">
-        <div class="block-content">
-          <div class="form-group row">
-            <div class="col-md-12 text-center">
-              <a href="#" id="btn-filter" class="btn bg-gd-corporate border-0 text-white pl-50 pr-50">
-                Filter <i class="fa fa-search ml-10"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  </form>
 
   <div class="block">
     <div class="block-content block-content-full">
@@ -113,6 +129,8 @@
       
       $('.js-select2').select2()
 
+      $('#category, #warehouse').val('all').trigger('change');
+
       $('#datesearch').daterangepicker({
         autoUpdateInput: false
       });
@@ -129,7 +147,7 @@
       let datatableUrl = '{{ route('superuser.transaction_report.stock_valuation.json') }}';
 
       let firstDatatableUrl = datatableUrl + '?start_date=' + start_date + '&end_date=' + end_date +
-        '&category=all';
+        '&category=all&warehouse=all';
 
       var datatable = $('.datatable').DataTable({
         "language": {
@@ -223,33 +241,19 @@
           "<'row'<'col-sm-5'i><'col-sm-7'p>>",
         @if($superuser->can('stock valuation-print'))
         buttons: [{
-            extend: 'pdfHtml5',
             text: '<i class="fa fa-file-pdf-o"></i>',
-            titleAttr: 'PDF',
-            title: 'Stock Valuation',
-            orientation: 'landscape',
-            pageSize: 'LEGAL',
-            action: newexportaction,
-            customize: function ( doc ) {
-              doc.content[1].table.widths = [ '6%', '14%', '10%', '10%', '10%', '10%','10%', '10%', '10%', '10%', '10%','10%', '10%', '10%'];
-
-              var objLayout = {};
-              objLayout['hLineWidth'] = function(i) { return .5; };
-              objLayout['vLineWidth'] = function(i) { return .5; };
-              objLayout['hLineColor'] = function(i) { return '#aaa'; };
-              objLayout['vLineColor'] = function(i) { return '#aaa'; };
-              objLayout['paddingLeft'] = function(i) { return 4; };
-              objLayout['paddingRight'] = function(i) { return 4; };
-              doc.content[1].layout = objLayout;
+            action: function(e, dt, node, config) {
+              $('#download_type').val('pdf');
+              $('#form').submit();
             }
           },
           {
-            extend: 'excelHtml5',
             text: '<i class="fa fa-file-excel-o"></i>',
-            titleAttr: 'Excel',
-            title: 'Stock Valuation',
-            action: newexportaction
-          }
+            action: function(e, dt, node, config) {
+              $('#download_type').val('excel');
+              $('#form').submit();
+            }
+          },
         ]
         @else
         buttons: []
@@ -260,11 +264,26 @@
         e.preventDefault();
 
         var category = $('#category').val();
+        var warehouse = $('#warehouse').val();
 
         let newDatatableUrl = datatableUrl + '?start_date=' + start_date + '&end_date=' + end_date +
-          '&category=' + category;
+          '&category=' + category +'&warehouse=' + warehouse;
         datatable.ajax.url(newDatatableUrl).load();
-      })
+      });
+
+      $('#category, #warehouse').on('select2:select', function (e) {
+          var data = e.params.data.id;
+          if(data == 'all') {
+            $(this).val('all').trigger('change');
+          } else {
+            var all = $(this).val();
+            const index = all.indexOf('all');
+            if (index > -1) {
+              all.splice(index, 1);
+            }
+            $(this).val(all).trigger('change');
+          }
+      });
 
       function newexportaction(e, dt, button, config) {
         var self = this;

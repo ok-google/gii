@@ -198,4 +198,32 @@ class SalesOrder extends Model
             }
         }
     }
+
+    public function return_history()
+    {
+        $data = [];
+
+        $delivery_order_detail = DeliveryOrderDetail::where('sales_order_id', $this->id)
+            ->whereHas('sale_return', function ($query) {
+                $query->where('sale_return.status', 2);
+            })
+            ->first();
+
+        if ($delivery_order_detail == null) {
+            return $data;
+        }
+
+        foreach ($delivery_order_detail->sale_return->sale_return_details as $item) {
+            $data[] = [
+                'date' => $delivery_order_detail->sale_return->updated_at,
+                'code' => $delivery_order_detail->sale_return->code ?? '-',
+                'sku' => $item->product->code ?? '-',
+                'qty' => $item->quantity,
+                'price' => $item->price,
+                'subtotal' => $item->quantity * $item->price,
+            ];
+        }
+
+        return $data;
+    }
 }

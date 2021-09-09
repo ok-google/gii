@@ -274,7 +274,7 @@
   </li>
   @endif
 
-  @if($superuser->hasAnyDirectPermission(['cash/bank receipt-manage', 'cash/bank receipt (inv)-manage', 'cash/bank payment-manage', 'cash/bank payment (inv)-manage', 'marketplace receipt-manage', 'setting finance-manage']))
+  @if($superuser->hasAnyDirectPermission(['cash/bank receipt-manage', 'cash/bank receipt (inv)-manage', 'cash/bank payment-manage', 'cash/bank payment (inv)-manage', 'marketplace receipt-manage', 'setting finance-manage', 'journal entry-manage', 'journal setting-manage']))
   <li class="{{ is_open_route('superuser/finance') }}">
     <a class="nav-submenu" data-toggle="nav-submenu" href="#">
       <i class="fa fa-money"></i>
@@ -322,6 +322,20 @@
       <li>
         <a href="{{ route('superuser.finance.setting_finance.index') }}" class="{{ is_active_route('superuser.finance.setting_finance.index') }}">
           Setting Finance
+        </a>
+      </li>
+      @endif
+      @if($superuser->can('journal entry-manage'))
+      <li>
+        <a href="{{ route('superuser.finance.journal_entry.index') }}" class="{{ is_active_route('superuser.finance.journal_entry.index') }}">
+          Journal Entry
+        </a>
+      </li>
+      @endif
+      @if($superuser->can('journal setting-manage'))
+      <li>
+        <a href="{{ route('superuser.finance.journal_setting.index') }}" class="{{ is_active_route('superuser.finance.journal_setting.index') }}">
+          Journal Setting
         </a>
       </li>
       @endif

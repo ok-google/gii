@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Superuser\TransactionReport;
 
 use App\DataTables\TransactionReport\StockValuationReportTable;
+use App\Entities\Master\ProductCategory;
+use App\Entities\Master\Warehouse;
 use App\Http\Controllers\Controller;
 use App\Repositories\MasterRepo;
 use Illuminate\Http\Request;
@@ -79,7 +81,7 @@ class StockValuationReportController extends Controller
     {
         $datatable = new StockValuationReportTable();
         $model = $datatable->query($request);
-        
+
         // return $this->getSqlWithBindings($model);
         // $list = \DB::select($model->toSql(), $model->getBindings());
 
@@ -102,22 +104,40 @@ class StockValuationReportController extends Controller
                 'SKU' => $data->sku,
                 'Product' => $data->name,
                 'Opening Qty' => $data->opening_qty,
-                'Opening Balance' => $data->opening_balance,
+                'Opening Balance' => number_format($data->opening_balance, 2, ',', ''),
                 'Purchase Qty' => $data->purchase_qty,
-                'Total Purchase' => $data->total_purchase,
+                'Total Purchase' => number_format($data->total_purchase, 2, ',', ''),
                 'Receiving Qty' => $data->receiving_qty,
-                'Total Receiving' => $data->total_receiving,
+                'Total Receiving' => number_format($data->total_receiving, 2, ',', ''),
                 'Sale Qty' => $data->sale_qty,
-                'Total Sale' => $data->total_sale,
+                'Total Sale' => number_format($data->total_sale, 2, ',', ''),
                 'Return Qty' => $data->return_qty,
-                'Total Return' => $data->total_return,
+                'Total Return' => number_format($data->total_return, 2, ',', ''),
                 'Closing Qty'   => $data->opening_qty + $data->receiving_qty - $data->sale_qty + $data->return_qty,
-                'Closing Balance'   => $data->opening_balance + $data->total_receiving - $data->total_sale + $data->total_return
+                'Closing Balance'   => number_format($data->opening_balance + $data->total_receiving - $data->total_sale + $data->total_return, 2, ',', '')
             ];
         }
     }
 
-    public function pdf(Request $request) {
-        abort(404);
+    public function pdf(Request $request)
+    {
+        $datatable = new StockValuationReportTable();
+        $query = $datatable->query($request);
+        $lists = $query->cursor();
+
+        $data = [
+            'lists' => $lists,
+            'category' => $request->category == 'all' ? 'All' : implode(',', ProductCategory::whereIn('id', explode(',', $request->category))->orderBy('name')->pluck('name')->toArray()),
+            'warehouse' => $request->warehouse == 'all' ? 'All' : implode(',', Warehouse::whereIn('id', explode(',', $request->warehouse))->orderBy('name')->pluck('name')->toArray()),
+            'from_date' => $request->start_date,
+            'to_date'   => $request->end_date
+        ];
+
+        $pdf = SnappyPDF::loadView('superuser.transaction_report.stock_valuation.pdf', $data);
+        $pdf->setPaper('a3', 'landscape');
+
+        $filename = 'SV-' . Carbon::parse($request->start_date)->isoFormat('DDMMYY') . '/' . Carbon::parse($request->end_date)->isoFormat('DDMMYY') . '.pdf';
+
+        return $pdf->download($filename);
     }
 }

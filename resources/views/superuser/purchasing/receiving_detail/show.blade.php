@@ -31,6 +31,12 @@
         <div class="form-control-plaintext">{{ $receiving->warehouse->name }}</div>
       </div>
     </div>
+    <div class="row">
+      <label class="col-md-3 col-form-label text-right">Delivery Cost</label>
+      <div class="col-md-7">
+        <div class="form-control-plaintext">{{ $receiving->price_format($receiving_detail->delivery_cost) }}</div>
+      </div>
+    </div>
     <div class="row pt-30 mb-15">
       <div class="col-md-6">
         @if ($receiving->status == $receiving::STATUS['ACTIVE'])

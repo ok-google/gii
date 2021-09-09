@@ -29,7 +29,8 @@
           <table class="text-center" style="margin-top: 0px;margin-bottom: -20px;table-layout: fixed;">
             <tr>
               <td>
-                <img src="data:image/png;base64,{{DNS1D::getBarcodePNG( $colly->code, 'C128',1.8,60,array(1,1,1), true)}}" alt="barcode"/>
+                <img src="data:image/png;base64,{{DNS1D::getBarcodePNG( $colly->code, 'C128',1.8,48,array(1,1,1))}}" alt="barcode"/>
+                <span style="font-weight: bold;">{{ $colly->code }}</span>
               </td>
             </tr>
             <tr>
