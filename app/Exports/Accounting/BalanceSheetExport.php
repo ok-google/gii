@@ -2,17 +2,14 @@
 
 namespace App\Exports\Accounting;
 
-use App\User;
-use Maatwebsite\Excel\Concerns\FromQuery;
-use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromCollection;
 use App\Entities\Accounting\JournalPeriode;
 
-class BalanceSheetExport implements FromQuery
+class BalanceSheetExport implements FromCollection
 {
-    use Exportable;
 
-    public function query()
+    public function collection()
     {
-        return JournalPeriode::query();
+        return JournalPeriode::all();
     }
 }

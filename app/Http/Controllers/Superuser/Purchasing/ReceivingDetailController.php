@@ -125,6 +125,7 @@ class ReceivingDetailController extends Controller
                 'ppb_detail' => 'required|integer',
                 'product' => 'required|integer',
                 'quantity' => 'required|numeric',
+                'delivery_cost' => 'nullable|numeric',
                 'description' => 'nullable|string',
             ]);
 
@@ -153,6 +154,7 @@ class ReceivingDetailController extends Controller
                 $receiving_detail->ppb_detail_id = $request->ppb_detail;
                 $receiving_detail->product_id = $request->product;
                 $receiving_detail->quantity = $request->quantity;
+                $receiving_detail->delivery_cost = $request->delivery_cost ?? 0;
                 $receiving_detail->description = $request->description;
 
                 if ($receiving_detail->save()) {
@@ -193,6 +195,7 @@ class ReceivingDetailController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'description' => 'nullable',
+                'delivery_cost' => 'nullable|numeric'
             ]);
 
             if ($validator->fails()) {
@@ -208,6 +211,7 @@ class ReceivingDetailController extends Controller
 
             if ($validator->passes()) {
                 $receiving_detail->description = $request->description;
+                $receiving_detail->delivery_cost = $request->delivery_cost ?? 0;
 
                 if ($receiving_detail->save()) {
                     $response['notification'] = [

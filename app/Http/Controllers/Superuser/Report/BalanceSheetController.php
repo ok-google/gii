@@ -58,7 +58,7 @@ class BalanceSheetController extends Controller
 
     public function export()
     {
-        return (new BalanceSheetExport)->download('BS.xlsx');
+        return Excel::download(new BalanceSheetExport, 'BS.xlsx');
     }
 
     private function grab_data($id) {
