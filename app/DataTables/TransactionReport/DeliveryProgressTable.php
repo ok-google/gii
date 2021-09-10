@@ -140,6 +140,10 @@ class DeliveryProgressTable extends Table
             return $model->return_date ? Carbon::parse($model->return_date)->format('d/m/Y H:i') : '-';
         });
 
+        $table->editColumn('scan_by', function ($model) {
+            return $model->scan_by ? $model->scan_by : '';
+        });
+
         $table->rawColumns(['detail']);
 
         return $table->make(true);
