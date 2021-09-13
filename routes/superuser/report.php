@@ -24,6 +24,7 @@ Route::group([
 
     Route::group(['as' => 'balance_sheet.', 'prefix' => '/balance_sheet'], function () {
         Route::get('/create/pdf/{data?}/{protect?}', 'BalanceSheetController@pdf')->name('pdf');
+        Route::get('/create/excel/{data?}/{protect?}', 'BalanceSheetController@export')->name('export');
     });
     Route::resource('balance_sheet', 'BalanceSheetController');
 

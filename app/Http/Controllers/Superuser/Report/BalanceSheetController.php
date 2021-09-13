@@ -10,6 +10,7 @@ use App\Entities\Account\Superuser;
 use App\Http\Controllers\Controller;
 use App\Repositories\MasterRepo;
 use Carbon\Carbon;
+use Excel;
 use DB;
 use Illuminate\Support\Facades\Auth;
 use DomPDF;
@@ -413,6 +414,28 @@ class BalanceSheetController extends Controller
         }
         
         return $collect;
+    }
+
+    public function export($id = null, $protect = false, $generate = false)
+    {
+        if (!Auth::guard('superuser')->user()->can('balance sheet-print')) {
+            return abort(403);
+        }
+
+        if ($id == null) {
+            abort(404);
+        }
+
+        $journal_periode = JournalPeriode::find($id);
+        if ($journal_periode == null) {
+            return abort(404);
+        }
+
+        $data['journal_periode'] = $journal_periode;
+
+        $data['collect'] = $this->grab_data($id);
+        
+        return Excel::download(new grab_data($id), 'BS.xlsx');
     }
 
     public function pdf($id = null, $protect = false, $generate = false)
