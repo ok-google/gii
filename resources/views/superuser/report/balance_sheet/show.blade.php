@@ -55,7 +55,7 @@
 
 <div class="block">
   <div class="block-content block-content-full">
-    <table class="table table-sm table-borderless">
+    <table class="datatable table-sm table-borderless">
       <tr>
         <td class="p-0" width="50%">
           <table id="a-id" class="table table-borderless">
