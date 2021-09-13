@@ -120,7 +120,7 @@
       </tr>
       @foreach ($report['F'] as $item)
         <tr>
-          <td class="text-left" width="25%">{{ $item->coa->name }}</td>
+          <td class="text-left" width="25%">{{ $item->coa->code .' - '. $item->coa->name }}</td>
           <td class="text-left" width="25%">{{ 'Rp. '.number_format($item->total_debet, 2, ",", ".") }}</td>
           <td class="text-left" width="25%"></td>
           <td class="text-left" width="25%"></td>
@@ -141,7 +141,7 @@
       </tr>
       @foreach ($report['H'] as $item)
         <tr>
-          <td class="text-left" width="25%">{{ $item->coa->name }}</td>
+          <td class="text-left" width="25%">{{ $item->coa->code .' - '. $item->coa->name }}</td>
           <td class="text-left" width="25%">{{ 'Rp. '.number_format($item->total_debet, 2, ",", ".") }}</td>
           <td class="text-left" width="25%"></td>
           <td class="text-left" width="25%"></td>
@@ -182,7 +182,7 @@
       </tr>
       @foreach ($report['K'] as $item)
         <tr>
-          <td class="text-left" width="25%">{{ $item->coa->name }}</td>
+          <td class="text-left" width="25%">{{ $item->coa->code .' - '. $item->coa->name }}</td>
           <td class="text-left" width="25%">{{ 'Rp. '.number_format($item->total_debet, 2, ",", ".") }}</td>
           <td class="text-left" width="25%"></td>
           <td class="text-left" width="25%"></td>

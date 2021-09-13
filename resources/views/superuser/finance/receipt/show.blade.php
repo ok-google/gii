@@ -44,7 +44,7 @@
             @foreach ($receipt_debet as $item)
                 <tr>
                   <td>{{ $loop->iteration }}</td>
-                  <td>{{ $item->coa->name }}</td>
+                  <td>{{ $item->coa->name }}<br><i style="font-size: 10px; color: #a2a2a3">{{ $item->name }}</i></td>
                   <td>{{ $item->price_format($item->total) }}</td>
                 </tr>
                 @php $grandtotal_debet = $grandtotal_debet + $item->total; @endphp
@@ -80,7 +80,7 @@
             @foreach ($receipt_credit as $item)
                 <tr>
                   <td>{{ $loop->iteration }}</td>
-                  <td>{{ $item->coa->name }}</td>
+                  <td>{{ $item->coa->name }}<br><i style="font-size: 10px; color: #a2a2a3">{{ $item->name }}</i></td>
                   <td>{{ $item->price_format($item->total) }}</td>
                 </tr>
                 @php $grandtotal_credit = $grandtotal_credit + $item->total; @endphp

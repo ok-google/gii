@@ -6,6 +6,7 @@ use App\DataTables\Accounting\CoaTable;
 use App\Entities\Account\Superuser;
 use App\Entities\Accounting\Coa;
 use App\Entities\Accounting\Journal;
+use App\Exports\Accounting\CoaExport;
 use App\Exports\Accounting\CoaImportTemplate;
 use App\Imports\Accounting\CoaImport;
 use App\Http\Controllers\Controller;
@@ -352,9 +353,9 @@ class CoaController extends Controller
         }
     }
 
-    // public function export()
-    // {
-    //     $filename = 'master-supplier-' . date('d-m-Y_H-i-s') . '.xlsx';
-    //     return Excel::download(new SupplierExport, $filename);
-    // }
+    public function export()
+    {
+        $filename = 'master-coa-' . date('d-m-Y_H-i-s') . '.xlsx';
+        return Excel::download(new CoaExport, $filename);
+    }
 }

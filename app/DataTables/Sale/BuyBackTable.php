@@ -62,6 +62,7 @@ class BuyBackTable extends Table
             $edit = route('superuser.sale.buy_back.edit', $model);
             $destroy = route('superuser.sale.buy_back.destroy', $model);
             $acc = route('superuser.sale.buy_back.acc', $model);
+            $pdf = route('superuser.sale.buy_back.pdf', $model);
 
             switch ($model->status) {
                 case $model::STATUS['ACTIVE']:
@@ -79,6 +80,19 @@ class BuyBackTable extends Table
                         <a href=\"javascript:deleteConfirmation('{$destroy}')\">
                             <button type=\"button\" class=\"btn btn-sm btn-circle btn-alt-danger\" title=\"Delete\">
                                 <i class=\"fa fa-times\"></i>
+                            </button>
+                        </a>
+                    ";
+                case $model::STATUS['ACC']:
+                    return "
+                        <a href=\"{$view}\">
+                            <button type=\"button\" class=\"btn btn-sm btn-circle btn-alt-secondary\" title=\"View\">
+                                <i class=\"fa fa-eye\"></i>
+                            </button>
+                        </a>
+                        <a href=\"{$pdf}\" target=\"_blank\">
+                            <button type=\"button\" class=\"btn btn-sm btn-circle btn-alt-info\" title=\"PDF\">
+                                <i class=\"fa fa-file-pdf-o\"></i>
                             </button>
                         </a>
                     ";

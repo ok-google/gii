@@ -2,6 +2,7 @@
 
 namespace App\Entities\Sale;
 
+use App\Entities\Account\Superuser as AccountSuperuser;
 use App\Entities\Model;
 
 class BuyBack extends Model
@@ -30,5 +31,14 @@ class BuyBack extends Model
     public function warehouse()
     {
         return $this->BelongsTo('App\Entities\Master\Warehouse');
+    }
+
+    public function createdBySuperuser()
+    {
+        $superuser = AccountSuperuser::find($this->created_by);
+        
+        if ($superuser) {
+            return $superuser->name ?? $superuser->username;
+        }
     }
 }

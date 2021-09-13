@@ -52,6 +52,12 @@
             </div>
           </div>
           <div class="form-group row">
+            <label class="col-md-3 col-form-label text-right" for="note_debet">Note</label>
+            <div class="col-md-7">
+              <input type="text" class="form-control" id="note_debet" name="note_debet">
+            </div>
+          </div>
+          <div class="form-group row">
             <div class="col-md-10 text-right">
               <a href="#" id="add_debet">
                 <button type="button" class="btn bg-gd-sea border-0 text-white">
@@ -107,6 +113,12 @@
             <label class="col-md-3 col-form-label text-right" for="total_credit">Total</label>
             <div class="col-md-7">
               <input type="number" class="form-control" id="total_credit" name="total_credit">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label text-right" for="note_credit">Note</label>
+            <div class="col-md-7">
+              <input type="text" class="form-control" id="note_credit" name="note_credit">
             </div>
           </div>
           <div class="form-group row">
@@ -196,17 +208,19 @@
       e.preventDefault();
       var select2_credit = $('.select2-credit').select2('data'); 
       var total_credit = $('#total_credit').val() ?? '';
+      var note_credit = $('#note_credit').val() ?? '';
 
       if(select2_credit[0]['id']) {
         table_credit.row.add([
                     counter,
-                    '<input type="hidden" name="coa_credit_detail[]" value="'+select2_credit[0]['id']+'"><span>'+select2_credit[0]['text']+'</span>',
+                    '<input type="hidden" name="coa_credit_detail[]" value="'+select2_credit[0]['id']+'"><input type="hidden" name="note_credit_detail[]" value="'+note_credit+'"><span>'+select2_credit[0]['text']+'</span>',
                     '<input type="number" class="form-control" name="total_credit_detail[]" value="'+total_credit+'" required>',
                     '<a href="#" class="row-delete-credit"><button type="button" class="btn btn-sm btn-circle btn-alt-danger" title="Delete"><i class="fa fa-trash"></i></button></a>'
                   ]).draw( false );
         counter++;
 
         $('#total_credit').val('')
+        $('#note_credit').val('')
         $('.select2-credit').val(null).trigger("change")
         grandtotalCredit()
       }
@@ -258,17 +272,19 @@
       e.preventDefault();
       var select2_debet = $('.select2-debet').select2('data'); 
       var total_debet = $('#total_debet').val() ?? '';
+      var note_debet = $('#note_debet').val() ?? '';
 
       if(select2_debet[0]['id']) {
         table_debet.row.add([
                     counter2,
-                    '<input type="hidden" name="coa_debet_detail[]" value="'+select2_debet[0]['id']+'"><span>'+select2_debet[0]['text']+'</span>',
+                    '<input type="hidden" name="coa_debet_detail[]" value="'+select2_debet[0]['id']+'"><input type="hidden" name="note_debet_detail[]" value="'+note_debet+'"><span>'+select2_debet[0]['text']+'</span>',
                     '<input type="number" class="form-control" name="total_debet_detail[]" value="'+total_debet+'" required>',
                     '<a href="#" class="row-delete-debet"><button type="button" class="btn btn-sm btn-circle btn-alt-danger" title="Delete"><i class="fa fa-trash"></i></button></a>'
                   ]).draw( false );
         counter2++;
 
         $('#total_debet').val('')
+        $('#note_debet').val('')
         $('.select2-debet').val(null).trigger("change")
         grandtotalDebet()
       }

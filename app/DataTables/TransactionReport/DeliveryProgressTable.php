@@ -139,8 +139,8 @@ class DeliveryProgressTable extends Table
         $table->editColumn('return_date', function (SalesOrder $model) {
             return $model->return_date ? Carbon::parse($model->return_date)->format('d/m/Y H:i') : '-';
         });
-
-        $table->editColumn('scan_by', function ($model) {
+        
+         $table->editColumn('scan_by', function ($model) {
             return $model->scan_by ? $model->scan_by : '';
         });
 

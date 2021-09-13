@@ -13,6 +13,7 @@ Route::group([
         Route::get('/select_parent_level_3', 'CoaController@select_parent_level_3')->name('select_parent_level_3');
         Route::get('/import_template', 'CoaController@import_template')->name('import_template');
         Route::post('/import', 'CoaController@import')->name('import');
+        Route::get('/export', 'CoaController@export')->name('export');
     });
     Route::resource('coa', 'CoaController');
 

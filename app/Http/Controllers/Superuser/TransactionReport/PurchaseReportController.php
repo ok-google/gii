@@ -29,8 +29,12 @@ class PurchaseReportController extends Controller
                 ->get();
 
             foreach ($purchase_order as $item) {
-                $detail_html = '<table class="table table-dark" style="margin-top: -10px;margin-bottom: -10px;">
+                // PAYMENT HISTORY
+                $detail_html = '<table class="table table-dark" style="margin-top: -10px;margin-bottom: 0px;">
                 <thead class="thead-light">
+                    <tr>
+                        <th class="w-100" colspan="5" style="text-align: left; font-weight: bold; font-size: 20px;">Payment History</th>
+                    </tr>
                   <tr>
                     <th class="w-20">Date</th>
                     <th class="w-20">COA</th>
@@ -62,6 +66,42 @@ class PurchaseReportController extends Controller
 
                 $detail_html .= '</tbody>
                 </table>';
+
+                // RINCIAN PEMBELIAN
+                $detail_html .= '<table class="table table-dark" style="margin-bottom: -10px;">
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="w-100" colspan="4" style="text-align: left; font-weight: bold; font-size: 20px;">Rincian Pembelian</th>
+                        </tr>
+                        <tr>
+                            <th class="w-20">Order Date</th>
+                            <th class="w-20">SKU</th>
+                            <th class="w-20">Qty</th>
+                            <th class="w-20">Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+
+                if (count($item->details)) {
+                    foreach ($item->details as $history) {
+                        $price = $history->total_price_idr ? 'Rp. ' . number_format($history->total_price_idr, 2, ',', '.') : '';
+                        $order_date = $history->order_date ? Carbon::parse($history->order_date)->format('d/m/Y') : '-';
+
+                        $detail_html .= '<tr>
+                            <td>' . $order_date . '</td>
+                            <td>' . $history->product->code . '</td>
+                            <td>' . $history->quantity . '</td>
+                            <td>' . $price . '</td>
+                        </tr>';
+                    }
+                } else {
+                    $detail_html .= '<tr>
+                        <td colspan="4">Nothing product</td>
+                    </tr>';
+                }
+
+                $detail_html .= '</tbody>
+                    </table>';
 
                 $data['data'][] = [
                     '',

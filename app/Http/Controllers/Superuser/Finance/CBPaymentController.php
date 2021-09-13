@@ -104,10 +104,12 @@ class CBPaymentController extends Controller
                         if($request->coa_credit_detail) {
                             foreach($request->coa_credit_detail as $key => $value){
                                 if($request->coa_credit_detail[$key]) {
+                                    $naming = $request->note_credit_detail[$key] ? $request->transaction . ' - ' . $request->note_credit_detail[$key] : $request->transaction;
+
                                     $payment_credit = new CBPaymentDetail;
                                     $payment_credit->cb_payment_id = $payment->id;
                                     $payment_credit->coa_id = $request->coa_credit_detail[$key];
-                                    $payment_credit->name = $request->transaction;
+                                    $payment_credit->name = $naming;
                                     $payment_credit->total = $request->total_credit_detail[$key];
                                     $payment_credit->status_transaction = CBPaymentDetail::STATUS_TRANSACTION['CREDIT'];
                                     $payment_credit->save();
@@ -118,10 +120,12 @@ class CBPaymentController extends Controller
                         if($request->coa_debet_detail) {
                             foreach($request->coa_debet_detail as $key => $value){
                                 if($request->coa_debet_detail[$key]) {
+                                    $naming = $request->note_debet_detail[$key] ? $request->transaction . ' - ' . $request->note_debet_detail[$key] : $request->transaction;
+
                                     $payment_debet = new CBPaymentDetail;
                                     $payment_debet->cb_payment_id = $payment->id;
                                     $payment_debet->coa_id = $request->coa_debet_detail[$key];
-                                    $payment_debet->name = $request->transaction;
+                                    $payment_debet->name = $naming;
                                     $payment_debet->total = $request->total_debet_detail[$key];
                                     $payment_debet->status_transaction = CBPaymentDetail::STATUS_TRANSACTION['DEBET'];
                                     $payment_debet->save();
@@ -236,14 +240,16 @@ class CBPaymentController extends Controller
                                     if($request->edit_credit_detail[$key]) {
                                         $payment_credit = CBPaymentDetail::find($request->edit_credit_detail[$key]);
                                         
-                                        $payment_credit->name = $request->transaction;
+                                        // $payment_credit->name = $request->transaction;
                                         $payment_credit->total = $request->total_credit_detail[$key];
                                         $payment_credit->save();
                                     } else {
+                                        $naming = $request->note_credit_detail[$key] ? $request->transaction . ' - ' . $request->note_credit_detail[$key] : $request->transaction;
+
                                         $payment_credit = new CBPaymentDetail;
                                         $payment_credit->cb_payment_id = $payment->id;
                                         $payment_credit->coa_id = $request->coa_credit_detail[$key];
-                                        $payment_credit->name = $request->transaction;
+                                        $payment_credit->name = $naming;
                                         $payment_credit->total = $request->total_credit_detail[$key];
                                         $payment_credit->status_transaction = CBPaymentDetail::STATUS_TRANSACTION['CREDIT'];
                                         $payment_credit->save();
@@ -258,14 +264,16 @@ class CBPaymentController extends Controller
                                     if($request->edit_debet_detail[$key]) {
                                         $payment_debet = CBPaymentDetail::find($request->edit_debet_detail[$key]);
                                         
-                                        $payment_debet->name = $request->transaction;
+                                        // $payment_debet->name = $request->transaction;
                                         $payment_debet->total = $request->total_debet_detail[$key];
                                         $payment_debet->save();
                                     } else {
+                                        $naming = $request->note_debet_detail[$key] ? $request->transaction . ' - ' . $request->note_debet_detail[$key] : $request->transaction;
+
                                         $payment_debet = new CBPaymentDetail;
                                         $payment_debet->cb_payment_id = $payment->id;
                                         $payment_debet->coa_id = $request->coa_debet_detail[$key];
-                                        $payment_debet->name = $request->transaction;
+                                        $payment_debet->name = $naming;
                                         $payment_debet->total = $request->total_debet_detail[$key];
                                         $payment_debet->status_transaction = CBPaymentDetail::STATUS_TRANSACTION['DEBET'];
                                         $payment_debet->save();

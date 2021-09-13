@@ -208,15 +208,19 @@ class ReceivingController extends Controller
                             }
                         }
 
-                        $delivery_cost = $detail->delivery_cost / $detail->total_quantity_ri;
+                        $delivery_cost = 0;
 
-                        $hpp                = new Hpp;
-                        $hpp->type          = $superuser->type;
-                        $hpp->branch_office_id = $superuser->branch_office_id;
-                        $hpp->product_id    = $detail->product_id;
-                        $hpp->quantity      = $detail->total_quantity_ri;
-                        $hpp->price         = $harga_satuan + $delivery_cost;
-                        $hpp->save();
+                        if($detail->total_quantity_ri > 0) {
+                            $delivery_cost = $detail->delivery_cost / $detail->total_quantity_ri;
+
+                            $hpp                = new Hpp;
+                            $hpp->type          = $superuser->type;
+                            $hpp->branch_office_id = $superuser->branch_office_id;
+                            $hpp->product_id    = $detail->product_id;
+                            $hpp->quantity      = $detail->total_quantity_ri;
+                            $hpp->price         = $harga_satuan + $delivery_cost;
+                            $hpp->save();
+                        }
 
                         // HANDLE RECEIVING COA
                         $qty_receive = ReceivingDetailColly::where('receiving_detail_id', $detail->id)->sum('quantity_ri');
@@ -300,14 +304,9 @@ class ReceivingController extends Controller
             } catch (\Exception $e) {
                 DB::rollback();
 
-                $response['notification'] = [
-                    'alert' => 'block',
-                    'type' => 'alert-danger',
-                    'header' => 'Error',
-                    'content' => 'Internal Server Error',
-                ];
+                $response['failed'] = 'Internal Server Error!';
 
-                return $this->response(400, $response);
+                return $this->response(200, $response);
             }
         }
     }

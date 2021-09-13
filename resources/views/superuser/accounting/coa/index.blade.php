@@ -21,6 +21,9 @@
     <a href="{{ route('superuser.accounting.coa.create') }}">
       <button type="button" class="btn btn-outline-primary min-width-125">Create</button>
     </a>
+    <a href="{{ route('superuser.accounting.coa.export') }}" class="ml-10">
+      <button type="button" class="btn btn-outline-info min-width-125">Export</button>
+    </a>
 
     <button type="button" class="btn btn-outline-info ml-10" data-toggle="modal" data-target="#modal-manage" style="display: none;">Manage</button>
   </div>

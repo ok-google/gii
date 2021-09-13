@@ -151,10 +151,10 @@ class SalesReportTable extends Table
 
         $table->editColumn('detail', function (SalesOrder $model) {
             // PAYMENT HISTORY
-            $detail_html = '<table class="table table-dark" style="margin-top: -5px;margin-bottom: -5px;">
+            $detail_html = '<table class="table table-dark" style="margin-top: -5px !important;margin-bottom: 0px;">
                 <thead class="thead-light">
                     <tr>
-                        <th class="w-100" colspan="5">Payment History</th>
+                        <th class="w-100" colspan="5" style="text-align: left; font-weight: bold; font-size: 20px;">Payment History</th>
                     </tr>
                     <tr>
                         <th class="w-20">Date</th>
@@ -189,10 +189,10 @@ class SalesReportTable extends Table
                 </table>';
 
             // RETURN HISTORY
-            $detail_html .= '<table class="table table-dark" style="margin-top: -5px;margin-bottom: -5px;">
+            $detail_html .= '<table class="table table-dark" style="margin-bottom: -5px !important;">
                 <thead class="thead-light">
                     <tr>
-                        <th class="w-100" colspan="6">Return History</th>
+                        <th class="w-100" colspan="6" style="text-align: left; font-weight: bold; font-size: 20px;">Return History</th>
                     </tr>
                     <tr>
                         <th class="w-20">Date</th>

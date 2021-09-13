@@ -4,6 +4,7 @@ namespace App\Entities\Sale;
 
 use App\Entities\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Entities\Account\Superuser as AccountSuperuser;
 
 class SaleReturn extends Model
 {
@@ -33,6 +34,15 @@ class SaleReturn extends Model
     public function warehouse()
     {
         return $this->belongsTo('App\Entities\Master\Warehouse','warehouse_reparation_id');
+    }
+
+    public function createdBySuperuser()
+    {
+        $superuser = AccountSuperuser::find($this->created_by);
+        
+        if ($superuser) {
+            return $superuser->name ?? $superuser->username;
+        }
     }
 
 }

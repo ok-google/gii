@@ -98,7 +98,7 @@ class DeliveryProgressController extends Controller
         $datas = $model->cursor();
         foreach ($datas as $data) {
             yield [
-                'Create Date' => Carbon::parse($data->create_date)->format('d/m/Y H:i'),
+                'Create Date' => Carbon::parse($data->created_at)->format('d/m/Y H:i'),
                 'Shop' => $data->store_name,
                 'Invoice No' => $data->code,
                 'No Pack' => $data->no_pack ? $data->no_pack : '-',

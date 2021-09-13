@@ -32,6 +32,7 @@ Route::group([
         Route::get('{id}/acc', 'SaleReturnController@acc')->name('acc');
         Route::post('get_product', 'SaleReturnController@get_product')->name('get_product');
         Route::get('/search_do', 'SaleReturnController@search_do')->name('search_do');
+        Route::get('/create/pdf/{data?}/{protect?}', 'SaleReturnController@pdf')->name('pdf');
     });
     Route::resource('sale_return', 'SaleReturnController');
 
@@ -44,6 +45,7 @@ Route::group([
         Route::post('get_sku', 'BuyBackController@get_sku')->name('get_sku');
         Route::get('{id}/acc', 'BuyBackController@acc')->name('acc');
         Route::get('/search_so', 'BuyBackController@search_so')->name('search_so');
+        Route::get('/create/pdf/{data?}/{protect?}', 'BuyBackController@pdf')->name('pdf');
     });
     Route::resource('buy_back', 'BuyBackController');
 

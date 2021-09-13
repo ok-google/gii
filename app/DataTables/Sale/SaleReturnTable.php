@@ -49,6 +49,7 @@ class SaleReturnTable extends Table
             $view = route('superuser.sale.sale_return.show', $model);
             $destroy = route('superuser.sale.sale_return.destroy', $model);
             $acc = route('superuser.sale.sale_return.acc', $model);
+            $pdf = route('superuser.sale.sale_return.pdf', $model);
 
 
             if ($model->status == $model::STATUS['ACC']) {
@@ -56,6 +57,11 @@ class SaleReturnTable extends Table
                     <a href=\"{$view}\">
                         <button type=\"button\" class=\"btn btn-sm btn-circle btn-alt-secondary\" title=\"View\">
                             <i class=\"fa fa-eye\"></i>
+                        </button>
+                    </a>
+                    <a href=\"{$pdf}\" target=\"_blank\">
+                        <button type=\"button\" class=\"btn btn-sm btn-circle btn-alt-info\" title=\"PDF\">
+                            <i class=\"fa fa-file-pdf-o\"></i>
                         </button>
                     </a>
                 ";

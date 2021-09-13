@@ -45,18 +45,6 @@
                 </select>
               </div>
             </div>
-            <div class="form-group row">
-            <label class="col-md-2 col-form-label text-left" for="store">Warehouse :</label>
-            <div class="col-md-4">
-              <select class="js-select2 form-control" id="warehouse" name="warehouse" data-placeholder="Select warehouse">
-                <option value="all">All</option>
-                  @foreach ($warehouses as $item)
-                  <option value="{{ $item->id }}">{{ $item->name }}</option>
-                  @endforeach
-               
-              </select>
-            </div>
-            </div>
           </div>
         </div>
       </div>

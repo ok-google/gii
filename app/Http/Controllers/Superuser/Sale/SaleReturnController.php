@@ -17,6 +17,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
+use DomPDF;
 
 class SaleReturnController extends Controller
 {
@@ -301,5 +302,35 @@ class SaleReturnController extends Controller
                 return $this->response(200, $response);
             }
         }
+    }
+
+    public function pdf($id = NULL, $protect = false, $generate = false)
+    {
+        if(!Auth::guard('superuser')->user()->can('sale return-manage')) {
+            return abort(403);
+        }
+
+        // if (is_string($data)) {
+        //     $data = json_decode($data);
+        // }
+
+        if ($id == NULL) {
+            abort(404);
+        }
+
+        $data['data'] = SaleReturn::findOrFail($id);
+
+        $pdf = DomPDF::loadView('superuser.sale.sale_return.pdf', $data);
+        $pdf->setPaper('a5', 'landscape');
+
+        if ($protect) {
+            $pdf->setEncryption('12345678');
+        }
+
+        if ($generate) {
+            return $pdf;
+        }
+
+        return $pdf->stream();
     }
 }
