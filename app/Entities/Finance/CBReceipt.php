@@ -9,7 +9,7 @@ class CBReceipt extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['code', 'type', 'branch_office_id', 'status', 'select_date'];
+    protected $fillable = ['code', 'type', 'branch_office_id', 'status', 'note_receipt', 'select_date'];
     protected $table = 'cb_receipt';
 
     const STATUS = [

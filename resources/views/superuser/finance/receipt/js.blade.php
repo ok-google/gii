@@ -56,6 +56,9 @@
           data: 'code'
         },
         {
+          data: 'note_receipt'
+        },
+        {
           data: 'status'
         },
         {

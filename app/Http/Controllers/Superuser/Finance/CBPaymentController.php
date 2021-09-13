@@ -97,6 +97,7 @@ class CBPaymentController extends Controller
                     $payment->select_date = $request->select_date;
                     $payment->type = $superuser->type;
                     $payment->branch_office_id = $superuser->branch_office_id;
+                    $payment->description = $request->description;
                     $payment->status = CBPayment::STATUS['ACTIVE'];
 
                     if ($payment->save()) {

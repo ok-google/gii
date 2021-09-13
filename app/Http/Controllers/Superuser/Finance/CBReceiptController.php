@@ -98,6 +98,7 @@ class CBReceiptController extends Controller
                     $receipt->select_date = $request->select_date;
                     $receipt->type = $superuser->type;
                     $receipt->branch_office_id = $superuser->branch_office_id;
+                    $receipt->note_receipt = $request->note_receipt;
                     $receipt->status = CBReceipt::STATUS['ACTIVE'];
 
                     if ($receipt->save()) {

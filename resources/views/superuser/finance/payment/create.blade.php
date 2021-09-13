@@ -26,6 +26,12 @@
           <input type="date" class="form-control" id="select_date" name="select_date">
         </div>
       </div>
+      <div class="form-group row">
+        <label class="col-md-3 col-form-label text-right" for="description">Description Transaction <span class="text-danger">*</span></label>
+        <div class="col-md-4">
+          <input type="text" class="form-control" id="description" name="description">
+        </div>
+      </div>
     </div>
     
     <div class="form-group row">

@@ -9,7 +9,7 @@ class CBPayment extends Model
 {
     use SoftDeletes;
 
-    protected $fillable = ['code', 'type', 'branch_office_id', 'status', 'select_date'];
+    protected $fillable = ['code', 'type', 'branch_office_id', 'description', 'status', 'select_date'];
     protected $table = 'cb_payment';
 
     const STATUS = [

@@ -49,6 +49,7 @@
           }
         },
         {data: 'code'},
+        {data: 'description'},
         {data: 'status'},
         {data: 'action', orderable: false, searcable: false},
         {

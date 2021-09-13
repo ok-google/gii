@@ -18,7 +18,7 @@ class CBReceiptTable extends Table
     {
         $superuser = Auth::guard('superuser')->user();
 
-        $model = CBReceipt::select('id', 'code', 'status', 'type', 'branch_office_id', 'created_at')
+        $model = CBReceipt::select('id', 'code', 'status', 'type', 'branch_office_id', 'created_at', 'note_receipt')
                     ->where('type', $superuser->type)
                     ->where('branch_office_id', $superuser->branch_office_id);
 

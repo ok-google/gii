@@ -18,7 +18,7 @@ class CBPaymentTable extends Table
     {
         $superuser = Auth::guard('superuser')->user();
 
-        $model = CBPayment::select('id', 'code', 'status', 'type', 'branch_office_id', 'created_at')
+        $model = CBPayment::select('id', 'code', 'status', 'type', 'branch_office_id', 'description', 'created_at')
                     ->where('type', $superuser->type)
                     ->where('branch_office_id', $superuser->branch_office_id);
 
