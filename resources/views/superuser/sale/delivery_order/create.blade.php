@@ -45,6 +45,16 @@
           </div>
         </div>
         <div class="form-group row">
+          <label class="col-md-3 col-form-label text-right" for="ekspedisi_marketplace">Ekspedisi <span
+              class="text-danger">*</span></label>
+          <div class="col-md-7">
+            <select class="js-select2 form-control" id="ekspedisi_marketplace" name="ekspedisi_marketplace" data-placeholder="Select Ekspedisi">
+              <option></option>
+            </select>
+            <div class="form-control-plaintext"><i id="remaining"></i></div>
+          </div>
+        </div>
+        <div class="form-group row">
           <label class="col-md-3 col-form-label text-right" for="order_count">Order Count <span
               class="text-danger">*</span></label>
           <div class="col-md-2">

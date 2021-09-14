@@ -27,11 +27,12 @@ class DeliveryOrderController extends Controller
     {
         if ($request->ajax()) {
 
-            $sales_order = SalesOrder::select('store_name', DB::raw('count(*) as total'))
+            $sales_order = SalesOrder::select('store_name', 'ekspedisi_marketplace', DB::raw('count(*) as total'))
                 ->where('status', SalesOrder::STATUS['ACC'])
                 ->where('status_sales_order', '0')
                 ->where('warehouse_id', $request->id)
-                ->groupBy('store_name')
+                ->groupBy('store_name', 'ekspedisi_marketplace')
+                
                 ->get();
 
             return response()->json(['code' => 200, 'data' => $sales_order]);
@@ -65,6 +66,7 @@ class DeliveryOrderController extends Controller
                 'code' => 'required|string|unique:delivery_order,code',
                 'warehouse' => 'required',
                 'store_name' => 'required',
+                'ekspedisi_marketplace' => 'required',
                 'order_count' => 'required|integer',
             ]);
 
@@ -93,6 +95,7 @@ class DeliveryOrderController extends Controller
                         $get_sales_order = SalesOrder::where('status', SalesOrder::STATUS['ACC'])
                             ->where('status_sales_order', '0')
                             ->where('store_name', $request->store_name)
+                            ->where('ekspedisi_marketplace', $request->ekspedisi_marketplace)
                             ->where('warehouse_id', $request->warehouse)
                             ->limit($request->order_count)
                             ->get();
