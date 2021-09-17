@@ -103,6 +103,7 @@
 
 @include('superuser.asset.plugin.swal2')
 @include('superuser.asset.plugin.datatables')
+@include('superuser.asset.plugin.datatables-button')
 @include('superuser.asset.plugin.select2')
 
 @section('modal')
@@ -166,22 +167,25 @@
           data: 'credit'
         },
       ],
-      // paging: true,
-      // info: false,
-      // ordering: false,
-      // searching: false,
+       paging: true,
+       info: false,
+       ordering: false,
+       searching: false,
       pageLength: 10,
       lengthMenu: [
-        [10, 25, 50, 100],
-        [10, 25, 50, 100]
+        [10, 25, 50, 100, 250, 500],
+        [10, 25, 50, 100, 250, 500]
       ],
-      dom: 'Bfrtip',
+      dom: "<'row'<'col-sm-2'l><'col-sm-7 text-left'B><'col-sm-3'f>>" +
+          "<'row'<'col-sm-12'tr>>" +
+          "<'row'<'col-sm-5'i><'col-sm-7'p>>",
       drawCallback: function( settings ) {
         var api = this.api();
   
         $( api.column( 3 ).footer() ).html(totalDebet);
         $( api.column( 4 ).footer() ).html(totalCredit);
-      }
+        
+      },
     });
   
     $('.js-select2').on('select2:select', function (e) {

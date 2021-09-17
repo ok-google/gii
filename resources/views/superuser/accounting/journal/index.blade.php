@@ -1,20 +1,20 @@
 @extends('superuser.app')
 
 @section('content')
-<nav class="breadcrumb bg-white push">
-  <span class="breadcrumb-item">Accounting</span>
-  <span class="breadcrumb-item active">Journal</span>
-</nav>
+  <nav class="breadcrumb bg-white push">
+    <span class="breadcrumb-item">Accounting</span>
+    <span class="breadcrumb-item active">Journal</span>
+  </nav>
 @if($errors->any())
-<div class="alert alert-danger alert-dismissable" role="alert">
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">×</span>
-  </button>
-  <h3 class="alert-heading font-size-h4 font-w400">Error</h3>
-  @foreach ($errors->all() as $error)
-  <p class="mb-0">{{ $error }}</p>
-  @endforeach
-</div>
+  <div class="alert alert-danger alert-dismissable" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <h3 class="alert-heading font-size-h4 font-w400">Error</h3>
+    @foreach ($errors->all() as $error)
+    <p class="mb-0">{{ $error }}</p>
+    @endforeach
+  </div>
 @endif
 <div class="form-group row">
   <div class="col-md-8">
@@ -171,22 +171,20 @@ $(document).ready(function() {
         data: 'credit'
       },
     ],
-    // paging: true,
-    // info: true,
-    // ordering: true,
-    // searching: true,
     pageLength: 10,
     lengthMenu: [
       [10, 25, 50, 100],
       [10, 25, 50, 100]
     ],
     dom: 'Bfrtip',
+    
     drawCallback: function( settings ) {
       var api = this.api();
 
       $( api.column( 3 ).footer() ).html(totalDebet);
       $( api.column( 4 ).footer() ).html(totalCredit);
     }
+    
   });
 
   $('.js-select2').on('select2:select', function (e) {
