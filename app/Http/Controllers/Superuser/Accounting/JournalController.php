@@ -14,6 +14,7 @@ use App\Entities\Account\Superuser;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Excel;
 use Validator;
 use Carbon\Carbon;
 use DB;
