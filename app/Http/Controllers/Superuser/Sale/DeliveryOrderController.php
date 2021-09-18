@@ -66,7 +66,7 @@ class DeliveryOrderController extends Controller
                 'code' => 'required|string|unique:delivery_order,code',
                 'warehouse' => 'required',
                 'store_name' => 'required',
-                'ekspedisi_marketplace' => 'required',
+                
                 'order_count' => 'required|integer',
             ]);
 
