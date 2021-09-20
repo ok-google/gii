@@ -10,6 +10,7 @@ use App\Entities\Accounting\JournalPeriode;
 use App\Entities\Accounting\JournalSaldo;
 use App\Entities\Accounting\CashFlowSaldo;
 use App\Exports\Accounting\JournalExport;
+use App\Repositories\MasterRepo;
 use App\Entities\Accounting\SettingProfitLoss;
 use App\Entities\Account\Superuser;
 use Illuminate\Http\Request;

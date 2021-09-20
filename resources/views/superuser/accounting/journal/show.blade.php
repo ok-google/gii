@@ -160,7 +160,7 @@
         },
       ],
        paging: true,
-       info: true,
+       info: false,
        ordering: false,
        searching: true,
       pageLength: 10000,

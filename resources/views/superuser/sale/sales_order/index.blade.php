@@ -25,7 +25,7 @@
     <div class="col pl-0">
       <div class="alert alert-success alert-dismissable" role="alert" style="max-height: 300px; overflow-y: auto;">
         <h3 class="alert-heading font-size-h4 font-w400">Successful Import</h3>
-        @foreach (session()->get('collect_success') as $msg)
+        //@foreach (session()->get('collect_success') as $msg)
         <p class="mb-0">{{ $msg }}</p>
         @endforeach
       </div>
