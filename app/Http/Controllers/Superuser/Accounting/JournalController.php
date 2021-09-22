@@ -13,10 +13,10 @@ use App\Exports\Accounting\JournalExport;
 use App\Repositories\MasterRepo;
 use App\Entities\Accounting\SettingProfitLoss;
 use App\Entities\Account\Superuser;
+use Rap2hpoutre\FastExcel\FastExcel;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
-use Excel;
 use Validator;
 use Carbon\Carbon;
 use DB;
@@ -298,44 +298,4 @@ class JournalController extends Controller
             }
         }
     }
-
-    public function excel(Request $request)
-    {
-        $datatable = new JournalTable();
-        $model = $datatable->query($request);
-
-        // $list = \DB::select($model->toSql(), $model->getBindings());
-
-        $filename = 'SR-' . Carbon::parse($request->start_date)->format('dmy') . '-' . Carbon::parse($request->end_date)->format('dmy') . '.xlsx';
-        $header_style = (new StyleBuilder())->setFontSize(11)->setFontBold()->build();
-
-        $rows_style = (new StyleBuilder())
-            ->setFontSize(11)
-            ->build();
-
-        return (new FastExcel($this->reportsGenerator($model)))->headerStyle($header_style)
-            ->rowsStyle($rows_style)->download($filename);
-    }
-    public function export(Request $request)
-    {
-        if (!Auth::guard('superuser')->user()->can('journal-print')) {
-            return abort(403);
-        }
-
-        $split = explode('-', str_replace(' ', '', $request->datesearch));
-        $from_date = Carbon::createFromFormat('d/m/Y', $split[0])->format('Y-m-d');
-        $to_date = Carbon::createFromFormat('d/m/Y', $split[1])->format('Y-m-d');
-
-        // ADD request date to use in datatable query
-        $request->request->add(['start_date' => $from_date, 'end_date' => $to_date]);
-        if ($request->download_type == 'excel') {
-            return $this->excel($request);
-        }
-
-        if ($request->download_type == 'pdf') {
-            return $this->pdf($request);
-        }
-    }
-
-    
 }

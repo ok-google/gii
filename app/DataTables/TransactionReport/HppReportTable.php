@@ -25,7 +25,8 @@ class HppReportTable extends Table
         })
             ->where(function ($query) use ($request) {
                 if ($request->store != 'all') {
-                    $query->where('store_name', $request->store);
+                    $multiple_store = explode(',', $request->store);
+                    $model->where('store_name', $multiple_store);
                 } else {
                     $query;
                 }
@@ -46,6 +47,7 @@ class HppReportTable extends Table
             ->select('sales_order.created_at', 'store_name', 'sales_order.code', 'master_products.code as sku', 'master_products.name as product', 'sales_order_detail.quantity as qty', 'sales_order_detail.hpp_total', 'sales_order_detail.price as sale_price', 'sales_order_detail.total as sale_price_total', 'master_warehouses.name as warehouse')
             ->selectRaw('sales_order_detail.hpp_total / sales_order_detail.quantity as hpp');
 
+        
         return $model;
     }
 

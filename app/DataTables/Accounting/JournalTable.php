@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class JournalTable extends Table
 {
+    protected $exportClass = JournalExport::class;
     /**
      * Get query source of dataTable.
      *

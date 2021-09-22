@@ -42,15 +42,15 @@
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-2 col-form-label text-left" for="store">Store :</label>
-            <div class="col-md-4">
-              <select class="js-select2 form-control" id="store" name="store" data-placeholder="Select Store">
-                <option value="all">All</option>
-                @foreach ($stores as $item)
-                  <option value="{{ $item->store_name }}">{{ $item->store_name }}</option>
-                @endforeach
-              </select>
-            </div>
+          <label class="col-md-2 col-form-label text-left" for="store">Store :</label>
+              <div class="col-md-4">
+                <select class="js-select2 form-control" id="store" name="store[]" data-placeholder="Select Store" multiple="multiple" required>
+                  <option value="all">All</option>
+                  @foreach ($stores as $item)
+                    <option value="{{ $item->store_name }}">{{ $item->store_name }}</option>
+                  @endforeach
+                </select>
+              </div>
             <label class="col-md-2 col-form-label text-left" for="product">SKU :</label>
             <div class="col-md-4">
               <select class="js-select2 form-control" id="product" name="product" data-placeholder="Select SKU">
@@ -122,6 +122,8 @@
 
     $(document).ready(function() {
       $('.js-select2').select2()
+
+      $('#store').val('all').trigger('change');
 
       $('#datesearch').daterangepicker({
         autoUpdateInput: false
@@ -241,6 +243,20 @@
         @else
         buttons: []
         @endif
+      });
+
+      $('#store').on('select2:select', function (e) {
+          var data = e.params.data.id;
+          if(data == 'all') {
+            $('#store').val('all').trigger('change');
+          } else {
+            var all = $('#store').val();
+            const index = all.indexOf('all');
+            if (index > -1) {
+              all.splice(index, 1);
+            }
+            $('#store').val(all).trigger('change');
+          }
       });
 
       $('#btn-filter').on('click', function(e) {

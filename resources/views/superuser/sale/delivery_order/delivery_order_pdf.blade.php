@@ -76,7 +76,8 @@
                   Batas Kirim :
                 </td>
                 <td class="border-full text-left" style="padding-left:7px;" width="15%">
-                  {{ $detail->sales_order->batas_kirim ? date('d-m-Y | H:i', strtotime($detail->sales_order->batas_kirim)) : '-' }}
+                  {{ $detail->sales_order->order_date ? date('d-m-Y | H:i', strtotime('+1 days', strtotime( $detail->sales_order->order_date ))) : '-' }}
+                  {{-- {{ $detail->sales_order->order_date ? date('d-m-Y | H:i', strtotime($detail->sales_order->order_date)) : '-' }} --}}
                 </td>
               </tr>
             </table>

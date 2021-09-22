@@ -20,7 +20,7 @@ Route::group([
     Route::group(['as' => 'journal.', 'prefix' => '/journal'], function () {
         Route::get('/posting', 'JournalController@posting')->name('posting');
         Route::get('/unpost/{id}', 'JournalController@unpost')->name('unpost');
-        Route::get('/Export', 'JournalController@posting')->name('export');
+        Route::get('/export/{id}', 'JournalController@export')->name('export');
         // Route::get('/create/profit_loss/{data?}/{protect?}', 'JournalController@profit_loss')->name('profit_loss');
     });
     Route::resource('journal', 'JournalController');

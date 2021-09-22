@@ -134,12 +134,20 @@
         "url": firstDatatableUrl,
         "dataType": "json",
         "type": "GET",
-        "data":{ _token: "{{csrf_token()}}"}  
+        dataSrc: function ( data ) {
+          totalDebet = data.totalDebet;
+          totalCredit = data.totalCredit;
+  
+          return data.data;
+        }
       },
       order: [
         [0, 'asc']
       ],
-      columns: [
+      "columnDefs": [
+        { className: "text-left", "targets": [ 1, 2 ] }
+      ],
+      "columns": [
         {
           data: 'created_date',
           name: 'journal.created_at'
@@ -165,25 +173,29 @@
        searching: true,
       pageLength: 10000,
       lengthMenu: [
-        [10, 25, 50, 100, 250, 500],
-        [10, 25, 50, 100, 250, 500]
+        [10, 25, 50, 100],
+        [10, 25, 50, 100]
       ],
-      dom: "<'row'<'col-sm-2'l><'col-sm-7 text-left'B><'col-sm-3'f>>" +
-          "<'row'<'col-sm-12'tr>>" +
-          "<'row'<'col-sm-5'i><'col-sm-7'p>>",
-          @if($superuser->can('all stock-print'))
-            buttons: [
-              {
-                extend: 'excelHtml5',
-                text: '<i class="fa fa-file-excel-o"></i>',
-                titleAttr: 'Excel',
-                title: 'Journal Periode'
-              }
-            ]
-            @else
-            buttons: []
-            @endif
-    });
+      dom: 'Bfrtip',
+      drawCallback: function( settings ) {
+        var api = this.api();
+  
+        $( api.column( 3 ).footer() ).html(totalDebet);
+        $( api.column( 4 ).footer() ).html(totalCredit);
+      },
+      @if($superuser->can('all stock-print'))
+      buttons: [
+        {
+          extend: 'excelHtml5',
+          text: '<i class="fa fa-file-excel-o"></i>',
+          titleAttr: 'Excel',
+          title: 'Journal'
+        }
+      ]
+      @else
+      buttons: []
+      @endif
+      });
   
     $('.js-select2').on('select2:select', function (e) {
       window.location.href = '{{ route('superuser.accounting.journal.index') }}/'+$(this).val();
