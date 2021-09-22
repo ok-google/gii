@@ -563,7 +563,7 @@
   </li>
   @endrole
 
-  @role('Developer', 'superuser')
+  @role('Developer|SuperAdmin', 'superuser')
   <li>
     <a class="nav-submenu" data-toggle="nav-submenu" href="#">
       <i class="si si-shield"></i>

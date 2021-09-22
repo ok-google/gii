@@ -23,7 +23,7 @@
       </a>
     </div>
     @endforeach
-    @if(\App\Helper\PermissionHelper::countSuperuserWithoutRole() > 0)
+    @if(\App\Helper\PermissionHelper::countSuperuserWithoutRole() > 1)
     <div class="col-2">
       <a class="block block-link-shadow bg-warning text-white show-role" href="javascript:void(0)" data-role-id="-1" data-role-name="Superuser Without Any Role">
         <div class="block-content block-content-full">

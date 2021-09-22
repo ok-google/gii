@@ -15,9 +15,9 @@
             <button type="submit" class="btn-block-option">
               <i class="fa fa-check"></i> Save
             </button>
-            {{-- <button type="reset" class="btn-block-option">
+             <button type="reset" class="btn-block-option">
               <i class="fa fa-repeat"></i> Reset
-            </button> --}}
+            </button>
           </div>
         </div>
         <div class="block-content">
@@ -27,7 +27,7 @@
               <input type="text" class="form-control" name="name" placeholder="Website Name" value="{{ setting('website.name') }}">
             </div>
           </div>
-          {{-- <div class="form-group row">
+           <div class="form-group row">
             <label class="col-lg-4 col-form-label">Maintenance</label>
             <div class="col-lg-7">
               <label class="css-control css-control-sm css-control-danger css-switch">
@@ -41,7 +41,7 @@
             <div class="col-lg-7">
               <textarea class="form-control" name="maintenance_message" rows="4">{{ setting('website.maintenance_message') }}</textarea>
             </div>
-          </div> --}}
+          </div>
           <div class="form-group row">
             <label class="col-lg-4 col-form-label">Color Themes</label>
             <input type="hidden" name="color_themes" value="{{ setting('website.color_themes') }}">

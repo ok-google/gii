@@ -23,14 +23,7 @@ class HppReportTable extends Table
                 $query->where('warehouse_id', $request->warehouse);
             }
         })
-            ->where(function ($query) use ($request) {
-                if ($request->store != 'all') {
-                    $multiple_store = explode(',', $request->store);
-                    $model->where('store_name', $multiple_store);
-                } else {
-                    $query;
-                }
-            })
+            
             ->whereBetween('sales_order.created_at', [$request->start_date . " 00:00:00", $request->end_date . " 23:59:59"])
             ->join('sales_order_detail', function ($join) use ($request) {
                 $join->on('sales_order.id', '=', 'sales_order_detail.sales_order_id')
@@ -47,8 +40,11 @@ class HppReportTable extends Table
             ->select('sales_order.created_at', 'store_name', 'sales_order.code', 'master_products.code as sku', 'master_products.name as product', 'sales_order_detail.quantity as qty', 'sales_order_detail.hpp_total', 'sales_order_detail.price as sale_price', 'sales_order_detail.total as sale_price_total', 'master_warehouses.name as warehouse')
             ->selectRaw('sales_order_detail.hpp_total / sales_order_detail.quantity as hpp');
 
-        
-        return $model;
+            if($request->store != 'all') {
+                $multiple_store = explode(',', $request->store);
+                $model->whereIn('store_name', $multiple_store);
+            }
+            return $model;
     }
 
     /**

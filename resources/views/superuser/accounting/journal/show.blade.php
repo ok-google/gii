@@ -36,7 +36,7 @@
               </button>
             </a>
             @endif
-            {{-- <a href="{{ route('superuser.report.general_ledger.show', $journal_periode->id) }}">
+             <a href="{{ route('superuser.report.general_ledger.show', $journal_periode->id) }}">
               <button type="button" class="btn bg-gd-sea border-0 text-white">
                 General Ledger <i class="fa fa-sticky-note-o ml-10"></i>
               </button>
@@ -50,7 +50,7 @@
               <button type="button" class="btn bg-gd-sea border-0 text-white">
                 Download P/L <i class="fa fa-sticky-note-o ml-10"></i>
               </button>
-            </a> --}}
+            </a> 
           </div>
         </div>
       </div>
