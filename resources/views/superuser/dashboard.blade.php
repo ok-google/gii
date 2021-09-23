@@ -6,7 +6,7 @@
 </nav>
 
 <div class="row gutters-tiny">
-  {{-- <div class="col-4">
+   <div class="col-4">
     <a class="block" href="javascript:void(0)">
       <div class="block-content block-content-full">
         <div class="row">
@@ -29,6 +29,6 @@
         </div>
       </div>
     </a>
-  </div> --}}
+  </div> 
 </div>
 @endsection
