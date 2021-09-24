@@ -40,7 +40,7 @@ class ReceivingReportTable extends Table
             ->join('master_supplier', 'ppb.supplier_id', '=', 'master_supplier.id')
             ->join('master_products', 'receiving_detail.product_id', '=', 'master_products.id')
             ->join('ppb_detail', 'receiving_detail.ppb_detail_id', '=', 'ppb_detail.id')
-            ->selectRaw('master_supplier.name as supplier, ppb.code as ppb, receiving.code as pbm, receiving_detail.description, master_products.code as sku, master_products.name as product, ppb_detail.quantity as ppb_qty, receiving_detail.total_quantity_ri as ri_qty, (ppb_detail.quantity - receiving_detail.total_quantity_ri) as incoming, receiving_detail.total_quantity_colly as colly_qty, ((ppb_detail.total_price_idr / ppb_detail.quantity) + (receiving_detail.delivery_cost / receiving_detail.total_quantity_ri)) as hpp');
+            ->selectRaw('receiving.created_at as created_date ,master_supplier.name as supplier, ppb.code as ppb, receiving.code as pbm, receiving_detail.description, master_products.code as sku, master_products.name as product, ppb_detail.quantity as ppb_qty, receiving_detail.total_quantity_ri as ri_qty, (ppb_detail.quantity - receiving_detail.total_quantity_ri) as incoming, receiving_detail.total_quantity_colly as colly_qty, ((ppb_detail.total_price_idr / ppb_detail.quantity) + (receiving_detail.delivery_cost / receiving_detail.total_quantity_ri)) as hpp');
 
         return $model;
     }

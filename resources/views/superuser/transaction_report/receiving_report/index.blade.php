@@ -69,6 +69,7 @@
       <table class="datatable table table-striped table-vcenter table-responsive display nowrap">
         <thead>
           <tr>
+            <th class="text-center">Created Date</th>
             <th class="text-center">Supplier</th>
             <th class="text-center">PPB No</th>
             <th class="text-center">PBM No</th>
@@ -126,6 +127,10 @@
           }
         },
         columns: [
+          {
+            data: 'created_date',
+            name: 'receiving.created_at'
+          },
           {
             data: 'supplier',
             name: 'master_supplier.name'

@@ -34,6 +34,8 @@ class ReceivingReportController extends Controller
 
         $data['products'] = MasterRepo::products();
 
+        
+
         return view('superuser.transaction_report.receiving_report.index', $data);
     }
 
