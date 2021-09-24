@@ -112,7 +112,6 @@
         searching: false,
         columns: [{
             name: 'counter',
-            "visible": false
           },
           {
             name: 'sku',
@@ -142,8 +141,8 @@
             width: "5%"
           }
         ],
-        'order': [
-          [0, 'desc']
+        order: [
+          [1, 'desc']
         ]
       })
 
