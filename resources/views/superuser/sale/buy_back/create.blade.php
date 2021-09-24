@@ -31,7 +31,7 @@
         <label class="col-md-3 col-form-label text-right" for="warehouse">Select Inventory <span class="text-danger">*</span></label>
         <div class="col-md-7">
           <select class="js-select2 form-control" id="warehouse" name="warehouse" data-placeholder="Select Inventory">
-            @foreach($warehouses_display as $item)
+            @foreach($warehouses_id as $item)
               <option></option>
               <option value="{{ $item->id }}">{{ $item->name }}</option>
             @endforeach

@@ -85,7 +85,7 @@ class BuyBackController extends Controller
             return abort(403);
         }
 
-        $data['warehouses_display'] = MasterRepo::warehouses_by_category(2);
+        $data['warehouses_id'] = MasterRepo::warehouses_by_branch();
 
         return view('superuser.sale.buy_back.create', $data);
     }
