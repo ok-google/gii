@@ -11,7 +11,7 @@ class Receiving extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'code', 'warehouse_id', 'pbm_date', 'status', 'acc_by', 'acc_at', 'description'
+        'code', 'warehouse_id', 'pbm_date', 'status', 'acc_by', 'acc_at', 'description', 'no_container'
     ];
     protected $table = 'receiving';
 

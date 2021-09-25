@@ -74,6 +74,7 @@ class ReceivingController extends Controller
                 $receiving->code = $request->code;
                 $receiving->warehouse_id = $request->warehouse;
                 $receiving->pbm_date = $request->pbm_date;
+                $receiving->no_container = $request->no_container;
                 $receiving->description = $request->note;
 
                 $receiving->status = Receiving::STATUS['ACTIVE'];
@@ -131,6 +132,7 @@ class ReceivingController extends Controller
             if ($validator->passes()) {
                 $receiving->code = $request->code;
                 $receiving->pbm_date = $request->pbm_date;
+                $receiving->no_container = $request->no_container;
                 $receiving->description = $request->note;
 
                 if ($receiving->save()) {

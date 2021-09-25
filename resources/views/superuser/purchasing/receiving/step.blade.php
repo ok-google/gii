@@ -42,6 +42,12 @@
       </div>
     </div>
     <div class="row">
+      <label class="col-md-3 col-form-label text-right">No container</label>
+      <div class="col-md-7">
+        <div class="form-control-plaintext">{{ $receiving->no_container }}</div>
+      </div>
+    </div>
+    <div class="row">
       <label class="col-md-3 col-form-label text-right">Note</label>
       <div class="col-md-7">
         <div class="form-control-plaintext">{{ $receiving->description }}</div>

@@ -37,6 +37,12 @@
         </div>
       </div>
       <div class="form-group row">
+        <label class="col-md-3 col-form-label text-right" for="no_container">No Container</span></label>
+        <div class="col-md-7">
+          <textarea class="form-control" id="no_container" name="no_container"></textarea>
+        </div>
+      </div>
+      <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="note">Note</span></label>
         <div class="col-md-7">
           <textarea class="form-control" id="note" name="note"></textarea>
