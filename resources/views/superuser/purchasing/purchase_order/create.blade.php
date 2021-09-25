@@ -83,28 +83,6 @@
           <input type="text" class="form-control" id="tax" name="tax" min="0">
         </div>
       </div>
-      <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="sea_freight">Sea Freight</label>
-        <div class="col-md-7">
-          <select class="js-select2 form-control" id="sea_freight" name="sea_freight" data-placeholder="Select Ekspedisi">
-            <option></option>
-            @foreach($ekspedisis as $ekspedisi)
-            <option value="{{ $ekspedisi->id }}">{{ $ekspedisi->name }}</option>
-            @endforeach
-          </select>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="local_freight">Local Freight</label>
-        <div class="col-md-7">
-          <select class="js-select2 form-control" id="local_freight" name="local_freight" data-placeholder="Select Ekspedisi">
-            <option></option>
-            @foreach($ekspedisis as $ekspedisi)
-            <option value="{{ $ekspedisi->id }}">{{ $ekspedisi->name }}</option>
-            @endforeach
-          </select>
-        </div>
-      </div>
       
       <div class="form-group row pt-30">
         <div class="col-md-6">

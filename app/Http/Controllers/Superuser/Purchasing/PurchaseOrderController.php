@@ -67,8 +67,6 @@ class PurchaseOrderController extends Controller
                 }),
                 'kurs' => 'nullable|integer',
                 'tax' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
-                'sea_freight' => 'nullable|integer',
-                'local_freight' => 'nullable|integer',
             ]);
 
             if ($validator->fails()) {
@@ -93,8 +91,6 @@ class PurchaseOrderController extends Controller
                 $purchase_order->coa_id = ($purchase_order->transaction_type == PurchaseOrder::TRANSACTION_TYPE['Non Tunai']) ? null : $request->coa;
                 $purchase_order->kurs = $request->kurs;
                 $purchase_order->tax = $request->tax ?? '0';
-                $purchase_order->sea_freight = $request->sea_freight;
-                $purchase_order->local_freight = $request->local_freight;
 
                 $purchase_order->status = PurchaseOrder::STATUS['DRAFT'];
 
@@ -148,8 +144,6 @@ class PurchaseOrderController extends Controller
                 }),
                 'kurs' => 'nullable|integer',
                 'tax' => 'nullable|regex:/^\d+(\.\d{1,2})?$/',
-                'sea_freight' => 'nullable|integer',
-                'local_freight' => 'nullable|integer',
             ]);
 
             if ($validator->fails()) {
@@ -172,8 +166,6 @@ class PurchaseOrderController extends Controller
                 $purchase_order->coa_id = ($purchase_order->transaction_type == PurchaseOrder::TRANSACTION_TYPE['Non Tunai']) ? null : $request->coa;
                 $purchase_order->kurs = $request->kurs;
                 $purchase_order->tax = $request->tax ?? '0';
-                $purchase_order->sea_freight = $request->sea_freight;
-                $purchase_order->local_freight = $request->local_freight;
 
                 if ($purchase_order->save()) {
                     // UPDATE TAX IN DETAIL
@@ -181,7 +173,7 @@ class PurchaseOrderController extends Controller
                         $purchase_order_detail = PurchaseOrderDetail::find($detail->id);
 
                         // SET TAX
-                        $total_price_before_tax = ((($purchase_order_detail->quantity * $purchase_order_detail->unit_price) + $purchase_order_detail->local_freight_cost) * $purchase_order_detail->kurs ) + $purchase_order_detail->sea_freight + $purchase_order_detail->local_freight;
+                        $total_price_before_tax = ((($purchase_order_detail->quantity * $purchase_order_detail->unit_price) + $purchase_order_detail->local_freight_cost) * $purchase_order_detail->kurs );
 
                         $tax = 0;
                         if($purchase_order->tax > 0) {

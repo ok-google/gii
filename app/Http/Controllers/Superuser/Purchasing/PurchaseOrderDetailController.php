@@ -33,8 +33,7 @@ class PurchaseOrderDetailController extends Controller
                 'unit_price' => 'nullable|numeric',
                 'local_freight_cost' => 'nullable|numeric',
                 'kurs' => 'nullable|numeric',
-                'sea_freight' => 'nullable|numeric',
-                'local_freight' => 'nullable|numeric',
+                'komisi' => 'nullable|numeric',
             ]);
 
             if ($validator->fails()) {
@@ -62,12 +61,11 @@ class PurchaseOrderDetailController extends Controller
                 $purchase_order_detail->quantity = $request->quantity;
                 $purchase_order_detail->unit_price = $request->unit_price;
                 $purchase_order_detail->local_freight_cost = $request->local_freight_cost;
+                $purchase_order_detail->komisi = $request->komisi;
 
-                $purchase_order_detail->total_price_rmb = ($request->quantity * $request->unit_price) + $request->local_freight_cost;
+                $purchase_order_detail->total_price_rmb = ($request->quantity * $request->unit_price) + $request->local_freight_cost + $request->komisi;
 
                 $purchase_order_detail->kurs = $request->kurs;
-                $purchase_order_detail->sea_freight = $request->sea_freight;
-                $purchase_order_detail->local_freight = $request->local_freight;
 
                 $purchase_order_detail->order_date = $request->order_date;
 
@@ -76,7 +74,7 @@ class PurchaseOrderDetailController extends Controller
                 $purchase_order_detail->colly_qty = $request->colly_qty;
 
                 // SET TAX
-                $total_price_before_tax = ((($request->quantity * $request->unit_price) + $request->local_freight_cost) * $request->kurs ) + $request->sea_freight + $request->local_freight;
+                $total_price_before_tax = ((($request->quantity * $request->unit_price) + $request->local_freight_cost) * $request->kurs );
 
                 $tax = 0;
                 if($purchase_order->tax > 0) {
@@ -127,8 +125,7 @@ class PurchaseOrderDetailController extends Controller
                 'unit_price' => 'nullable|numeric',
                 'local_freight_cost' => 'nullable|numeric',
                 'kurs' => 'nullable|numeric',
-                'sea_freight' => 'nullable|numeric',
-                'local_freight' => 'nullable|numeric',
+                'komisi' => 'nullable|numeric',
             ]);
 
             if ($validator->fails()) {
@@ -154,12 +151,11 @@ class PurchaseOrderDetailController extends Controller
                 $purchase_order_detail->quantity = $request->quantity;
                 $purchase_order_detail->unit_price = $request->unit_price;
                 $purchase_order_detail->local_freight_cost = $request->local_freight_cost;
+                $purchase_order_detail->komisi = $request->komisi;
 
-                $purchase_order_detail->total_price_rmb = ($request->quantity * $request->unit_price) + $request->local_freight_cost;
+                $purchase_order_detail->total_price_rmb = ($request->quantity * $request->unit_price) + $request->local_freight_cost + $request->komisi;
 
                 $purchase_order_detail->kurs = $request->kurs;
-                $purchase_order_detail->sea_freight = $request->sea_freight;
-                $purchase_order_detail->local_freight = $request->local_freight;
                 
                 $purchase_order_detail->order_date = $request->order_date;
 
@@ -168,7 +164,7 @@ class PurchaseOrderDetailController extends Controller
                 $purchase_order_detail->colly_qty = $request->colly_qty;
 
                 // SET TAX
-                $total_price_before_tax = ((($request->quantity * $request->unit_price) + $request->local_freight_cost) * $request->kurs ) + $request->sea_freight + $request->local_freight;
+                $total_price_before_tax = ((($request->quantity * $request->unit_price) + $request->local_freight_cost) * $request->kurs );
 
                 $tax = 0;
                 if($purchase_order->tax > 0) {

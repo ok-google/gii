@@ -98,18 +98,6 @@
       </div>
     </div>
     <div class="row">
-      <label class="col-md-3 col-form-label text-right">Sea Freight</label>
-      <div class="col-md-7">
-        <div class="form-control-plaintext">{{ $purchase_order->ekspedisi_sea_freight->name ?? '-' }}</div>
-      </div>
-    </div>
-    <div class="row">
-      <label class="col-md-3 col-form-label text-right">Local Freight</label>
-      <div class="col-md-7">
-        <div class="form-control-plaintext">{{ $purchase_order->ekspedisi_local_freight->name ?? '-' }}</div>
-      </div>
-    </div>
-    <div class="row">
       <label class="col-md-3 col-form-label text-right">Status</label>
       <div class="col-md-7">
         <div class="form-control-plaintext">{{ $purchase_order->status() }}</div>
@@ -183,6 +171,7 @@
           <th class="text-center">Qty</th>
           <th class="text-center">Unit Price (RMB)</th>
           <th class="text-center">Local Freight Cost (RMB)</th>
+          <th class="text-center">Komisi (IDR)</th>
           <th class="text-center">Total Price (RMB)</th>
           <th class="text-center">Kurs (IDR)</th>
           <th class="text-center">Sea Freight (IDR)</th>
@@ -199,6 +188,7 @@
           <td class="text-center">{{ $purchase_order->price_format($detail->quantity) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->unit_price) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->local_freight_cost) }}</td>
+          <td class="text-center">{{ $purchase_order->price_format($detail->komisi) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->total_price_rmb) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->kurs) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->sea_freight) }}</td>

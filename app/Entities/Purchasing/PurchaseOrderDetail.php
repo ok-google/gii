@@ -8,9 +8,8 @@ class PurchaseOrderDetail extends Model
 {
     protected $fillable = [
         'ppb_id', 'product_id', 'quantity', 
-        'unit_price', 'local_freight_cost', 'total_tax', 'total_price_rmb', 
-        'kurs', 'sea_freight', 'local_freight',
-        'total_price_idr', 'no_urut', 'order_date',
+        'unit_price', 'local_freight_cost', 'komisi', 'total_tax', 'total_price_rmb', 
+        'kurs', 'total_price_idr', 'no_urut', 'order_date',
         'no_container', 'qty_container', 'colly_qty'
     ];
     protected $table = 'ppb_detail';
