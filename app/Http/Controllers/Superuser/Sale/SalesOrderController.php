@@ -328,6 +328,8 @@ class SalesOrderController extends Controller
         }
     }
 
+    /*
+    REMOVE By: danitri33
     public function bulk_acc(Request $request) 
     {
         if ($request->ajax()) {
@@ -424,6 +426,162 @@ class SalesOrderController extends Controller
                             }
                             
                             $sales_order->save();
+                        }
+                    }
+                }
+
+                DB::commit();
+
+                if($errors) {
+                    $response['notification'] = [
+                        'alert' => 'block',
+                        'type' => 'alert-danger',
+                        'header' => 'Error',
+                        'content' => $errors,
+                    ];
+
+                    $response['redirect_to'] = '#datatable';
+                    return $this->response(400, $response);
+                } else {
+                    $response['notification'] = [
+                        'alert' => 'notify',
+                        'type' => 'success',
+                        'content' => 'Success',
+                    ];
+        
+                    $response['redirect_to'] = '#datatable';
+                    return $this->response(200, $response);
+                }
+            } catch (\Exception $e) {
+                DB::rollback();
+                $response['notification'] = [
+                    'alert' => 'block',
+                    'type' => 'alert-danger',
+                    'header' => 'Error',
+                    'content' => "Internal Server Error",
+                ];
+  
+                return $this->response(400, $response);
+            }
+            
+        }
+    }
+    */
+
+    public function bulk_action(Request $request) 
+    {
+        if ($request->ajax()) {
+            if(!Auth::guard('superuser')->user()->can('sales order-acc')) {
+                return abort(403);
+            }
+            
+            $type = $request->bulk_type;
+
+            DB::beginTransaction();
+            try {
+                $errors = [];
+
+                $pecah = explode(',', $request->bulk_acc_ids);
+                foreach ($pecah as $id) {
+                    if($id) {
+                        $sales_order = SalesOrder::find($id);
+
+                        if ($sales_order === null) {
+                            continue;
+                        }
+
+                        if($type == "delete"){
+
+                            if($sales_order->status != SalesOrder::STATUS['ACTIVE']) {
+
+                                $errors[] = '<a href="'.route('superuser.sale.sales_order.show', $sales_order->id).'">'.$sales_order->code.'</a> : Data has approved!';
+                                continue;
+                                
+                            }else{
+
+                                $sales_order->delete();
+
+                            }
+
+                        }else{
+
+                            if($sales_order->status == SalesOrder::STATUS['ACC']) {
+                                $errors[] = '<a href="'.route('superuser.sale.sales_order.show', $sales_order->id).'">'.$sales_order->code.'</a> : Data has approved!';
+                                continue;
+                            }
+    
+                            if( count($sales_order->sales_order_details) < 1 ) {
+                                $errors[] = '<a href="'.route('superuser.sale.sales_order.show', $sales_order->id).'">'.$sales_order->code.'</a> : Empty product details!';
+                                continue;
+                            }
+    
+                            $sales_order_duplicate_resi = SalesOrder::where('resi', $sales_order->resi)->where('status', SalesOrder::STATUS['ACC'])->first();
+                            if($sales_order_duplicate_resi) {
+                                $errors[] = '<a href="'.route('superuser.sale.sales_order.show', $sales_order->id).'">'.$sales_order->code.'</a> : Duplicate AWB/Resi with <a href="'.route('superuser.sale.sales_order.show', $sales_order_duplicate_resi->id).'">'.$sales_order_duplicate_resi->code.'</a>';
+                                continue;
+                            }
+    
+                            $out_of_stock = false;
+                            foreach ($sales_order->sales_order_details as $detail) {
+                                if($detail->product->non_stock == '0') {
+                                    $stock_sales_order = StockSalesOrder::where('warehouse_id', $sales_order->warehouse_id)->where('product_id', $detail->product_id)->first();
+                                    if($stock_sales_order) {
+                                        $sum_multiple_product_quantity = SalesOrderDetail::where('sales_order_id', $id)->where('product_id', $detail->product_id)->sum('quantity');
+                                        
+                                        if($stock_sales_order->stock < $sum_multiple_product_quantity) {
+                                            $out_of_stock = true;
+                                            break;
+                                        }
+                                    } else {
+                                        $out_of_stock = true;
+                                        break;
+                                    }
+                                }
+                            }
+    
+                            if($out_of_stock) {
+                                $errors[] = '<a href="'.route('superuser.sale.sales_order.edit', $sales_order->id).'">'.$sales_order->code.'</a> : Out of stock product found!';
+                            } else {
+                                
+                                foreach ($sales_order->sales_order_details as $detail) {
+                                    
+                                    if($detail->product->non_stock == '0') {
+                                        $stock_sales_order = StockSalesOrder::where('warehouse_id', $sales_order->warehouse_id)->where('product_id', $detail->product_id)->first();
+                                    
+                                        $getstock = $stock_sales_order->stock;
+                                        $stock_sales_order->stock = $getstock - $detail->quantity;
+                                        $stock_sales_order->save();
+                                    }
+                                }
+    
+                                $sales_order->status = SalesOrder::STATUS['ACC'];
+                                $sales_order->acc_by = Auth::guard('superuser')->id();
+                                $sales_order->acc_at = Carbon::now()->toDateTimeString();
+    
+                                if( $sales_order->marketplace_order == SalesOrder::MARKETPLACE_ORDER['Non Marketplace'] ) {
+                                    $delivery_order = new DeliveryOrder;
+    
+                                    $delivery_order->code = DeliveryOrderRepo::generateCode();
+                                    $delivery_order->status = DeliveryOrder::STATUS['ACTIVE'];
+                                    $delivery_order->save();
+    
+                                    $count = DeliveryOrderDetail::whereMonth('created_at', Carbon::now()->month)->count();
+    
+                                    $delivery_order_detail = new DeliveryOrderDetail;
+                                    $delivery_order_detail->code = 'DO-'.Carbon::now()->format('my').'-'.sprintf('%07d', $count+1);
+                                    $delivery_order_detail->delivery_order_id = $delivery_order->id;
+                                    $delivery_order_detail->sales_order_id = $sales_order->id;
+                                    $delivery_order_detail->save();
+    
+                                    $sales_order->status_sales_order = 1;
+    
+                                    if($sales_order->resi == null) {
+                                        $sales_order->resi = $sales_order->code;
+                                    }
+                                }
+                                
+                                $sales_order->save();
+                            }
                         }
                     }
                 }

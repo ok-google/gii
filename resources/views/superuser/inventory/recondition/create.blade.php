@@ -104,6 +104,7 @@
         </div>
       </div> --}}
     </div>
+    {{-- <input type="text" id="last_no" value="0"> --}}
   </form>
 
 @endsection
@@ -114,6 +115,9 @@
 @push('scripts')
   <script src="{{ asset('utility/superuser/js/form.js') }}"></script>
   <script type="text/javascript">
+  
+  // let nomor = $("#last_no").val();
+  let nomor = 0;
     $(document).ready(function() {
       $('.js-select2').select2()
 
@@ -148,8 +152,9 @@
               Codebase.layout('header_loader_off')
             }
           }).done(function(response) {
+            nomor = (parseInt(nomor)+1);
             var html =
-              '<div class="js-animation-object animated fadeIn block block-themed block-rounded block-result"><div class="block-header bg-earth-dark"><h3 class="block-title">' +
+              '<div class="js-animation-object animated fadeIn block block-themed block-rounded block-result"><div class="block-header bg-earth-dark"><h3 class="block-title">' + nomor + '.) ' +
               response.title +
               '</h3><div class="block-options"><button type="button" class="btn-block-option btn-remove-block"><i class="fa fa-trash"></i></button></div></div><div class="block-content"><table id="product-' +
               response.id +
@@ -170,7 +175,8 @@
                 '<td class="text-center"><input type="number" class="form-control text-center" name="quantity_disposal[]" min="0" value="0"></td>';
               html += '</tr>';
             });
-
+            // $("#last_no").val(nomor)
+            // nomor = nomor;
             html += '</tbody></table></div></div>';
 
             $('#list-result').prepend(html);

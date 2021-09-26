@@ -92,12 +92,23 @@
     </table>
   </div>
   <div class="block-content block-content-full">
-    <form class="ajax" id="form_bulk_acc" data-action="{{ route('superuser.sale.sales_order.bulk_acc') }}" data-type="POST" enctype="multipart/form-data">
+    <form class="ajax" id="form_bulk_acc" data-action="{{ route('superuser.sale.sales_order.bulk_action') }}" data-type="POST" enctype="multipart/form-data">
       <input type="hidden" name="bulk_acc_ids">
+      <input type="hidden" name="bulk_type">
       @if($superuser->can('sales order-acc'))
-      <button type="submit" class="btn bg-gd-corporate border-0 text-white" id="approve">
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Bulk Action
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item bulk-click" href="#" bulk-type="approve"> <i class="fa fa-check"></i> Approve</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item bulk-click" href="#" bulk-type="delete"><i class="fa fa-trash"></i> Delete</a>
+        </div>
+      </div>
+      {{-- <button type="submit" class="btn bg-gd-corporate border-0 text-white" id="approve">
         Approve <i class="fa fa-arrow-right ml-10"></i>
-      </button>
+      </button> --}}
       @endif
     </form>
     
@@ -196,6 +207,24 @@ $(document).ready(function() {
     });
 
     $('input[name="bulk_acc_ids"]').val(selected);
+    bulkaccConfirmation();
+
+  })
+
+  $('.bulk-click').on('click', function (e) {
+    e.preventDefault();
+    var selected = '';
+    var type = $(this).attr('bulk-type');
+
+    // alert(type);return;
+    table.rows( { selected: true } ).every( function ( rowIdx, tableLoop, rowLoop ) {
+      var data = this.node();
+      var id = data.querySelector('.sales_order_id').textContent;
+      selected = selected + id + ",";
+    });
+    
+    $('input[name="bulk_acc_ids"]').val(selected);
+    $('input[name="bulk_type"]').val(type);
     bulkaccConfirmation();
 
   })
