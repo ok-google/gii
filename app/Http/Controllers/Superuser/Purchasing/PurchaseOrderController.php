@@ -173,7 +173,7 @@ class PurchaseOrderController extends Controller
                         $purchase_order_detail = PurchaseOrderDetail::find($detail->id);
 
                         // SET TAX
-                        $total_price_before_tax = ((($purchase_order_detail->quantity * $purchase_order_detail->unit_price) + $purchase_order_detail->local_freight_cost) * $purchase_order_detail->kurs );
+                        $total_price_before_tax = ((($request->quantity * $request->unit_price) + $request->local_freight_cost+ $request->komisi) * $request->kurs );
                         $tax = 0;
                         if($purchase_order->tax > 0) {
                             $tax = $total_price_before_tax * $purchase_order->tax / 100;

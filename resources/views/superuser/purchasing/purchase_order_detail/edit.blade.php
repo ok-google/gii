@@ -49,42 +49,18 @@
         </div>
       </div>
       <div class="form-group row">
+        <label class="col-md-3 col-form-label text-right" for="komisi">Komisi (RMB)</label>
+        <div class="col-md-4">
+          <input type="number" class="form-control" id="komisi" name="komisi" min="0" value="{{ $purchase_order_detail->komisi }}" step="any">
+        </div>
+      </div>
+      <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="kurs">Kurs (IDR)</label>
         <div class="col-md-4">
           <input type="number" class="form-control" id="kurs" name="kurs" min="0" value="{{ $purchase_order_detail->kurs }}" step="any">
         </div>
       </div>
-      <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="sea_freight">Sea Freight (IDR)</label>
-        <div class="col-md-4">
-          <input type="number" class="form-control" id="sea_freight" name="sea_freight" min="0" value="{{ $purchase_order_detail->sea_freight }}" step="any">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="local_freight">Local Freight (IDR)</label>
-        <div class="col-md-4">
-          <input type="number" class="form-control" id="local_freight" name="local_freight" min="0" value="{{ $purchase_order_detail->local_freight }}" step="any">
-        </div>
-      </div>
-      <hr>
-      <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="no_container">No Container</label>
-        <div class="col-md-4">
-          <input type="text" class="form-control" id="no_container" name="no_container" value="{{ $purchase_order_detail->no_container }}">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="container_qty">Container Qty</label>
-        <div class="col-md-4">
-          <input type="text" class="form-control" id="container_qty" name="container_qty" value="{{ $purchase_order_detail->qty_container }}">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="colly_qty">Colly Qty</label>
-        <div class="col-md-4">
-          <input type="text" class="form-control" id="colly_qty" name="colly_qty" value="{{ $purchase_order_detail->colly_qty }}">
-        </div>
-      </div>
+      
 
       <div class="form-group row pt-30">
         <div class="col-md-6">

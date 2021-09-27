@@ -47,21 +47,9 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="delivery_cost">Delivery Cost</label>
+        <label class="col-md-3 col-form-label text-right" for="delivery_cost">Sea Freight</label>
         <div class="col-md-4">
           <input type="number" class="form-control" id="delivery_cost" name="delivery_cost" min="0" value="0" step="any">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="sea_freight">Sea Freight</label>
-        <div class="col-md-4">
-          <input type="number" class="form-control" id="sea_freight" name="sea_freight" min="0" value="0" step="any">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="local_freight">Local Freight</label>
-        <div class="col-md-4">
-          <input type="number" class="form-control" id="local_freight" name="local_freight" min="0" value="0" step="any">
         </div>
       </div>
       <div class="form-group row">

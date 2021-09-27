@@ -213,7 +213,7 @@ class ReceivingController extends Controller
                         $delivery_cost = 0;
 
                         if($detail->total_quantity_ri > 0) {
-                            $delivery_cost = $detail->delivery_cost / $detail->total_quantity_ri;
+                            $delivery_cost = $detail->delivery_cost * $detail->total_quantity_ri;
 
                             $hpp                = new Hpp;
                             $hpp->type          = $superuser->type;
@@ -226,7 +226,7 @@ class ReceivingController extends Controller
 
                         // HANDLE RECEIVING COA
                         $qty_receive = ReceivingDetailColly::where('receiving_detail_id', $detail->id)->sum('quantity_ri');
-                        $total_persediaan_item = $reject_idr + ($detail->total_quantity_ri * ($harga_satuan + $delivery_cost));
+                        $total_persediaan_item = ($detail->total_quantity_ri * ($harga_satuan + $delivery_cost));
                         $total_persediaan = $total_persediaan + $total_persediaan_item;
 
                         // SUM TAX
