@@ -28,7 +28,7 @@ class SaleReturnController extends Controller
 
     public function search_do(Request $request)
     {
-        $delivery_orders = DeliveryOrderDetail::where('created_at', '>=', Carbon::now()->subDays(30)->toDateTimeString())
+        $delivery_orders = DeliveryOrderDetail::where('created_at', '>=', Carbon::now()->subDays(90)->toDateTimeString())
             ->where(function ($query) use ($request) {
                 $query->where('code', 'LIKE', $request->input('q', '') . '%')
                     ->orWhere(function ($query) use ($request) {
