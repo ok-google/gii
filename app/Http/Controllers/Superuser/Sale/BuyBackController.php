@@ -32,7 +32,7 @@ class BuyBackController extends Controller
         $sales_order = SalesOrder::where('code', 'LIKE', $request->input('q', '') . '%')
             ->whereIn('warehouse_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray())
             ->where('status', SalesOrder::STATUS['ACC'])
-            ->where('created_at', '>=', Carbon::now()->subDays(30)->toDateTimeString())
+            ->where('created_at', '>=', Carbon::now()->subDays(90)->toDateTimeString())
             ->get();
 
         $results = [];

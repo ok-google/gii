@@ -415,6 +415,13 @@
         </a>
       </li>
       @endif
+      @if($superuser->can('recondition-manage'))
+      <li>
+        <a href="{{ route('superuser.transaction_report.recondition_report.index') }}" class="{{ is_active_route('superuser.transaction_report.recondition_report.index') }}">
+          Recondition
+        </a>
+      </li>
+      @endif
       @if($superuser->can('stock valuation-manage'))
       <li>
         <a href="{{ route('superuser.transaction_report.stock_valuation.index') }}" class="{{ is_active_route('superuser.transaction_report.stock_valuation.index') }}">
