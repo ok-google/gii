@@ -155,6 +155,8 @@ class ReceivingDetailController extends Controller
                 $receiving_detail->product_id = $request->product;
                 $receiving_detail->quantity = $request->quantity;
                 $receiving_detail->delivery_cost = $request->delivery_cost ?? 0;
+                $receiving_detail->sea_freight = $request->sea_freight;
+                $receiving_detail->local_freight = $request->local_freight;
                 $receiving_detail->description = $request->description;
 
                 if ($receiving_detail->save()) {
