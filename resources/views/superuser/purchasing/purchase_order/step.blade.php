@@ -173,9 +173,7 @@
           <th class="text-center">Local Freight Cost (RMB)</th>
           <th class="text-center">Komisi (IDR)</th>
           <th class="text-center">Total Price (RMB)</th>
-          <th class="text-center">Kurs (IDR)</th>
-          <th class="text-center">Sea Freight (IDR)</th>
-          <th class="text-center">Local Freight (IDR)</th>
+          <th class="text-center">Kurs (RMB)</th>
           <th class="text-center">Total Price (IDR)</th>
           <th class="text-center">Action</th>
         </tr>
@@ -191,8 +189,6 @@
           <td class="text-center">{{ $purchase_order->price_format($detail->komisi) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->total_price_rmb) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->kurs) }}</td>
-          <td class="text-center">{{ $purchase_order->price_format($detail->sea_freight) }}</td>
-          <td class="text-center">{{ $purchase_order->price_format($detail->local_freight) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->total_price_idr) }}</td>
           <td class="text-center">
             <a href="{{ route('superuser.purchasing.purchase_order.detail.edit', [$purchase_order->id, $detail->id]) }}">
