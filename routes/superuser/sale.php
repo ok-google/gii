@@ -11,7 +11,7 @@ Route::group([
 
         Route::get('/search_sku', 'SalesOrderController@search_sku')->name('search_sku');
         Route::get('{id}/acc', 'SalesOrderController@acc')->name('acc');
-        Route::post('/bulk_acc', 'SalesOrderController@bulk_acc')->name('bulk_acc');
+        Route::post('/bulk_action', 'SalesOrderController@bulk_action')->name('bulk_action');
         Route::get('/import_template', 'SalesOrderController@import_template')->name('import_template');
         Route::post('/import', 'SalesOrderController@import')->name('import');
         Route::get('/export', 'SalesOrderController@export')->name('export');
