@@ -7,7 +7,7 @@ use App\Entities\Model;
 class ReceivingDetail extends Model
 {
     protected $fillable = [
-        'receiving_id', 'ppb_id', 'ppb_detail_id', 'product_id', 'quantity', 'total_quantity_ri', 'total_quantity_colly', 'delivery_cost', 'description'
+        'receiving_id', 'ppb_id', 'ppb_detail_id', 'product_id', 'quantity', 'total_quantity_ri', 'total_quantity_colly', 'delivery_cost', 'description', 'total_ri_idr', 'grand_total'
     ];
     protected $table = 'receiving_detail';
 

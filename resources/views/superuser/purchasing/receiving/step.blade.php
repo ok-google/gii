@@ -105,7 +105,7 @@
           <th class="text-center">#</th>
           <th class="text-center">PPB Number</th>
           <th class="text-center">SKU</th>
-          <th class="text-center">Product</th>
+          
           <th class="text-center">PPB Quantity</th>
           <th class="text-center">RI Quantity</th>
           <th class="text-center">Colly Quantity</th>
@@ -119,7 +119,7 @@
           <td class="text-center">{{ $loop->iteration }}</td>
           <td class="text-center">{{ $detail->purchase_order->code }}</td>
           <td class="text-center">{{ $detail->product->code }}</td>
-          <td class="text-center">{{ $detail->product->name }}</td>
+          
           <td class="text-center">{{ $receiving->price_format($detail->quantity) }}</td>
           <td class="text-center">{{ $receiving->price_format($detail->total_quantity_ri) }}{{ $detail->total_reject_ri($detail->id) ? ' [RE '.$receiving->price_format($detail->total_reject_ri($detail->id)).']' : '' }}</td>
           <td class="text-center">{{ $receiving->price_format($detail->total_quantity_colly) }}{{ $detail->total_reject_colly($detail->id) ? ' [RE '.$receiving->price_format($detail->total_reject_colly($detail->id)).']' : '' }}</td>

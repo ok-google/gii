@@ -170,6 +170,7 @@
           <th class="text-center">SKU</th>
           <th class="text-center">Qty</th>
           <th class="text-center">Unit Price (RMB)</th>
+          <th class="text-center">Unit Price (IDR)</th>
           <th class="text-center">Local Freight Cost (RMB)</th>
           <th class="text-center">Komisi (IDR)</th>
           <th class="text-center">Total Price (RMB)</th>
@@ -185,6 +186,7 @@
           <td class="text-center">{{ $detail->product->code }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->quantity) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->unit_price) }}</td>
+          <td class="text-center">{{ $purchase_order->price_format($detail->unit_price_idr) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->local_freight_cost) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->komisi) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->total_price_rmb) }}</td>
@@ -237,7 +239,7 @@
   $(document).ready(function() {
 
     $('#datatable').DataTable({
-        "footerCallback": function ( row, data, start, end, display ) {
+        footerCallback: function ( row, data, start, end, display ) {
           var api = this.api(), data;
 
           // Remove the formatting to get integer data for summation
@@ -252,14 +254,14 @@
 
           // Total over all pages
           total = api
-              .column( 5 )
+              .column( 7 )
               .data()
               .reduce( function (a, b) {
                   return intVal(a) + intVal(b);
               }, 0 );
 
           // Update footer
-          $( api.column( 5 ).footer() ).html(
+          $( api.column( 7 ).footer() ).html(
             numFormat(total)
           );
 

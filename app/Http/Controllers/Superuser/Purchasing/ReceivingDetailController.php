@@ -155,7 +155,7 @@ class ReceivingDetailController extends Controller
                 $receiving_detail->product_id = $request->product;
                 $receiving_detail->quantity = $request->quantity;
                 $receiving_detail->delivery_cost = $request->delivery_cost ?? 0;
-                $receiving_detail->description = $request->description;
+                $receiving_detail->description = $request->description; 
 
                 if ($receiving_detail->save()) {
                     $response['notification'] = [
