@@ -97,7 +97,7 @@
           <th class="text-center">Total Price (RMB)</th>
           <th class="text-center">Kurs (IDR)</th>
           <th class="text-center">Komisi (RMB)</th>
-          <th class="text-center">No Container</th>
+          <th class="text-center">Total Tax</th>
           <th class="text-center">Total Price (IDR)</th>
         </tr>
       </thead>
@@ -113,7 +113,7 @@
           <td class="text-center">{{ $purchase_order->price_format($detail->total_price_rmb) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->kurs) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->komisi) }}</td>
-          <td class="text-center">{{ $detail->no_container }}</td>
+          <td class="text-center">{{ $purchase_order->price_format($detail->total_tax) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->total_price_idr) }}</td>
         </tr>
         @endforeach

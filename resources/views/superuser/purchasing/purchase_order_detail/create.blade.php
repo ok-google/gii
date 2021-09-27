@@ -58,25 +58,6 @@
           <input type="number" class="form-control" id="kurs" name="kurs" min="0" value="0" step="any">
         </div>
       </div>
-      <hr>
-      <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="no_container">No Container</label>
-        <div class="col-md-4">
-          <input type="text" class="form-control" id="no_container" name="no_container">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="container_qty">Container Qty</label>
-        <div class="col-md-4">
-          <input type="text" class="form-control" id="container_qty" name="container_qty">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="colly_qty">Colly Qty</label>
-        <div class="col-md-4">
-          <input type="text" class="form-control" id="colly_qty" name="colly_qty">
-        </div>
-      </div>
      
       <div class="form-group row pt-30">
         <div class="col-md-6">
