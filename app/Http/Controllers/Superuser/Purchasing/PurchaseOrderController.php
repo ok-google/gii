@@ -174,7 +174,6 @@ class PurchaseOrderController extends Controller
 
                         // SET TAX
                         $total_price_before_tax = ((($purchase_order_detail->quantity * $purchase_order_detail->unit_price) + $purchase_order_detail->local_freight_cost) * $purchase_order_detail->kurs );
-
                         $tax = 0;
                         if($purchase_order->tax > 0) {
                             $tax = $total_price_before_tax * $purchase_order->tax / 100;
