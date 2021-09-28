@@ -93,6 +93,7 @@
           <th class="text-center">SKU</th>
           <th class="text-center">Qty</th>
           <th class="text-center">Unit Price (RMB)</th>
+          <th class="text-center">Unit Price (IDR)</th>
           <th class="text-center">Local Freight Cost (RMB)</th>
           <th class="text-center">Total Price (RMB)</th>
           <th class="text-center">Kurs (IDR)</th>
@@ -109,6 +110,7 @@
           <td class="text-center">{{ $detail->product->code }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->quantity) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->unit_price) }}</td>
+          <td class="text-center">{{ $purchase_order->price_format($detail->unit_price_idr) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->local_freight_cost) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->total_price_rmb) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->kurs) }}</td>

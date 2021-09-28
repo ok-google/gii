@@ -142,6 +142,7 @@ class ReceivingDetailController extends Controller
 
             if ($validator->passes()) {
                 $receiving = Receiving::find($id);
+                $ppb_detail = PurchaseOrderDetail::find($id);
 
                 if ($receiving == null) {
                     abort(404);
@@ -155,7 +156,9 @@ class ReceivingDetailController extends Controller
                 $receiving_detail->product_id = $request->product;
                 $receiving_detail->quantity = $request->quantity;
                 $receiving_detail->delivery_cost = $request->delivery_cost ?? 0;
-                $receiving_detail->description = $request->description; 
+                $receiving_detail->description = $request->description;
+
+                
 
                 if ($receiving_detail->save()) {
                     $response['notification'] = [
