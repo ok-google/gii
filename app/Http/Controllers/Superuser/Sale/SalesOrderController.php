@@ -36,7 +36,7 @@ class SalesOrderController extends Controller
     public function json(Request $request, SalesOrderTable $datatable)
     {
         // return $datatable->build();
-        return $datatable->with('show', $request->show)->build();
+        return $datatable->with('show', $request->show)->build($request);
     }
 
     public function index()

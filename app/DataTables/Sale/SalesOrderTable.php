@@ -6,6 +6,7 @@ use App\DataTables\Table;
 use App\Entities\Sale\SalesOrder;
 use Carbon\Carbon;
 use App\Repositories\MasterRepo;
+use Illuminate\Http\Request;
 
 class SalesOrderTable extends Table
 {
@@ -13,20 +14,32 @@ class SalesOrderTable extends Table
      * Get query source of dataTable.
      *
      */
-    private function query()
+    private function query(Request $request)
     {
         switch ($this->show) {
             case 'default':
               $model = SalesOrder::select('id', 'code', 'marketplace_order', 'customer_id', 'customer_marketplace', 'store_name', 'ekspedisi_id', 'ekspedisi_marketplace', 'status', 'status_sales_order', 'created_at')->whereIn('warehouse_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray())->where('status', 1);
+              if($request->from??false){
+                  $model = $model->whereDate("created_at", ">=", $request->from)->whereDate("created_at", "<=", $request->to);
+              }
               break;
             case 'acc':
               $model = SalesOrder::select('id', 'code', 'marketplace_order', 'customer_id', 'customer_marketplace', 'store_name', 'ekspedisi_id', 'ekspedisi_marketplace', 'status', 'status_sales_order', 'created_at')->whereIn('warehouse_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray())->where('status', 2);
+              if($request->from??false){
+                  $model = $model->whereDate("created_at", ">=", $request->from)->whereDate("created_at", "<=", $request->to);
+              }
               break;
             case 'all':
               $model = SalesOrder::select('id', 'code', 'marketplace_order', 'customer_id', 'customer_marketplace', 'store_name', 'ekspedisi_id', 'ekspedisi_marketplace', 'status', 'status_sales_order', 'created_at')->whereIn('warehouse_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray());
+              if($request->from??false){
+                  $model = $model->whereDate("created_at", ">=", $request->from)->whereDate("created_at", "<=", $request->to);
+              }
               break;
             default:
               $model = SalesOrder::select('id', 'code', 'marketplace_order', 'customer_id', 'customer_marketplace', 'store_name', 'ekspedisi_id', 'ekspedisi_marketplace', 'status', 'status_sales_order', 'created_at')->whereIn('warehouse_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray())->where('status', 1);
+              if($request->from??false){
+                  $model = $model->whereDate("created_at", ">=", $request->from)->whereDate("created_at", "<=", $request->to);
+              }
               break;
           }
   
@@ -36,9 +49,9 @@ class SalesOrderTable extends Table
     /**
      * Build DataTable class.
      */
-    public function build()
+    public function build(Request $request)
     {
-        $table = Table::of($this->query());
+        $table = Table::of($this->query($request));
         $table->addIndexColumn();
 
         $table->setRowClass(function (SalesOrder $model) {
