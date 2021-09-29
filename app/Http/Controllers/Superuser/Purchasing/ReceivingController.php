@@ -213,7 +213,7 @@ class ReceivingController extends Controller
                         $delivery_cost = 0;
 
                         if($detail->total_quantity_ri > 0) {
-                            $delivery_cost = $detail->delivery_cost * $detail->total_quantity_ri;
+                            $delivery_cost = $detail->delivery_cost / $detail->total_quantity_ri;
 
                             $hpp                = new Hpp;
                             $hpp->type          = $superuser->type;
@@ -226,7 +226,7 @@ class ReceivingController extends Controller
 
                         // HANDLE RECEIVING COA
                         $qty_receive = ReceivingDetailColly::where('receiving_detail_id', $detail->id)->sum('quantity_ri');
-                        $total_persediaan_item = ($detail->total_quantity_ri * ($harga_satuan + $delivery_cost));
+                        $total_persediaan_item = $reject_idr + ($detail->total_quantity_ri * ($harga_satuan + $delivery_cost));
                         $total_persediaan = $total_persediaan + $total_persediaan_item;
 
                         // SUM TAX
@@ -242,6 +242,8 @@ class ReceivingController extends Controller
 
                     $setting_finance = SettingFinance::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('key', 'ppb_tunai_debet')->first();
 
+                    $setting_finance_cost = SettingFinance::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('key', 'receiving_cost')->first();
+
                     // ADD JOURNAL
                     $journal = new Journal;
                     $journal->coa_id = $setting_receiving_acc->coa_id;
@@ -253,7 +255,14 @@ class ReceivingController extends Controller
                     $journal = new Journal;
                     $journal->coa_id = $setting_finance->coa_id;
                     $journal->name = Journal::PREJOURNAL['RI_ACC'] . $receiving->code;
-                    $journal->credit = $total_persediaan;
+                    $journal->credit = ($total_persediaan - ($delivery_cost * $qty_receive));
+                    $journal->status = Journal::STATUS['UNPOST'];
+                    $journal->save();
+
+                    $journal = new Journal;
+                    $journal->coa_id = $setting_finance_cost->coa_id;
+                    $journal->name = Journal::PREJOURNAL['RI_ACC'] . $receiving->code;
+                    $journal->credit = $delivery_cost * $qty_receive;
                     $journal->status = Journal::STATUS['UNPOST'];
                     $journal->save();
 

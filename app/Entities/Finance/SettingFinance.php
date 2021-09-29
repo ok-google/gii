@@ -20,6 +20,7 @@ class SettingFinance extends Model
         
         'receiving_debet',
         'receiving_tax',
+        'receiving_cost',
         
         // 'do_transaction_credit',
         'do_hpp_debet',

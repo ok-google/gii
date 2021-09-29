@@ -87,6 +87,17 @@
             </div>
           </div>
           <div class="form-group row">
+            <label class="col-md-4 col-form-label text-right" for="receiving_cost">Cost (Credit)</label>
+            <div class="col-md-4">
+              <select class="js-select2 form-control" id="receiving_cost" name="receiving_cost" data-placeholder="Select COA">
+                @foreach($coa as $item)
+                  <option></option>
+                  <option value="{{ $item->id }}" {{ $receiving_cost == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                @endforeach
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
             <label class="col-md-4 col-form-label text-right" for="receiving_tax">Tax (Debet)</label>
             <div class="col-md-4">
               <select class="js-select2 form-control" id="receiving_tax" name="receiving_tax" data-placeholder="Select COA">
