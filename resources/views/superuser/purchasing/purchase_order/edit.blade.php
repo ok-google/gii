@@ -84,6 +84,17 @@
           <input type="text" class="form-control" id="tax" name="tax" min="0" value="{{ $purchase_order->tax }}">
         </div>
       </div>
+      <div class="form-group row">
+        <label class="col-md-3 col-form-label text-right" for="sea_freight">Ekspedisi</label>
+        <div class="col-md-7">
+          <select class="js-select2 form-control" id="sea_freight" name="sea_freight" data-placeholder="Select Ekspedisi">
+            <option></option>
+            @foreach($ekspedisis as $ekspedisi)
+            <option value="{{ $ekspedisi->id }}" {{ $purchase_order->sea_freight == $ekspedisi->id ? 'selected' : '' }}>{{ $ekspedisi->name }}</option>
+            @endforeach
+          </select>
+        </div>
+      </div>
       
       <div class="form-group row pt-30">
         <div class="col-md-6">

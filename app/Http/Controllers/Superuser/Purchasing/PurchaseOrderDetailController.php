@@ -70,7 +70,7 @@ class PurchaseOrderDetailController extends Controller
                 $purchase_order_detail->order_date = $request->order_date;
 
                 // SET TAX
-                $total_price_before_tax = ((($request->quantity * $request->unit_price) + $request->local_freight_cost) * $request->kurs );
+                $total_price_before_tax = ((($request->quantity * $request->unit_price) + $request->local_freight_cost + $request->komisi) * $request->kurs );
 
                 $tax = 0;
                 if($purchase_order->tax > 0) {
@@ -156,7 +156,7 @@ class PurchaseOrderDetailController extends Controller
                 
                 $purchase_order_detail->order_date = $request->order_date;
                 // SET TAX
-                $total_price_before_tax = ((($request->quantity * $request->unit_price) + $request->local_freight_cost) * $request->kurs );
+                $total_price_before_tax = ((($request->quantity * $request->unit_price) + $request->local_freight_cost + $request->komisi) * $request->kurs );
 
                 $tax = 0;
                 if($purchase_order->tax > 0) {

@@ -91,6 +91,7 @@ class PurchaseOrderController extends Controller
                 $purchase_order->coa_id = ($purchase_order->transaction_type == PurchaseOrder::TRANSACTION_TYPE['Non Tunai']) ? null : $request->coa;
                 $purchase_order->kurs = $request->kurs;
                 $purchase_order->tax = $request->tax ?? '0';
+                $purchase_order->sea_freight = $request->sea_freight;
 
                 $purchase_order->status = PurchaseOrder::STATUS['DRAFT'];
 

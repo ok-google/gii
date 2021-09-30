@@ -98,6 +98,12 @@
       </div>
     </div>
     <div class="row">
+      <label class="col-md-3 col-form-label text-right">Ekspedisi</label>
+      <div class="col-md-7">
+        <div class="form-control-plaintext">{{ $purchase_order->ekspedisi_sea_freight->name ?? '-' }}</div>
+      </div>
+    </div>
+    <div class="row">
       <label class="col-md-3 col-form-label text-right">Status</label>
       <div class="col-md-7">
         <div class="form-control-plaintext">{{ $purchase_order->status() }}</div>
@@ -170,12 +176,12 @@
           <th class="text-center">SKU</th>
           <th class="text-center">Qty</th>
           <th class="text-center">Unit Price (RMB)</th>
-          <th class="text-center">Unit Price (IDR)</th>
           <th class="text-center">Local Freight Cost (RMB)</th>
           <th class="text-center">Komisi (IDR)</th>
           <th class="text-center">Total Price (RMB)</th>
           <th class="text-center">Kurs (RMB)</th>
           <th class="text-center">Total Price (IDR)</th>
+          <th class="text-center">Unit Price (IDR)</th>
           <th class="text-center">Action</th>
         </tr>
       </thead>
@@ -186,12 +192,12 @@
           <td class="text-center">{{ $detail->product->code }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->quantity) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->unit_price) }}</td>
-          <td class="text-center">{{ $purchase_order->price_format($detail->unit_price_idr) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->local_freight_cost) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->komisi) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->total_price_rmb) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->kurs) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->total_price_idr) }}</td>
+          <td class="text-center">{{ $purchase_order->price_format($detail->unit_price_idr) }}</td>
           <td class="text-center">
             <a href="{{ route('superuser.purchasing.purchase_order.detail.edit', [$purchase_order->id, $detail->id]) }}">
               <button type="button" class="btn btn-sm btn-circle btn-alt-warning" title="Edit">
@@ -239,6 +245,7 @@
   $(document).ready(function() {
 
     $('#datatable').DataTable({
+        
         footerCallback: function ( row, data, start, end, display ) {
           var api = this.api(), data;
 
@@ -254,42 +261,31 @@
 
           // Total over all pages
           total = api
-              .column( 7 )
+              .column( 6 )
               .data()
               .reduce( function (a, b) {
                   return intVal(a) + intVal(b);
               }, 0 );
 
           // Update footer
-          $( api.column( 7 ).footer() ).html(
+          $( api.column( 6 ).footer() ).html(
             numFormat(total)
           );
 
           // Total over all pages
           total_idr = api
-              .column( 9 )
+              .column( 8 )
               .data()
               .reduce( function (a, b) {
                   return intVal(a) + intVal(b);
               }, 0 );
 
           // Update footer
-          $( api.column( 9 ).footer() ).html(
+          $( api.column( 8 ).footer() ).html(
             numFormat(total_idr)
           );
       },
       "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>> <"row"<"col-sm-12 col-md-6"<"toolbar">><"col-sm-12 col-md-6"p>> <"row"<"col-sm-12"rt>> <"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
-      "columnDefs": [
-            { 
-                "targets": [ 0 ], //first column
-                "orderable": false, //set not orderable
-            },
-            { 
-                "targets": [ -1 ], //last column
-                "orderable": false, //set not orderable
-            },
- 
-        ],
     })
 
     $("div.toolbar").html('<div class="row"><div class="col-auto my-auto"><select name="select_action" id="select_action" aria-controls="datatable" class="custom-select custom-select-sm form-control form-control-sm"><option value="">Select Action</option><option value="bulk_delete">Bulk Delete</option></select></div> <div class="col-auto"><button class="btn btn-primary" type="button" onclick="select_action()"><span>Submit Action</span></button></div></div>');

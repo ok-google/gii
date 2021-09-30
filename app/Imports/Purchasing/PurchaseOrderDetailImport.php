@@ -53,21 +53,23 @@ class PurchaseOrderDetailImport implements ToCollection, WithHeadingRow, WithSta
                 $quantity = $row['quantity'] ?? 0;
                 $unit_price = $row['unit_price'] ?? 0;
                 $local_freight_cost = $row['local_freight_cost'] ?? 0;
+                $komisi = $row['komisi'] ?? 0;
 
-                $total_price_rmb = ($quantity*$unit_price)+$local_freight_cost;
+                $total_price_rmb = ($quantity*$unit_price)+$local_freight_cost+$komisi;
                 
                 $kurs = $row['kurs'] ?? 0;
-                $sea_freight = $row['sea_freight'] ?? 0;
-                $local_freight = $row['local_freight'] ?? 0;
+                
 
                 // SET TAX
-                $total_price_before_tax = ($total_price_rmb*$kurs)+$sea_freight+$local_freight;
+                $total_price_before_tax = $total_price_rmb*$kurs;
 
                 $tax = 0;
                 if($purchase_order->tax > 0) {
                     $tax = $total_price_before_tax * $purchase_order->tax / 100;
                 }
                 $total_price_after_tax = $total_price_before_tax + $tax;
+                $total_price_idr = $total_price_after_tax;
+                $unit_price_idr = $total_price_after_tax / $quantity;
                 
                 $order_date = $row['order_date'] ? $this->transformDate($row['order_date']) : 'NULL';
                 
@@ -81,12 +83,12 @@ class PurchaseOrderDetailImport implements ToCollection, WithHeadingRow, WithSta
                 $purchase_order_detail->quantity = $quantity;
                 $purchase_order_detail->unit_price = $unit_price;
                 $purchase_order_detail->local_freight_cost = $local_freight_cost;
+                $purchase_order_detail->komisi = $komisi;
                 $purchase_order_detail->total_price_rmb = $total_price_rmb;
                 $purchase_order_detail->kurs = $kurs;
-                $purchase_order_detail->sea_freight = $sea_freight;
-                $purchase_order_detail->local_freight = $local_freight;
                 $purchase_order_detail->total_tax = $tax;
                 $purchase_order_detail->total_price_idr = $total_price_after_tax;
+                $purchase_order_detail->unit_price_idr = $unit_price_idr;
                 $purchase_order_detail->order_date = $order_date;
                 $purchase_order_detail->no_container = $no_container;
                 $purchase_order_detail->qty_container = $qty_container;

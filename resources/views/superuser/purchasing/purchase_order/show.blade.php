@@ -63,6 +63,12 @@
       </div>
     </div>
     <div class="row">
+      <label class="col-md-3 col-form-label text-right">Ekspedisi</label>
+      <div class="col-md-7">
+        <div class="form-control-plaintext">{{ $purchase_order->sea_freight->name }}</div>
+      </div>
+    </div>
+    <div class="row">
       <label class="col-md-3 col-form-label text-right">Status</label>
       <div class="col-md-7">
         <div class="form-control-plaintext">{{ $purchase_order->status() }}</div>
@@ -93,13 +99,13 @@
           <th class="text-center">SKU</th>
           <th class="text-center">Qty</th>
           <th class="text-center">Unit Price (RMB)</th>
-          <th class="text-center">Unit Price (IDR)</th>
           <th class="text-center">Local Freight Cost (RMB)</th>
           <th class="text-center">Total Price (RMB)</th>
           <th class="text-center">Kurs (IDR)</th>
           <th class="text-center">Komisi (RMB)</th>
           <th class="text-center">Total Tax</th>
           <th class="text-center">Total Price (IDR)</th>
+          <th class="text-center">Unit Price (IDR)</th>
         </tr>
       </thead>
       <tbody>
@@ -110,13 +116,13 @@
           <td class="text-center">{{ $detail->product->code }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->quantity) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->unit_price) }}</td>
-          <td class="text-center">{{ $purchase_order->price_format($detail->unit_price_idr) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->local_freight_cost) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->total_price_rmb) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->kurs) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->komisi) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->total_tax) }}</td>
           <td class="text-center">{{ $purchase_order->price_format($detail->total_price_idr) }}</td>
+          <td class="text-center">{{ $purchase_order->price_format($detail->unit_price_idr) }}</td>
         </tr>
         @endforeach
       </tbody>
@@ -184,6 +190,7 @@
           );
       },
       "dom": '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>> <"row"<"col-sm-12 col-md-12"p>> <"row"<"col-sm-12"rt>> <"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>'
+      
     })
 
     $('a.img-lightbox').magnificPopup({

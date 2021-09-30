@@ -15,7 +15,7 @@ class PurchaseOrder extends Model
 
     protected $fillable = [
         'code', 'supplier_id', 'address',
-        'warehouse_id', 'transaction_type', 'coa_id', 'kurs', 'tax', 'edit_counter',
+        'warehouse_id', 'transaction_type', 'coa_id', 'kurs', 'tax', 'sea_freight', 'edit_counter',
         'grand_total_rmb', 'grand_total_idr', 'status', 'acc_by', 'acc_at',
     ];
     protected $table = 'ppb';
