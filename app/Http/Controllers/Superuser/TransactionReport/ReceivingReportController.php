@@ -89,12 +89,13 @@ class ReceivingReportController extends Controller
                 'Supplier' => $data->supplier,
                 'PPB No' => $data->ppb,
                 'PBM No' => $data->pbm,
-                'Notes' => $data->description,
                 'SKU' => $data->sku,
                 'PPB Qty' => $data->ppb_qty,
                 'RI Qty' => $data->ri_qty,
                 'Incoming' => $data->incoming,
                 'Colly Qty' => $data->colly_qty,
+                'Notes' => $data->description,
+                'No Container' => $data->container,
                 'HPP' => number_format($data->hpp, 2, ',', ''),
             ];
         }

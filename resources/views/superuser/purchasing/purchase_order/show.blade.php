@@ -65,7 +65,7 @@
     <div class="row">
       <label class="col-md-3 col-form-label text-right">Ekspedisi</label>
       <div class="col-md-7">
-        <div class="form-control-plaintext">{{ $purchase_order->sea_freight->name }}</div>
+        <div class="form-control-plaintext">{{ $purchase_order->sea_freight }}</div>
       </div>
     </div>
     <div class="row">

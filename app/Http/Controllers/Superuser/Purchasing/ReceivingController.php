@@ -188,7 +188,7 @@ class ReceivingController extends Controller
             try {
                 $superuser = Auth::guard('superuser')->user();
                 $collect = [];
-
+                
                 $setting_tax = SettingFinance::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('key', 'receiving_tax')->first();
 
                 if ($setting_tax == null or $setting_tax->coa_id == null) {

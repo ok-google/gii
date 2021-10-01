@@ -69,17 +69,22 @@
       <table class="datatable table table-striped table-vcenter table-responsive display nowrap">
         <thead>
           <tr>
-            <th class="text-center">Created Date</th>
             <th class="text-center">Supplier</th>
             <th class="text-center">PPB No</th>
             <th class="text-center">PBM No</th>
-            <th class="text-center">Notes</th>
             <th class="text-center">SKU</th>
-            <th class="text-center">Product</th>
+            <th class="text-center">Unit Price</th>
             <th class="text-center">PPB Qty</th>
             <th class="text-center">RI Qty</th>
             <th class="text-center">Incoming</th>
             <th class="text-center">Colly Qty</th>
+            <th class="text-center">Domestic Cost</th>
+            <th class="text-center">Komisi</th>
+            <th class="text-center">Total Price (RMB)</th>
+            <th class="text-center">Kurs</th>
+            <th class="text-center">Sea Freight</th>
+            <th class="text-center">Notes</th>
+            <th class="text-center">No Container</th>
             <th class="text-center">HPP</th>
           </tr>
         </thead>
@@ -128,10 +133,6 @@
         },
         columns: [
           {
-            data: 'created_date',
-            name: 'receiving.created_at'
-          },
-          {
             data: 'supplier',
             name: 'master_supplier.name'
           },
@@ -144,16 +145,12 @@
             name: 'receiving.code'
           },
           {
-            data: 'description',
-            name: 'ppb.description'
-          },
-          {
             data: 'sku',
             name: 'master_products.code'
           },
           {
-            data: 'product',
-            name: 'master_products.name'
+            data: 'unit_price',
+            name: 'ppb_detail.unit_price'
           },
           {
             data: 'ppb_qty',
@@ -170,6 +167,34 @@
           {
             data: 'colly_qty',
             searchable: false
+          },
+          {
+            data: 'domestic_cost',
+            name: 'ppb_detail.local_freight_cost'
+          },
+          {
+            data: 'komisi',
+            name: 'ppb_detail.komisi'
+          },
+          {
+            data: 'total_price_rmb',
+            name: 'ppb_detail.total_price_rmb'
+          },
+          {
+            data: 'kurs',
+            name: 'ppb_detail.kurs'
+          },
+          {
+            data: 'delivery_cost',
+            name: 'ppb_detail.delivery_cost'
+          },
+          {
+            data: 'description',
+            name: 'ppb.description'
+          },
+          {
+            data: 'container',
+            name: 'ppb_detail.no_container'
           },
           {
             data: 'hpp',
