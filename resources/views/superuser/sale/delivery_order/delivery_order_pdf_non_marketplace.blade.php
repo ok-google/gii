@@ -40,7 +40,7 @@
             <table class="text-center">
               <tr>
                 <td>
-                  <img src="data:image/png;base64,{{DNS1D::getBarcodePNG( $detail->sales_order->resi, 'C128',strlen($detail->sales_order->resi) > 16 ? 1.4 : 2,37,array(1,1,1))}}" alt="barcode"/>
+                  <img src="data:image/png;base64,{{DNS1D::getBarcodePNG( $detail->sales_order->resi, 'C128',strlen($detail->sales_order->resi) > 18 ? 1.4 : 2,37,array(1,1,1))}}" alt="barcode"/>
                 </td>
               </tr>
               <tr>

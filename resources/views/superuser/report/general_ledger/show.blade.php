@@ -104,6 +104,7 @@
 
 @include('superuser.asset.plugin.swal2')
 @include('superuser.asset.plugin.datatables')
+@include('superuser.asset.plugin.datatables-button')
 @include('superuser.asset.plugin.select2')
 
 @section('modal')
