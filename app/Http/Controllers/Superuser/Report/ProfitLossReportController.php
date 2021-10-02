@@ -9,6 +9,7 @@ use App\Entities\Accounting\JournalPeriode;
 use App\Entities\Accounting\JournalSaldo;
 use App\Entities\Accounting\SettingProfitLoss;
 use App\Entities\Account\Superuser;
+use App\Exports\ProfitLossReportExcel;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
@@ -200,6 +201,35 @@ class ProfitLossReportController extends Controller
         }
 
         return $pdf->stream();
+    }
+
+    
+    public function excel($id = NULL, $protect = false, $generate = false)
+    {
+        if(!Auth::guard('superuser')->user()->can('profit loss-print')) {
+            return abort(403);
+        }
+
+        if ($id == NULL) {
+            abort(404);
+        }
+
+        $journal_periode = JournalPeriode::find($id);
+        if($journal_periode == null) {
+            return abort(404);
+        }
+
+        $data['journal_periode'] = $journal_periode;
+        $data['report'] = $this->grab_data($id);
+        
+        $fileName = "Profit Loss Report ".$journal_periode->from_date." sd ".$journal_periode->to_date;
+        // dd($fileName);
+
+        // $pdf = DomPDF::loadView('superuser.report.profit_loss_report.pdf', $data);
+        // $pdf->setOptions(['enable_php' => true]);
+        // $pdf->setPaper('a4', 'portrait');
+
+        return (new ProfitLossReportExcel($data))->download(str_replace("/", "", $fileName).'.xlsx');
     }
 
     // WITH SETTING

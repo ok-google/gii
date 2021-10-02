@@ -7,6 +7,7 @@ use App\Entities\Accounting\Journal;
 use App\Entities\Accounting\JournalPeriode;
 use App\Entities\Accounting\JournalSaldo;
 use App\Entities\Account\Superuser;
+use App\Exports\BalanceSheetReportExcel;
 use App\Http\Controllers\Controller;
 use App\Repositories\MasterRepo;
 use Carbon\Carbon;
@@ -472,4 +473,65 @@ class BalanceSheetController extends Controller
         return $pdf->stream();
     }
 
+    public function excel($id = null, $protect = false, $generate = false)
+    {
+        if (!Auth::guard('superuser')->user()->can('balance sheet-print')) {
+            return abort(403);
+        }
+
+        if ($id == null) {
+            abort(404);
+        }
+
+        $journal_periode = JournalPeriode::find($id);
+        if ($journal_periode == null) {
+            return abort(404);
+        }
+
+        $data['journal_periode'] = $journal_periode;
+
+        $data['collect'] = $this->grab_data($id);
+
+        $fileName = "Balance Sheet ".$journal_periode->from_date." sd ".$journal_periode->to_date;
+
+        Excel::store($fileName, function($excel) {
+            $excel->sheet('Sheetname', function($sheet) {
+
+                $excel->sheet('Sheetname', function($sheet) {
+                    $sheet->mergeCells('A1:G1');
+                    $sheet->cell('A1', function($cell) {
+                        $cell->setValue('Balance Sheet');
+                        $cell->setFontSize(18);
+                        $cell->setFontWeight('bold');
+                        $cell->setAlignment('center');
+                    });
+                    $sheet->cell('A1', function($cell) {
+                        $cell->setValue($journal_periode->from_date." s/d ".$journal_periode->to_date);
+                        $cell->setFontSize(18);
+                        $cell->setAlignment('center');
+                        // $cells->setFontWeight('bold');
+                    });
+                    // Sheet manipulation
+            
+                });
+        
+            });
+        
+        })->export('xlsx');
+
+        // return (new BalanceSheetReportExcel($data))->download(str_replace("/", "", $fileName).'.xlsx');
+        // $pdf = DomPDF::loadView('superuser.report.balance_sheet.pdf', $data);
+        // $pdf->setOptions(['enable_javascript' => true]);
+        // $pdf->setPaper('a4', 'portrait');
+
+        // if ($protect) {
+        //     $pdf->setEncryption('12345678');
+        // }
+
+        // if ($generate) {
+        //     return $pdf;
+        // }
+
+        // return $pdf->stream();
+    }
 }

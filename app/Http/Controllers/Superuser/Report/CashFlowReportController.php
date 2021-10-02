@@ -6,6 +6,7 @@ use App\Entities\Accounting\CashFlowSaldo;
 use App\Entities\Accounting\Journal;
 use App\Entities\Accounting\JournalPeriode;
 use App\Entities\Account\Superuser;
+use App\Exports\CashFlowReportExcel;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use DomPDF;
@@ -147,4 +148,28 @@ class CashFlowReportController extends Controller
         return $pdf->stream();
     }
 
+
+    public function excel($id = null, $protect = false, $generate = false)
+    {
+        if (!Auth::guard('superuser')->user()->can('cash flow-print')) {
+            return abort(403);
+        }
+
+        if ($id == null) {
+            abort(404);
+        }
+
+        $journal_periode = JournalPeriode::find($id);
+        if ($journal_periode == null) {
+            return abort(404);
+        }
+
+        $data['journal_periode'] = $journal_periode;
+
+        $data['report'] = $this->grab_data($id);
+        
+        $fileName = "Cash Flow ".$journal_periode->from_date." sd ".$journal_periode->to_date;
+
+        return (new CashFlowReportExcel($data))->download(str_replace("/", "", $fileName).'.xlsx');
+    }
 }

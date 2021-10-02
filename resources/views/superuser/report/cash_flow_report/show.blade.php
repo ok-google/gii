@@ -25,6 +25,11 @@
             <span style="vertical-align: super;">Period :</span> <span class="h2">{{ \Carbon\Carbon::parse( $journal_periode->from_date )->format('d/m/Y') }} - {{ \Carbon\Carbon::parse( $journal_periode->to_date )->format('d/m/Y') }}</span>
           </div>
           <div class="col-md-4 text-right">
+            <a href="{{ route('superuser.report.cash_flow_report.excel', $journal_periode->id) }}" target="_blank">
+              <button type="button" class="btn bg-gd-sea border-0 text-white">
+                Download C/F <i class="fa fa-sticky-note-o ml-10"></i>
+              </button>
+            </a>
             <a href="{{ route('superuser.report.cash_flow_report.pdf', $journal_periode->id) }}" target="_blank">
               <button type="button" class="btn bg-gd-sea border-0 text-white">
                 Download C/F <i class="fa fa-sticky-note-o ml-10"></i>

@@ -32,7 +32,7 @@
             </a>
           </div>
           <div class="col-md-4 text-right">
-            <a href="{{ route('superuser.report.balance_sheet.export', $journal_periode->id) }}" target="_blank">
+            <a href="{{ route('superuser.report.balance_sheet.excel', $journal_periode->id) }}" target="_blank">
               <button type="button" class="btn bg-gd-sea border-0 text-white">
                 Download B/S Excel <i class="fa fa-sticky-note-o ml-10"></i>
               </button>
