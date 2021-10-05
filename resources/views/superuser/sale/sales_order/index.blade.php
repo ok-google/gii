@@ -52,7 +52,7 @@
 </div>
 @endif
 
-<form id="form" target="_blank" action="{{ route('superuser.transaction_report.purchase_report.pdf') }}"
+  <form id="form" target="_blank" action="{{ route('superuser.transaction_report.purchase_report.pdf') }}"
     enctype="multipart/form-data" method="POST">
     @csrf
     <div class="block">

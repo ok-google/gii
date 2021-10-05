@@ -8,7 +8,7 @@
 <div class="row gutters-tiny">
    <div class="col-4">
     <a class="block" href="javascript:void(0)">
-      <div class="block-content block-content-full">
+      {{-- <div class="block-content block-content-full">
         <div class="row">
           <div class="col-6">
             <i class="fa fa-dollar fa-2x text-body-bg-dark"></i>
@@ -27,7 +27,7 @@
             <div class="font-size-h4 font-w600">{{ rupiah(Swap::latest('USD/IDR', ['cache_ttl' => \Carbon\Carbon::now()->secondsUntilEndOfDay()])->getValue()) }}</div>
           </div>
         </div>
-      </div>
+      </div> --}}
     </a>
   </div> 
 </div>

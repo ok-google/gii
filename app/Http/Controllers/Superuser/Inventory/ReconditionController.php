@@ -32,7 +32,7 @@ class ReconditionController extends Controller
 
     public function json(Request $request, ReconditionTable $datatable)
     {
-        return $datatable->build();
+        return $datatable->build($request);
     }
 
     public function search_sku(Request $request)

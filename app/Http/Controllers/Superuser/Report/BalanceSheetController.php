@@ -495,7 +495,7 @@ class BalanceSheetController extends Controller
         $fileName = "Balance Sheet ".$journal_periode->from_date." sd ".$journal_periode->to_date;
 
         Excel::store($fileName, function($excel) {
-            $excel->sheet('Sheetname', function($sheet) {
+            // $excel->sheet('Sheetname', function($sheet) {
 
                 $excel->sheet('Sheetname', function($sheet) {
                     $sheet->mergeCells('A1:G1');
@@ -505,7 +505,7 @@ class BalanceSheetController extends Controller
                         $cell->setFontWeight('bold');
                         $cell->setAlignment('center');
                     });
-                    $sheet->cell('A1', function($cell) {
+                    $sheet->cell('A2', function($cell) {
                         $cell->setValue($journal_periode->from_date." s/d ".$journal_periode->to_date);
                         $cell->setFontSize(18);
                         $cell->setAlignment('center');
@@ -515,7 +515,7 @@ class BalanceSheetController extends Controller
             
                 });
         
-            });
+            // });
         
         })->export('xlsx');
 

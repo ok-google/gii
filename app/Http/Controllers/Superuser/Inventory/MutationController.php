@@ -73,7 +73,7 @@ class MutationController extends Controller
 
     public function json(Request $request, MutationTable $datatable)
     {
-        return $datatable->build();
+        return $datatable->build($request);
     }
 
     public function index()

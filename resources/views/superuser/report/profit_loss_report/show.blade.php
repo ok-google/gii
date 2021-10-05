@@ -27,7 +27,7 @@
           <div class="col-md-4 text-right">
             <a href="{{ route('superuser.report.profit_loss_report.excel', $journal_periode->id) }}" target="_blank">
               <button type="button" class="btn bg-gd-sea border-0 text-white">
-                Download P/L <i class="fa fa-sticky-note-o ml-10"></i>
+                <i class="fa fa-file-excel-o"></i>
               </button>
             </a>
             <a href="{{ route('superuser.report.profit_loss_report.pdf', $journal_periode->id) }}" target="_blank">

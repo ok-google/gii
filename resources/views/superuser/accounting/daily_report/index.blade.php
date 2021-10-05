@@ -26,10 +26,22 @@
       @endforeach
     </select>
   </div>
-  <label class="col-md-2 col-form-label text-right" for="date">Select Date</label>
+  {{-- <div class="form-group row"> --}}
+    <label class="col-md-1 col-form-label text-left" for="period">Period :</label>
+    <div class="col-md-4">
+      <div class="input-group">
+        <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-calendar"
+              aria-hidden="true"></i></span></div><input type="text" class="form-control pull-right" id="datesearch"
+          name="datesearch" placeholder="Select period"
+          value="{{ \Carbon\Carbon::now()->format('d/m/Y') }} - {{ \Carbon\Carbon::now()->format('d/m/Y') }}">
+      </div>
+    </div>
+  {{-- </div> --}}
+
+  {{-- <label class="col-md-2 col-form-label text-right" for="date">Select Date</label>
   <div class="col-md-3">
     <input class="form-control" type="date" id="date" name="date" max="{{ \Carbon\Carbon::yesterday()->format('Y-m-d') }}">
-  </div>
+  </div> --}}
 </div>
 <div class="block">
   <div class="block-content block-content-full">
@@ -76,20 +88,60 @@
 
 @push('scripts')
 <script src="{{ asset('utility/superuser/js/form.js') }}"></script>
+@include('superuser.asset.plugin.daterangepicker')
 <script type="text/javascript">
+function convertDateToSQL(obj){
+
+  var newSD = new Date(obj);
+  var year = newSD.getFullYear();
+  var month = ((parseInt(newSD.getMonth())+1).toString().length == 1 ? "0"+(parseInt(newSD.getMonth())+1) : (parseInt(newSD.getMonth())+1));
+  var date = (newSD.getDate().toString().length == 1 ? "0"+newSD.getDate() : newSD.getDate());
+  return year+"-"+month+"-"+date;
+}
 $(document).ready(function() {
   $('.js-select2').select2()
 
   let datatableUrl = '{{ route('superuser.accounting.daily_report.json') }}';
 
+  $('#datesearch').daterangepicker({
+    autoUpdateInput: false
+  });
+
+  $('#datesearch').data('daterangepicker').setStartDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
+  $('#datesearch').data('daterangepicker').setEndDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
+
+  $('#datesearch').on('apply.daterangepicker', function(ev, picker) {
+    $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+    start_date = picker.startDate.format('YYYY-MM-DD');
+    end_date = picker.endDate.format('YYYY-MM-DD');
+
+    if (start_date && end_date) {
+      
+      var coa = $('#coa').val();
+      let newDatatableUrl = datatableUrl + '?coa='+ coa +'&from=' + start_date + '&to=' + end_date;
+      $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
+    // alert('aa')
+    }
+  });
+
+
   $('#date,#coa').on('change', function(){
     $('#result-sa').hide();
     $('#download').hide();
 
+    var sd = $('#datesearch').data('daterangepicker').startDate._d;
+    var newSD = convertDateToSQL(sd);
+    var ed = $('#datesearch').data('daterangepicker').endDate._d;
+    var newED = convertDateToSQL(ed);
+    // alert(+"="+endDate)
     var coa = $('#coa').val();
     var date   = $('#date').val();
-    if( coa && date ) {
-      let newDatatableUrl = datatableUrl+'?coa='+coa+'&date='+date;
+    // if( coa && date ) { REMOVE BY dani
+    //   let newDatatableUrl = datatableUrl+'?coa='+coa+'&date='+date;
+    //   $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
+    // }
+    if( coa) {
+      let newDatatableUrl = datatableUrl + '?coa='+ coa +'&from=' + newSD + '&to=' + newED;
       $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
     }
   });
@@ -129,6 +181,11 @@ $(document).ready(function() {
     "footerCallback": function ( row, data, start, end, display ) {
       var api = this.api(), data;
 
+      var sd = $('#datesearch').data('daterangepicker').startDate._d;
+      var from = convertDateToSQL(sd);
+      var ed = $('#datesearch').data('daterangepicker').endDate._d;
+      var to = convertDateToSQL(ed);
+      
       saldo_akhir = api
           .row( ':last' )
           .data();
@@ -137,7 +194,7 @@ $(document).ready(function() {
         $('#saldo_akhir').html( saldo_akhir[4] );
         $('#result-sa').show();
         $('#download').show();
-        $('#download-to').attr("href", '{{ route('superuser.accounting.daily_report.pdf') }}/'+$('#coa').val()+'/'+$('#date').val());
+        $('#download-to').attr("href", '{{ route('superuser.accounting.daily_report.pdf') }}/'+$('#coa').val()+'/'+from+'/'+to);
       }
     }
   });

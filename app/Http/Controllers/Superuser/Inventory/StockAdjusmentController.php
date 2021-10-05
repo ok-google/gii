@@ -21,7 +21,7 @@ class StockAdjusmentController extends Controller
 {
     public function json(Request $request, StockAdjusmentTable $datatable)
     {
-        return $datatable->build();
+        return $datatable->build($request);
     }
 
     public function get_sku(Request $request)

@@ -22,7 +22,7 @@ class MutationDisplayController extends Controller
 {
     public function json(Request $request, MutationDisplayTable $datatable)
     {
-        return $datatable->build();
+        return $datatable->build($request);
     }
 
     public function search_sku(Request $request)

@@ -22,23 +22,25 @@ class DailyReportController extends Controller
         $data = [];
         $coa = $request->coa;
         $date = $request->date;
-        
-        if($coa && $date) {
+        $from = $request->from;
+        $to = $request->to;
+        // dd($coa);
+        if($coa && $from) {
             $superuser = Superuser::find(Auth::guard('superuser')->id());
             if($superuser->type) {
                 // GET SALDO AWAL
                 $saldo_awal_debet = Journal::where('coa_id', $coa)
-                ->where('created_at', '<', $date." 00:00:00")
+                ->where('created_at', '<', $from." 00:00:00")
                 ->sum('debet');
 
                 $saldo_awal_credit = Journal::where('coa_id', $coa)
-                ->where('created_at', '<', $date." 00:00:00")
+                ->where('created_at', '<', $from." 00:00:00")
                 ->sum('credit');
 
                 $balance = $saldo_awal_debet - $saldo_awal_credit;
 
                 $data['data'][] = [
-                    Carbon::parse($date)->format('j/m/Y'),
+                    Carbon::parse($from)->format('j/m/Y'),
                     'Saldo Awal',
                     $balance > 0 ? 'Rp. '.number_format($balance, 2, ",", ".") : '',
                     $balance < 0 ? 'Rp. '.number_format(abs($balance), 2, ",", ".") : '',
@@ -47,7 +49,7 @@ class DailyReportController extends Controller
                 ];
 
                 $journal = Journal::where('coa_id', $coa)
-                ->whereBetween('created_at', [$date." 00:00:00", $date." 23:59:59"])
+                ->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])
                 ->orderBy('created_at', 'ASC')
                 ->get();
 
@@ -71,6 +73,7 @@ class DailyReportController extends Controller
 
             
         } else {
+            // dd("sini");
             $data['data'] = '';
         }
                 
@@ -88,41 +91,41 @@ class DailyReportController extends Controller
         return view('superuser.accounting.daily_report.index', $data);
     }
 
-    public function pdf($coa = NULL, $date = NULL, $generate = false)
+    public function pdf($coa = NULL, $from = NULL, $to = NULL, $generate = false)
     {
         if(!Auth::guard('superuser')->user()->can('daily cash/bank report-print')) {
             return abort(403);
         }
-
-        if ($coa == NULL OR $date == NULL) {
+        if ($coa == NULL OR $from == NULL) {
             abort(404);
         }
 
-        if(Carbon::parse($date)->format('j/m/Y') >= Carbon::now()->format('j/m/Y')) {
-            abort(404);
-        }
+        // if(Carbon::parse($from)->format('Y-m-d') >= Carbon::now()->format('Y-m-d')) {
+        //     dd(Carbon::now()->format('Y-m-d'));
+        //     abort(404);
+        // }
 
         $find_coa = Coa::find($coa);
 
         $data['title'] = $find_coa->code.' - '.$find_coa->name;
-        $data['date'] = $date;
+        $data['date'] = $from." s/d ".$to;
         
-        if($coa && $date) {
+        if($coa && $from) {
             $superuser = Superuser::find(Auth::guard('superuser')->id());
             if($superuser->type) {
                 // GET SALDO AWAL
                 $saldo_awal_debet = Journal::where('coa_id', $coa)
-                ->where('created_at', '<', $date." 00:00:00")
+                ->where('created_at', '<', $from." 00:00:00")
                 ->sum('debet');
 
                 $saldo_awal_credit = Journal::where('coa_id', $coa)
-                ->where('created_at', '<', $date." 00:00:00")
+                ->where('created_at', '<', $from." 00:00:00")
                 ->sum('credit');
 
                 $balance = $saldo_awal_debet - $saldo_awal_credit;
 
                 $data['data'][] = [
-                    Carbon::parse($date)->format('j/m/Y'),
+                    Carbon::parse($from)->format('j/m/Y'),
                     'Saldo Awal',
                     $balance > 0 ? 'Rp. '.number_format($balance, 2, ",", ".") : '',
                     $balance < 0 ? 'Rp. '.number_format(abs($balance), 2, ",", ".") : '',
@@ -130,7 +133,7 @@ class DailyReportController extends Controller
                 ];
 
                 $journal = Journal::where('coa_id', $coa)
-                ->whereBetween('created_at', [$date." 00:00:00", $date." 23:59:59"])
+                ->whereBetween('created_at', [$from." 00:00:00", $to." 23:59:59"])
                 ->orderBy('created_at', 'ASC')
                 ->get();
 

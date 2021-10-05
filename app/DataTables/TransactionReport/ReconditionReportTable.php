@@ -26,7 +26,7 @@ class ReconditionReportTable extends Table
             $model = $model->whereIn('warehouse_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray());
         }
         $model = $model->where('status', 2);
-        dd($model);
+        // dd($model);
         return $model;
     }
 
