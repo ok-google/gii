@@ -429,6 +429,13 @@
         </a>
       </li>
       @endif
+      @if($superuser->can('product conversion-manage'))
+      <li>
+        <a href="{{ route('superuser.transaction_report.conversion_report.index') }}" class="{{ is_active_route('superuser.transaction_report.conversion_report.index') }}">
+          Product Conversion
+        </a>
+      </li>
+      @endif
     </ul>
   </li>
   @endif

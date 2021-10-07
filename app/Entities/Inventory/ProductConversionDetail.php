@@ -3,12 +3,18 @@
 namespace App\Entities\Inventory;
 
 use App\Entities\Master\Product;
+use App\Entities\Inventory\ProductConversion;
 use App\Entities\Model;
 
 class ProductConversionDetail extends Model
 {
     protected $fillable = ['product_conversion_id', 'product_from', 'product_to', 'qty', 'description'];
     protected $table = 'product_conversion_detail';
+
+    public function product_conversion()
+    {
+        return $this->belongsTo(ProductConversion::class, 'product_conversion_id', 'id');
+    }
 
     public function product_from_rel()
     {
