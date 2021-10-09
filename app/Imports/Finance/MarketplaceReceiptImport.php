@@ -28,6 +28,12 @@ class MarketplaceReceiptImport implements ToCollection, WithHeadingRow, WithStar
 
     public $error;
 
+    public function  __construct($store_name, $kode_transaksi)
+    {
+        $this->store_name = $store_name;
+        $this->kode_transaksi = $kode_transaksi;
+    }
+
     public function collection(Collection $rows)
     {
         DB::beginTransaction();
@@ -74,6 +80,8 @@ class MarketplaceReceiptImport implements ToCollection, WithHeadingRow, WithStar
 
                 $marketplace_receipt = new MarketplaceReceipt;
                 $marketplace_receipt->code = $row['invoice'];
+                $marketplace_receipt->store_name = $this->store_name;
+                $marketplace_receipt->kode_transaksi = $this->kode_transaksi;
                 $marketplace_receipt->total = $sales_order->grand_total;
                 $marketplace_receipt->payment = $row['payment'];
                 $marketplace_receipt->cost_1 = $row['cost_1'];

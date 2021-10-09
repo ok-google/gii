@@ -6,7 +6,7 @@ use App\Entities\Model;
 
 class MarketplaceReceipt extends Model
 {
-    protected $fillable = ['code', 'total', 'payment', 'cost_1', 'cost_2', 'cost_3', 'paid', 'status', 'created_by'];
+    protected $fillable = ['code', 'total', 'payment', 'cost_1', 'cost_2', 'cost_3', 'paid', 'status', 'created_by', 'store_name', 'kode_transaksi'];
     protected $table = 'marketplace_receipt';
 
     public function details()
