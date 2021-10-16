@@ -8,6 +8,7 @@ use App\Entities\Accounting\Journal;
 use App\Entities\Accounting\JournalPeriode;
 use App\Entities\Accounting\JournalSaldo;
 use App\Entities\Accounting\SettingProfitLoss;
+use App\Repositories\MasterRepo;
 use App\Entities\Account\Superuser;
 use App\Exports\ProfitLossReportExcel;
 use Illuminate\Http\Request;
@@ -34,12 +35,16 @@ class ProfitLossReportController extends Controller
         return view('superuser.report.profit_loss_report.index', $data);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         if(!Auth::guard('superuser')->user()->can('profit loss-manage')) {
             return abort(403);
         }
 
+        // dd($request->coa);
+        $coa = $request->coa;
+        $data['coas'] = MasterRepo::coas_by_branch();
+        $data['coa'] = $coa;
         $journal_periode = JournalPeriode::find($id);
         $data['journal_periode'] = $journal_periode;
 
@@ -48,12 +53,12 @@ class ProfitLossReportController extends Controller
         $journal_periodes = JournalPeriode::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->orderBy('id', 'DESC')->get();
         $data['journal_periodes'] = $journal_periodes;
 
-        $data['report'] = $this->grab_data($id);
+        $data['report'] = $this->grab_data($id,$coa);
         
         return view('superuser.report.profit_loss_report.show', $data);
     }
 
-    public function grab_data( $periode_id = NULL ) {
+    public function grab_data( $periode_id = NULL,$coa=null ) {
         if ($periode_id == NULL) {
             abort(404);
         }
@@ -63,13 +68,16 @@ class ProfitLossReportController extends Controller
             return abort(404);
         }
 
-        $A = Journal::whereHas('coa', function($query) {
+        $exCoa = explode(",",$coa);
+        $A = Journal::whereHas('coa', function($query){
             $superuser = Superuser::find(Auth::guard('superuser')->id());
 
             $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('code', 'like', '41.01%')->where('group', 4);
         })
-        ->whereBetween('created_at', [$journal_periode->from_date." 00:00:00", $journal_periode->to_date." 23:59:59"])
-        ->orderBy('created_at', 'ASC')
+        ->whereBetween('created_at', [$journal_periode->from_date." 00:00:00", $journal_periode->to_date." 23:59:59"]);
+
+
+        $A = $A->orderBy('created_at', 'ASC')
         ->sum('credit');
 
         $data['A'] = $A;
@@ -116,8 +124,13 @@ class ProfitLossReportController extends Controller
             $superuser = Superuser::find(Auth::guard('superuser')->id());
             $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('code', 'like', '6%')->where('group', 5);
         })
-        ->whereBetween('created_at', [$journal_periode->from_date." 00:00:00", $journal_periode->to_date." 23:59:59"])
-        ->orderBy('coa_id', 'ASC')
+        ->whereBetween('created_at', [$journal_periode->from_date." 00:00:00", $journal_periode->to_date." 23:59:59"]);
+        
+        if($coa != "all" && $coa != null){
+            $F = $F->whereIn("coa_id",$exCoa);
+        }
+
+        $F = $F->orderBy('coa_id', 'ASC')
         ->groupBy('coa_id')
         ->get();
 
@@ -133,8 +146,12 @@ class ProfitLossReportController extends Controller
             $superuser = Superuser::find(Auth::guard('superuser')->id());
             $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('code', 'like', '7%')->where('group', 5);
         })
-        ->whereBetween('created_at', [$journal_periode->from_date." 00:00:00", $journal_periode->to_date." 23:59:59"])
-        ->orderBy('coa_id', 'ASC')
+        ->whereBetween('created_at', [$journal_periode->from_date." 00:00:00", $journal_periode->to_date." 23:59:59"]);
+        
+        if($coa != "all" && $coa != null){
+            $H = $H->whereIn("coa_id",$exCoa);
+        }
+        $H = $H->orderBy('coa_id', 'ASC')
         ->groupBy('coa_id')
         ->get();
 
@@ -153,8 +170,13 @@ class ProfitLossReportController extends Controller
             $superuser = Superuser::find(Auth::guard('superuser')->id());
             $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('code', 'like', '8%')->where('group', 4);
         })
-        ->whereBetween('created_at', [$journal_periode->from_date." 00:00:00", $journal_periode->to_date." 23:59:59"])
-        ->orderBy('coa_id', 'ASC')
+        ->whereBetween('created_at', [$journal_periode->from_date." 00:00:00", $journal_periode->to_date." 23:59:59"]);
+        
+        if($coa != "all" && $coa != null){
+            $K = $K->whereIn("coa_id",$exCoa);
+        }
+
+        $K = $K->orderBy('coa_id', 'ASC')
         ->groupBy('coa_id')
         ->get();
 
@@ -169,7 +191,7 @@ class ProfitLossReportController extends Controller
         return $data;
     }
 
-    public function pdf($id = NULL, $protect = false, $generate = false)
+    public function pdf(Request $request, $id = NULL, $protect = false, $generate = false)
     {
         if(!Auth::guard('superuser')->user()->can('profit loss-print')) {
             return abort(403);
@@ -179,6 +201,7 @@ class ProfitLossReportController extends Controller
             abort(404);
         }
 
+        $coa = $request->coa;
         $journal_periode = JournalPeriode::find($id);
         if($journal_periode == null) {
             return abort(404);
@@ -186,7 +209,7 @@ class ProfitLossReportController extends Controller
 
         $data['journal_periode'] = $journal_periode;
 
-        $data['report'] = $this->grab_data($id);
+        $data['report'] = $this->grab_data($id,$coa);
         
         $pdf = DomPDF::loadView('superuser.report.profit_loss_report.pdf', $data);
         $pdf->setOptions(['enable_php' => true]);
@@ -204,7 +227,7 @@ class ProfitLossReportController extends Controller
     }
 
     
-    public function excel($id = NULL, $protect = false, $generate = false)
+    public function excel(Request $request, $id = NULL, $protect = false, $generate = false)
     {
         if(!Auth::guard('superuser')->user()->can('profit loss-print')) {
             return abort(403);
@@ -213,14 +236,14 @@ class ProfitLossReportController extends Controller
         if ($id == NULL) {
             abort(404);
         }
-
+        $coa = $request->coa;
         $journal_periode = JournalPeriode::find($id);
         if($journal_periode == null) {
             return abort(404);
         }
 
         $data['journal_periode'] = $journal_periode;
-        $data['report'] = $this->grab_data($id);
+        $data['report'] = $this->grab_data($id,$coa);
         
         $fileName = "Profit Loss Report ".$journal_periode->from_date." sd ".$journal_periode->to_date;
         // dd($fileName);

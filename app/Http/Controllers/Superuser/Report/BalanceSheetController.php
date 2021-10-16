@@ -10,6 +10,7 @@ use App\Entities\Account\Superuser;
 use App\Exports\BalanceSheetReportExcel;
 use App\Http\Controllers\Controller;
 use App\Repositories\MasterRepo;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Excel;
 use DB;
@@ -32,7 +33,7 @@ class BalanceSheetController extends Controller
         return view('superuser.report.balance_sheet.index', $data);
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         if(!Auth::guard('superuser')->user()->can('balance sheet-manage')) {
             return abort(403);
@@ -43,6 +44,10 @@ class BalanceSheetController extends Controller
             return abort(404);
         }
 
+        $coa = $request->coa;
+        $data['coas'] = MasterRepo::coas_by_branch();
+        $data['coa'] = $coa;
+
         $data['journal_periode'] = $journal_periode;
 
         $superuser = Superuser::find(Auth::guard('superuser')->id());
@@ -51,12 +56,12 @@ class BalanceSheetController extends Controller
         $data['journal_periodes'] = $journal_periodes;
 
 
-        $data['collect'] = $this->grab_data($id);
+        $data['collect'] = $this->grab_data($id,$coa);
         
         return view('superuser.report.balance_sheet.show', $data);
     }
 
-    private function grab_data($id) {
+    private function grab_data($id,$coa=null) {
 
         $journal_periode = JournalPeriode::find($id);
 
@@ -65,6 +70,8 @@ class BalanceSheetController extends Controller
         $prev_periode = JournalPeriode::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('id', '<', $journal_periode->id)->latest('id')->first();
 
         $collect = [];
+
+        $exCoa = explode(",",$coa);
 
         // A1
         $A1 = Journal::select('coa_id', DB::raw('SUM(debet) as total_debet'), DB::raw('SUM(credit) as total_credit'))
@@ -76,8 +83,12 @@ class BalanceSheetController extends Controller
             //         ->where('code', 'like', '11%')
             //         ->where('group', 1);
             // })
-            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"]);
+        
+            if($coa != "all" && $coa != null){
+                $A1 = $A1->whereIn("journal.coa_id",$exCoa);
+            }
+            $A1 = $A1->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
             ->where('master_coa.code', 'like', '11%')
             ->where('master_coa.group', 1)
             ->orderBy('master_coa.code', 'ASC')
@@ -116,8 +127,12 @@ class BalanceSheetController extends Controller
             //         ->orWhere('code', 'like', '12.02%')
             //         ->where('group', 1);
             // })
-            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"]);
+            
+            if($coa != "all" && $coa != null){
+                $A2 = $A2->whereIn("coa_id",$exCoa);
+            }
+            $A2 = $A2->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
             ->where('master_coa.group', 1)
             ->where(function ($query) {
                 $query->where('master_coa.code', 'like', '12.01%')
@@ -158,8 +173,12 @@ class BalanceSheetController extends Controller
             //         ->where('code', 'like', '12.03%')
             //         ->where('group', 1);
             // })
-            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"]);
+            
+            if($coa != "all" && $coa != null){
+                $A3 = $A3->whereIn("coa_id",$exCoa);
+            }
+            $A3 = $A3->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
             ->where('master_coa.code', 'like', '12.03%')
             ->where('master_coa.group', 1)
             ->orderBy('master_coa.code', 'ASC')
@@ -198,8 +217,12 @@ class BalanceSheetController extends Controller
             //         ->orWhere('code', 'like', '14%')
             //         ->where('group', 1);
             // })
-            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"]);
+            
+            if($coa != "all" && $coa != null){
+                $A4 = $A4->whereIn("coa_id",$exCoa);
+            }
+            $A4 = $A4->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
             ->where('master_coa.group', 1)
             ->where(function ($query) {
                 $query->where('master_coa.code', 'like', '13%')
@@ -240,8 +263,12 @@ class BalanceSheetController extends Controller
             //         ->where('code', 'like', '21%')
             //         ->where('group', 2);
             // })
-            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"]);
+            
+            if($coa != "all" && $coa != null){
+                $P1 = $P1->whereIn("coa_id",$exCoa);
+            }
+            $P1 = $P1->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
             ->where('master_coa.code', 'like', '21%')
             ->where('master_coa.group', 2)
             ->orderBy('master_coa.code', 'ASC')
@@ -279,8 +306,12 @@ class BalanceSheetController extends Controller
             //         ->where('code', 'like', '22%')
             //         ->where('group', 2);
             // })
-            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"]);
+            
+            if($coa != "all" && $coa != null){
+                $P2 = $P2->whereIn("coa_id",$exCoa);
+            }
+            $P2 = $P2->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
             ->where('master_coa.code', 'like', '22%')
             ->where('master_coa.group', 2)
             ->orderBy('master_coa.code', 'ASC')
@@ -319,8 +350,12 @@ class BalanceSheetController extends Controller
             //         ->orWhere('code', 'like', '32%')
             //         ->where('group', 3);
             // })
-            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"]);
+            
+            if($coa != "all" && $coa != null){
+                $P3 = $P3->whereIn("coa_id",$exCoa);
+            }
+            $P3 = $P3->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
             ->where('master_coa.group', 3)
             ->where(function($query) {
                 $query->where('master_coa.code', 'like', '31%')
@@ -361,8 +396,12 @@ class BalanceSheetController extends Controller
             //         ->where('code', 'like', '33%')
             //         ->where('group', 3);
             // })
-            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"])
-            ->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
+            ->whereBetween('journal.created_at', [$journal_periode->from_date . " 00:00:00", $journal_periode->to_date . " 23:59:59"]);
+            
+            if($coa != "all" && $coa != null){
+                $P4 = $P4->whereIn("coa_id",$exCoa);
+            }
+            $P4 = $P4->where('master_coa.type', $superuser->type)->where('master_coa.branch_office_id', $superuser->branch_office_id)
             ->where('master_coa.code', 'like', '33%')
             ->where('master_coa.group', 3)
             ->orderBy('master_coa.code', 'ASC')
@@ -417,7 +456,7 @@ class BalanceSheetController extends Controller
         return $collect;
     }
 
-    public function export($id = null, $protect = false, $generate = false)
+    public function export(Request $request, $id = null, $protect = false, $generate = false)
     {
         if (!Auth::guard('superuser')->user()->can('balance sheet-print')) {
             return abort(403);
@@ -427,6 +466,7 @@ class BalanceSheetController extends Controller
             abort(404);
         }
 
+        $coa = $request->coa;
         $journal_periode = JournalPeriode::find($id);
         if ($journal_periode == null) {
             return abort(404);
@@ -434,12 +474,12 @@ class BalanceSheetController extends Controller
 
         $data['journal_periode'] = $journal_periode;
 
-        $data['collect'] = $this->grab_data($id);
+        $data['collect'] = $this->grab_data($id,$coa);
         
         return Excel::download(new grab_data($id), 'BS.xlsx');
     }
 
-    public function pdf($id = null, $protect = false, $generate = false)
+    public function pdf(Request $request, $id = null, $protect = false, $generate = false)
     {
         if (!Auth::guard('superuser')->user()->can('balance sheet-print')) {
             return abort(403);
@@ -449,6 +489,7 @@ class BalanceSheetController extends Controller
             abort(404);
         }
 
+        $coa = $request->coa;
         $journal_periode = JournalPeriode::find($id);
         if ($journal_periode == null) {
             return abort(404);
@@ -456,7 +497,7 @@ class BalanceSheetController extends Controller
 
         $data['journal_periode'] = $journal_periode;
 
-        $data['collect'] = $this->grab_data($id);
+        $data['collect'] = $this->grab_data($id,$coa);
 
         $pdf = DomPDF::loadView('superuser.report.balance_sheet.pdf', $data);
         $pdf->setOptions(['enable_javascript' => true]);
@@ -473,7 +514,7 @@ class BalanceSheetController extends Controller
         return $pdf->stream();
     }
 
-    public function excel($id = null, $protect = false, $generate = false)
+    public function excel(Request $request, $id = null, $protect = false, $generate = false)
     {
         if (!Auth::guard('superuser')->user()->can('balance sheet-print')) {
             return abort(403);
@@ -483,6 +524,7 @@ class BalanceSheetController extends Controller
             abort(404);
         }
 
+        $coa = $request->coa;
         $journal_periode = JournalPeriode::find($id);
         if ($journal_periode == null) {
             return abort(404);
@@ -490,7 +532,7 @@ class BalanceSheetController extends Controller
 
         $data['journal_periode'] = $journal_periode;
 
-        $data['collect'] = $this->grab_data($id);
+        $data['collect'] = $this->grab_data($id,$coa);
 
         $fileName = "Balance Sheet ".$journal_periode->from_date." sd ".$journal_periode->to_date;
 
