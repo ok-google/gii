@@ -44,7 +44,7 @@ class ReceivingController extends Controller
             return abort(403);
         }
 
-        $data['warehouses'] = MasterRepo::warehouses_by_category(1);
+        $data['warehouses'] = MasterRepo::warehouses_by_category(2);
 
         return view('superuser.purchasing.receiving.create', $data);
     }
@@ -218,6 +218,7 @@ class ReceivingController extends Controller
                             $hpp                = new Hpp;
                             $hpp->type          = $superuser->type;
                             $hpp->branch_office_id = $superuser->branch_office_id;
+                            $hpp->warehouse_id  = $receiving->warehouse_id;
                             $hpp->product_id    = $detail->product_id;
                             $hpp->quantity      = $detail->total_quantity_ri;
                             $hpp->price         = $harga_satuan + $delivery_cost;

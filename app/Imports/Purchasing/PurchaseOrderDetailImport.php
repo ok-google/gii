@@ -55,13 +55,13 @@ class PurchaseOrderDetailImport implements ToCollection, WithHeadingRow, WithSta
                 $local_freight_cost = $row['local_freight_cost'] ?? 0;
                 $komisi = $row['komisi'] ?? 0;
 
-                $total_price_rmb = ($quantity*$unit_price)+$local_freight_cost+$komisi;
+                $total_price_rmb = ($quantity * $unit_price) + $local_freight_cost + $komisi;
                 
                 $kurs = $row['kurs'] ?? 0;
                 
 
                 // SET TAX
-                $total_price_before_tax = $total_price_rmb*$kurs;
+                $total_price_before_tax = $total_price_rmb * $kurs;
 
                 $tax = 0;
                 if($purchase_order->tax > 0) {
