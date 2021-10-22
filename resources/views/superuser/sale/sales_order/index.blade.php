@@ -117,7 +117,7 @@
       <input type="hidden" name="bulk_acc_ids">
       <input type="hidden" name="bulk_type">
       @if($superuser->can('sales order-acc'))
-      <div class="dropdown">
+      {{-- <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Bulk Action
         </button>
@@ -126,10 +126,13 @@
           <div class="dropdown-divider"></div>
           <a class="dropdown-item bulk-click" href="#" bulk-type="delete"><i class="fa fa-trash"></i> Delete</a>
         </div>
-      </div>
-      {{-- <button type="submit" class="btn bg-gd-corporate border-0 text-white" id="approve">
+      </div> --}}
+      <button type="button" class="btn bg-gd-corporate border-0 text-white bulk-click" id="approve2" bulk-type="approve">
         Approve <i class="fa fa-arrow-right ml-10"></i>
-      </button> --}}
+      </button>
+      <button type="button" class="btn btn-danger border-0 text-white bulk-click" id="delete-bulk" bulk-type="delete">
+        Delete <i class="fa fa-trash ml-10"></i>
+      </button>
       @endif
     </form>
     
