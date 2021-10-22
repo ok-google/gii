@@ -734,8 +734,10 @@ class SalesOrderController extends Controller
 
         if ($validator->passes()) {
             $import = new SalesOrderImport($request->warehouse, $request->marketplace, $request->store_name, $request->store_phone);
+            
             Excel::import($import, $request->import_file);
             
+        // dd($import);
             // if($import->error) {
             //     return redirect()->back()->withErrors($import->error);
             // }

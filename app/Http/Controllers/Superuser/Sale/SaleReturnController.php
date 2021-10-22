@@ -23,7 +23,7 @@ class SaleReturnController extends Controller
 {
     public function json(Request $request, SaleReturnTable $datatable)
     {
-        return $datatable->build();
+        return $datatable->build($request);
     }
 
     public function search_do(Request $request)

@@ -6,6 +6,7 @@ use App\DataTables\Table;
 use App\Entities\Sale\DeliveryOrder;
 use Carbon\Carbon;
 use App\Repositories\MasterRepo;
+use Illuminate\Http\Request;
 
 class DeliveryOrderTable extends Table
 {
@@ -13,7 +14,7 @@ class DeliveryOrderTable extends Table
      * Get query source of dataTable.
      *
      */
-    private function query()
+    private function query(Request $request)
     {   
         $warehouse_ids = MasterRepo::warehouses_by_branch()->pluck('id')->toArray();
 
@@ -25,9 +26,13 @@ class DeliveryOrderTable extends Table
                     $query->whereHas('sales_order', function($query2) use($warehouse_ids) {
                         $query2->whereIn('warehouse_id', $warehouse_ids);
                     });
-                })
-                ->addSelect(\DB::raw('GROUP_CONCAT(sales_order.code) as list_so'))
-                ->groupBy(['delivery_order.id', 'delivery_order.code', 'delivery_order.status', 'print_count', 'delivery_order.created_at', 'is_marketplace', 'sales_order.store_name'])
+                });
+                // dd($request->from);
+                if(isset($request->from)){
+                    $model = $model->whereDate("delivery_order_detail.created_at", ">=", $request->from)->whereDate("delivery_order_detail.created_at", "<=", $request->to);
+                }
+
+        $model = $model->addSelect(\DB::raw('GROUP_CONCAT(sales_order.code) as list_so'))->groupBy(['delivery_order.id', 'delivery_order.code', 'delivery_order.status', 'print_count', 'delivery_order.created_at', 'is_marketplace', 'sales_order.store_name'])
                 ->orderBy('status', 'ASC')->orderBy('created_at', 'DESC');
 
         return $model;
@@ -36,9 +41,9 @@ class DeliveryOrderTable extends Table
     /**
      * Build DataTable class.
      */
-    public function build()
+    public function build(Request $request)
     {
-        $table = Table::of($this->query());
+        $table = Table::of($this->query($request));
         $table->addIndexColumn();
 
         $table->setRowClass(function (DeliveryOrder $model) {

@@ -68,7 +68,12 @@
             <th class="text-center">Created at</th>
             <th class="text-center">Code</th>
             <th class="text-center">Warehouse</th>
-            <th class="text-center">Status</th>
+            <th class="text-center">Date In</th>
+            <th class="text-center">In From</th>
+            <th class="text-center">Quantity</th>
+            <th class="text-center">Keterangan</th>
+            <th class="text-center">Recondition</th>
+            <th class="text-center">Disposal</th>
             {{-- <th class="text-center">Action</th> --}}
           </tr>
         </thead>
@@ -126,7 +131,12 @@
           },
           {data: 'code'},
           {data: 'warehouse_id'},
-          {data: 'status'},
+          {data: 'date_in'},
+          {data: 'from'},
+          {data: 'qty'},
+          {data: 'keterangan'},
+          {data: 'recondition'},
+          {data: 'disposal'},
         ],
         // paging: false,
         // info: false,

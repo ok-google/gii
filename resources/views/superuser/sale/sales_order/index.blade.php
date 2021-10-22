@@ -170,26 +170,24 @@ $(document).ready(function() {
   });
 
   $('#datesearch').daterangepicker({
-        autoUpdateInput: false
-      });
+    autoUpdateInput: false
+  });
 
-      $('#datesearch').data('daterangepicker').setStartDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
-      $('#datesearch').data('daterangepicker').setEndDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
+  $('#datesearch').data('daterangepicker').setStartDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
+  $('#datesearch').data('daterangepicker').setEndDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
 
-      $('#datesearch').on('apply.daterangepicker', function(ev, picker) {
-        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
-        start_date = picker.startDate.format('YYYY-MM-DD');
-        end_date = picker.endDate.format('YYYY-MM-DD');
+  $('#datesearch').on('apply.daterangepicker', function(ev, picker) {
+    $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+    start_date = picker.startDate.format('YYYY-MM-DD');
+    end_date = picker.endDate.format('YYYY-MM-DD');
 
-        if (start_date && end_date) {
-          let newDatatableUrl = datatableUrl + '?from=' + start_date + '&to=' + end_date;
-          $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
-        // alert('aa')
-        }
-      });
-
-
-
+    if (start_date && end_date) {
+      let newDatatableUrl = datatableUrl + '?from=' + start_date + '&to=' + end_date;
+      $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
+    // alert('aa')
+    }
+  });
+  
   var table = $('#datatable').DataTable({
     processing: true,
     serverSide: true,
