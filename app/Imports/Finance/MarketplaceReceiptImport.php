@@ -65,6 +65,9 @@ class MarketplaceReceiptImport implements ToCollection, WithHeadingRow, WithStar
                     } else if($find_mr->created_by != $superuser->id) {
                         $collect_error[] = array('INVOICE '.$row['invoice'].' HAS BEEN IMPORTED BY OTHER USER : skipping import');
                         continue;
+                    }else if($row['cost_1'] < 0 || $row['cost_2'] < 0 || $row['cost_3'] < 0){
+                        $collect_error[] = array('INVOICE '.$row['invoice'].' HAS COST MINUS : skipping import');
+                        continue;
                     } else {
                         if($row['tgl_pencairan']) {
                             $find_mr->created_at = $this->transformDate($row['tgl_pencairan']);
