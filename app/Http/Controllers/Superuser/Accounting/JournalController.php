@@ -34,7 +34,9 @@ class JournalController extends Controller
         $data = [];
         $from_date = $request->from_date;
         $to_date = $request->to_date;
+        $coa = $request->coa;
         
+        // dd($coa);
         if($from_date && $to_date) {
             $superuser = Superuser::find(Auth::guard('superuser')->id());
             if($superuser->type) {
@@ -43,8 +45,15 @@ class JournalController extends Controller
 
                     $query->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id);
                 })
-                ->whereBetween('created_at', [$from_date." 00:00:00", $to_date." 23:59:59"])
-                ->orderBy('created_at', 'ASC')
+                ->whereBetween('created_at', [$from_date." 00:00:00", $to_date." 23:59:59"]);
+                if($coa != ""){
+                    $exCoa = explode(",",$coa);
+                    if($coa != "all" && $coa != null){
+                        $journal = $journal->whereIn("coa_id",$exCoa);
+                    }
+
+                }
+                $journal = $journal->orderBy('created_at', 'ASC')
                 ->limit(10)
                 ->get();
 
@@ -74,7 +83,7 @@ class JournalController extends Controller
         return $data;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         if(!Auth::guard('superuser')->user()->can('journal-manage')) {
             return abort(403);
@@ -96,6 +105,10 @@ class JournalController extends Controller
         $journal_periode = JournalPeriode::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->orderBy('id', 'DESC')->get();
         $data['journal_periode'] = $journal_periode;
         
+        $coa = $request->coa;
+        $data['coas'] = MasterRepo::coas_by_branch();
+        $data['coa'] = $coa;
+
         return view('superuser.accounting.journal.index', $data);
     }
 
@@ -104,6 +117,7 @@ class JournalController extends Controller
         if(!Auth::guard('superuser')->user()->can('journal-manage')) {
             return abort(403);
         }
+
 
         $journal_periode = JournalPeriode::find($id);
         $data['journal_periode'] = $journal_periode;
