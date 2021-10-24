@@ -3,6 +3,8 @@
 namespace App\Imports\Sale;
 
 use App\Entities\Sale\SalesOrder;
+use App\Entities\Master\Warehouse;
+use App\Entities\Master\Store;
 use App\Entities\Sale\SalesOrderDetail;
 use App\Entities\Master\Product;
 use Illuminate\Support\Collection;
@@ -69,6 +71,9 @@ class SalesOrderImport implements ToCollection, WithHeadingRow, WithStartRow, Sk
                             ];
 
                             $data[$row['Invoice']]['info'] = [
+                                'marketplace'           => $row['Marketplace'],
+                                'warehouse'             => trim($row['Warehouse']),
+                                'store'                 => $row['Store'],
                                 'customer_marketplace'  => $row['Nama Penerima'],
                                 'address_marketplace'   => $row['Alamat Penerima'],
                                 'ekspedisi_marketplace' => $row['Ekspedisi'],
@@ -96,9 +101,34 @@ class SalesOrderImport implements ToCollection, WithHeadingRow, WithStartRow, Sk
                     if ($sales_order == '') {
                         // VERIFIED DATA
                         if ($value['info']['resi'] == null) {
-                            $collect_error[] = $key . ' : "No. Resi" is empty';
+                            $collect_error[] = $key . ' : "Resi / AWB" is empty';
                             continue;
                         }
+
+                        if ($value['info']['warehouse'] == null) {
+                            $collect_error[] = $key . ' : "Warehouse" is empty';
+                            continue;
+                        }else{
+                            $warehouse_id = Warehouse::where("name", $value['info']['warehouse'])->first();
+                            // if($key == "ABC124"){ dd($warehouse_id); }
+                            if ($warehouse_id == null) {
+                                $collect_error[] = $key . ' : "Warehouse" not found';
+                                continue;
+                            }
+                        }
+
+                        if ($value['info']['store'] == null) {
+                            $collect_error[] = $key . ' : "Store" is empty';
+                            continue;
+                        }else{
+                            $store_id = Store::where("name", $value['info']['store'])->first();
+                            // if($key == "ABC124"){ dd($warehouse_id); }
+                            if ($store_id == null) {
+                                $collect_error[] = $key . ' : "Store" not found';
+                                continue;
+                            }
+                        }
+
 
                         if ($value['product']) {
                             $found_error_product = false;
@@ -120,10 +150,10 @@ class SalesOrderImport implements ToCollection, WithHeadingRow, WithStartRow, Sk
 
                         $sales_order = new SalesOrder;
                         $sales_order->code = $key;
-                        $sales_order->marketplace_order = SalesOrder::MARKETPLACE_ORDER[$this->marketplace];
-                        $sales_order->warehouse_id = $this->warehouse;
-                        $sales_order->store_name = $this->store_name;
-                        $sales_order->store_phone = $this->store_phone;
+                        $sales_order->marketplace_order = SalesOrder::MARKETPLACE_ORDER[$value['info']["marketplace"]];
+                        $sales_order->warehouse_id = $warehouse_id->id;
+                        $sales_order->store_name = $value['info']["store"];
+                        // $sales_order->store_phone = $this->store_phone;
                         $sales_order->customer_marketplace = $value['info']['customer_marketplace'];
                         $sales_order->address_marketplace = $value['info']['address_marketplace'];
                         $sales_order->ekspedisi_marketplace = $value['info']['ekspedisi_marketplace'];

@@ -17,15 +17,15 @@
               <p>
                 Import your data with the template from each marketplace.<br>
               </p>
-              {{-- <a href="{{ $import_template_url ?? '' }}">
+              <a href="{{ $import_template_url ?? '' }}">
                 <button type="button" class="btn btn-sm btn-noborder btn-info">
                   <i class="fa fa-download mr-5"></i> Template
                 </button>
-              </a> --}}
+              </a>
               <hr>
               <form action="{{ $import_url ?? '' }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <div class="form-group row">
+                {{-- <div class="form-group row">
                   <label class="col-md-4 col-form-label text-left" for="grand_total">Warehouse <span class="text-danger">*</span></label>
                   <div class="col-md-8">
                     <select class="js-select2 form-control" id="warehouse" name="warehouse" data-placeholder="Select Warehouse" required>
@@ -59,7 +59,7 @@
                   <div class="col-md-8">
                     <input type="text" class="form-control" id="store_phone" name="store_phone" required>
                   </div>
-                </div>
+                </div> --}}
                 <div class="custom-file">
                   <input type="file" class="custom-file-input" id="import_file" name="import_file" data-toggle="custom-file-input" required>
                   <label class="custom-file-label" for="import_file">Choose file</label>

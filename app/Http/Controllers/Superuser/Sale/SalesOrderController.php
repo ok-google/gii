@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Superuser\Sale;
 
+use App\Exports\Sale\SalesOrderImportTemplate;
 use App\DataTables\Sale\SalesOrderTable;
 use App\Entities\Sale\SalesOrder;
 use App\Entities\Sale\SalesOrderDetail;
@@ -718,8 +719,8 @@ class SalesOrderController extends Controller
 
     public function import_template()
     {
-        $filename = 'master-product-import-template.xlsx';
-        return Excel::download(new ProductImportTemplate, $filename);
+        $filename = 'sales-order-import-template.xlsx';
+        return Excel::download(new SalesOrderImportTemplate, $filename);
     }
 
     public function import(Request $request)
