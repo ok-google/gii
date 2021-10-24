@@ -429,13 +429,13 @@
         </a>
       </li>
       @endif
-      @if($superuser->can('conversion-manage'))
+      {{-- @if($superuser->can('conversion-manage')) --}}
       <li>
         <a href="{{ route('superuser.transaction_report.conversion_report.index') }}" class="{{ is_active_route('superuser.transaction_report.conversion_report.index') }}">
           Product Conversion
         </a>
       </li>
-      @endif
+      {{-- @endif --}}
       @if($superuser->can('sales order-manage'))
       <li>
         <a href="{{ route('superuser.transaction_report.order_detail_report.index') }}" class="{{ is_active_route('superuser.transaction_report.order_detail_report.index') }}">

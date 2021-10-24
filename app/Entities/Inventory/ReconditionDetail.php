@@ -9,6 +9,11 @@ class ReconditionDetail extends Model
     protected $fillable = ['recondition_id', 'receiving_detail_colly_id', 'quality_control2_id', 'sale_return_detail_id', 'recondition_residual_id', 'product_id', 'quantity_recondition', 'quantity_disposal', 'description'];
     protected $table = 'recondition_detail';
 
+    public function recondition()
+    {
+        return $this->belongsTo('App\Entities\Inventory\Recondition');
+    }
+
     public function receiving_detail_colly()
     {
         return $this->belongsTo('App\Entities\Purchasing\ReceivingDetailColly');
