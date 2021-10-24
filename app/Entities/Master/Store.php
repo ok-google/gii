@@ -5,15 +5,11 @@ namespace App\Entities\Master;
 use App\Entities\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class BranchOffice extends Model
+class Store extends Model
 {
     use SoftDeletes;
 
     protected $fillable = ['code', 'name', 'phone', 'address'];
-    protected $table = 'master_store';
+    protected $table = 'master_stores';
 
-    public function warehouses()
-    {
-        return $this->hasMany('App\Entities\Master\Warehouse');
-    }
 }

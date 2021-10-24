@@ -20,6 +20,13 @@ Route::group([
     });
     Route::resource('branch_office', 'BranchOfficeController');
 
+    Route::group(['as' => 'store.', 'prefix' => '/store'], function () {
+        Route::get('/import_template', 'StoreController@import_template')->name('import_template');
+        Route::post('/import', 'StoreController@import')->name('import');
+        Route::get('/export', 'StoreController@export')->name('export');
+    });
+    Route::resource('store', 'StoreController');
+
     Route::group(['as' => 'warehouse.', 'prefix' => '/warehouse'], function () {
         Route::get('/import_template', 'WarehouseController@import_template')->name('import_template');
         Route::post('/import', 'WarehouseController@import')->name('import');

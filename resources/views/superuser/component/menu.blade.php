@@ -28,6 +28,11 @@
           Branch Office
         </a>
       </li>
+      <li>
+        <a href="{{ route('superuser.master.store.index') }}" class="{{ is_active_route('superuser.master.store.index') }}">
+          Store
+        </a>
+      </li>
       @endif
       @if($superuser->can('warehouse-manage'))
       <li>
