@@ -1,3 +1,12 @@
+
+function convertDateToSQL(obj){
+
+  var newSD = new Date(obj);
+  var year = newSD.getFullYear();
+  var month = ((parseInt(newSD.getMonth())+1).toString().length == 1 ? "0"+(parseInt(newSD.getMonth())+1) : (parseInt(newSD.getMonth())+1));
+  var date = (newSD.getDate().toString().length == 1 ? "0"+newSD.getDate() : newSD.getDate());
+  return year+"-"+month+"-"+date;
+}
 function deleteConfirmation(delete_url, quickRedirectBack = false) {
   Swal.fire({
     title: 'Are you sure?',

@@ -18,6 +18,14 @@ class ConversionReportTable extends Table
      */
     private function query(Request $request)
     {
+        $from = date("Y-m-d");
+        $to = date("Y-m-d");
+
+        if($request->from??false){
+            $from = Carbon::parse($request->from)->format('Y-m-d');
+            $to = Carbon::parse($request->to)->format('Y-m-d');
+        }
+// dd($request->from);
         $model = ProductConversionDetail::select('product_conversion_detail.id', 'product_conversion.code', 'master_warehouses.name', 'product_conversion.status', 'product_conversion.created_at', 'product_conversion.created_at', 'product_conversion_detail.product_from', 'product_conversion_detail.product_to', 'product_conversion_detail.qty');
 
         $model = $model->leftJoin("product_conversion", "product_conversion_detail.product_conversion_id","=","product_conversion.id");
@@ -29,6 +37,7 @@ class ConversionReportTable extends Table
         } else {
             $model = $model->whereIn('product_conversion.warehouse_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray());
         }
+        $model = $model->whereBetween("product_conversion.created_at", [$from." 00:00:00",$to." 23:59:59"]);
         $model = $model->where('product_conversion.status', 2);
         // dd($model);
         return $model;

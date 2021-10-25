@@ -444,7 +444,7 @@
       @if($superuser->can('sales order-manage'))
       <li>
         <a href="{{ route('superuser.transaction_report.order_detail_report.index') }}" class="{{ is_active_route('superuser.transaction_report.order_detail_report.index') }}">
-          Order Detail per SKU
+          Order Detail
         </a>
       </li>
       @endif
