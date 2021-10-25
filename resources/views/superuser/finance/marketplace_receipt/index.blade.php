@@ -48,6 +48,7 @@
     <table id="datatable" class="table table-striped table-vcenter table-responsive">
       <thead>
         <tr>
+          <th class="text-center">Store Name</th>
           <th class="text-center">Invoice</th>
           <th class="text-center">Tgl Pencairan</th>
           <th class="text-center">Customer</th>
@@ -61,7 +62,7 @@
       </thead>
       <tfoot>
         <tr>
-          <th class="text-right" colspan="3">Total</th>
+          <th class="text-right" colspan="4">Total</th>
           <th class="text-center" id="total"></th>
           <th class="text-center" id="payment"></th>
           <th class="text-center" id="cost_1"></th>
@@ -70,12 +71,12 @@
           <th></th>
         </tr>
         <tr id="btn-input" style="display: none">
-          <th class="text-center" colspan="9">
+          <th class="text-center" colspan="10">
             <button type="button" class="btn btn-outline-info ml-10 min-width-125" data-toggle="modal" data-target="#modal-manage-mr">INPUT</button>
           </th>
         </tr>
         <tr id="wrong-total" style="display: none">
-          <th class="text-center" colspan="9" style="color: red">
+          <th class="text-center" colspan="10" style="color: red">
             Please make sure the payment or cost not empty!
           </th>
         </tr>
@@ -116,6 +117,7 @@ $(document).ready(function() {
       "data":{ _token: "{{csrf_token()}}"}
     },
     columns: [
+      {data: 'store_name'},
       {data: 'code'},
       {
         data: 'created_at',

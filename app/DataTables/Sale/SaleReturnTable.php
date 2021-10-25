@@ -6,6 +6,7 @@ use App\DataTables\Table;
 use App\Entities\Sale\SaleReturn;
 use Carbon\Carbon;
 use App\Repositories\MasterRepo;
+use Illuminate\Http\Request;
 
 class SaleReturnTable extends Table
 {
@@ -13,21 +14,24 @@ class SaleReturnTable extends Table
      * Get query source of dataTable.
      *
      */
-    private function query()
+    private function query(Request $request)
     {
         $model = SaleReturn::join('delivery_order_detail', 'sale_return.delivery_order_id', '=', 'delivery_order_detail.id')
             ->select('sale_return.id', 'sale_return.code', 'delivery_order_detail.code as delivery_order_code', 'sale_return.status', 'sale_return.created_at')
             ->whereIn('warehouse_reparation_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray());
 
+        if(isset($request->from)){
+            $model = $model->whereDate("sale_return.created_at", ">=", $request->from)->whereDate("sale_return.created_at", "<=", $request->to);
+        }
         return $model;
     }
 
     /**
      * Build DataTable class.
      */
-    public function build()
+    public function build(Request $request)
     {
-        $table = Table::of($this->query());
+        $table = Table::of($this->query($request));
         $table->addIndexColumn();
 
         $table->setRowClass(function (SaleReturn $model) {

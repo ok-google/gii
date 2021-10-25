@@ -20,7 +20,7 @@ class DeliveryOrderController extends Controller
 {
     public function json(Request $request, DeliveryOrderTable $datatable)
     {
-        return $datatable->build();
+        return $datatable->build($request);
     }
 
     public function get_store(Request $request)

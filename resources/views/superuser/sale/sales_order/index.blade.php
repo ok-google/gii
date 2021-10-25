@@ -51,6 +51,27 @@
   <p class="mb-0">{{ session()->get('message') }}</p>
 </div>
 @endif
+
+  <form id="form" target="_blank" action="{{ route('superuser.transaction_report.purchase_report.pdf') }}"
+    enctype="multipart/form-data" method="POST">
+    @csrf
+    <div class="block">
+      <div class="block-content">
+        <div class="form-group row">
+          <label class="col-md-1 col-form-label text-left" for="period">Period :</label>
+          <div class="col-md-3">
+            <div class="input-group">
+              <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-calendar"
+                    aria-hidden="true"></i></span></div><input type="text" class="form-control pull-right" id="datesearch"
+                name="datesearch" placeholder="Select period"
+                value="{{ \Carbon\Carbon::now()->format('d/m/Y') }} - {{ \Carbon\Carbon::now()->format('d/m/Y') }}">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
 <div class="block">
   <div class="block-content">
     @if($superuser->can('sales order-create'))
@@ -96,7 +117,7 @@
       <input type="hidden" name="bulk_acc_ids">
       <input type="hidden" name="bulk_type">
       @if($superuser->can('sales order-acc'))
-      <div class="dropdown">
+      {{-- <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Bulk Action
         </button>
@@ -105,10 +126,13 @@
           <div class="dropdown-divider"></div>
           <a class="dropdown-item bulk-click" href="#" bulk-type="delete"><i class="fa fa-trash"></i> Delete</a>
         </div>
-      </div>
-      {{-- <button type="submit" class="btn bg-gd-corporate border-0 text-white" id="approve">
+      </div> --}}
+      <button type="button" class="btn bg-gd-corporate border-0 text-white bulk-click" id="approve2" bulk-type="approve">
         Approve <i class="fa fa-arrow-right ml-10"></i>
-      </button> --}}
+      </button>
+      <button type="button" class="btn btn-danger border-0 text-white bulk-click" id="delete-bulk" bulk-type="delete">
+        Delete <i class="fa fa-trash ml-10"></i>
+      </button>
       @endif
     </form>
     
@@ -137,16 +161,36 @@
 @push('scripts')
 <script src="{{ url('https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js') }}"></script>
 <script src="{{ asset('utility/superuser/js/form.js') }}"></script>
+@include('superuser.asset.plugin.daterangepicker')
 <script type="text/javascript">
 $(document).ready(function() {
   let datatableUrl = '{{ route('superuser.sale.sales_order.json') }}';
-
+  
   let showControl = $('input[type=radio][name=show-control]');
   showControl.change(function() {
     let newDatatableUrl = datatableUrl+'?show='+this.value;
     $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
   });
 
+  $('#datesearch').daterangepicker({
+    autoUpdateInput: false
+  });
+
+  $('#datesearch').data('daterangepicker').setStartDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
+  $('#datesearch').data('daterangepicker').setEndDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
+
+  $('#datesearch').on('apply.daterangepicker', function(ev, picker) {
+    $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+    start_date = picker.startDate.format('YYYY-MM-DD');
+    end_date = picker.endDate.format('YYYY-MM-DD');
+
+    if (start_date && end_date) {
+      let newDatatableUrl = datatableUrl + '?from=' + start_date + '&to=' + end_date;
+      $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
+    // alert('aa')
+    }
+  });
+  
   var table = $('#datatable').DataTable({
     processing: true,
     serverSide: true,
@@ -207,7 +251,7 @@ $(document).ready(function() {
     });
 
     $('input[name="bulk_acc_ids"]').val(selected);
-    bulkaccConfirmation();
+    bulkaccConfirmation('');
 
   })
 
@@ -225,13 +269,13 @@ $(document).ready(function() {
     
     $('input[name="bulk_acc_ids"]').val(selected);
     $('input[name="bulk_type"]').val(type);
-    bulkaccConfirmation();
+    bulkaccConfirmation(type.toUpperCase());
 
   })
 
-  function bulkaccConfirmation() {
+  function bulkaccConfirmation(position) {
     Swal.fire({
-      title: 'Are you sure?',
+      title: 'Are you sure to '+position+'?',
       type: 'warning',
       showCancelButton: true,
       allowOutsideClick: false,

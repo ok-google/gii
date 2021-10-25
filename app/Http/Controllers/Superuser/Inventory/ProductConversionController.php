@@ -20,7 +20,7 @@ class ProductConversionController extends Controller
 {
     public function json(Request $request, ProductConversionTable $datatable)
     {
-        return $datatable->build();
+        return $datatable->build($request);
     }
 
     public function search_sku(Request $request)

@@ -47,6 +47,12 @@ Route::group([
     });
     Route::resource('gudang_utama_report', 'GudangUtamaReportController');
 
+    // Route::group(['as' => 'recondition_report.', 'prefix' => '/recondition_report'], function () {
+    // });
+    Route::resource('recondition_report', 'ReconditionReportController');
+    Route::resource('conversion_report', 'ConversionReportController');
+    Route::resource('order_detail_report', 'orderDetailReportController');
+
     Route::group(['as' => 'stock_valuation.', 'prefix' => '/stock_valuation'], function () {
         Route::post('/export', 'StockValuationReportController@export')->name('export');
     });

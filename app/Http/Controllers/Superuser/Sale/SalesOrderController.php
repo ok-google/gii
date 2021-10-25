@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Superuser\Sale;
 
+use App\Exports\Sale\SalesOrderImportTemplate;
 use App\DataTables\Sale\SalesOrderTable;
 use App\Entities\Sale\SalesOrder;
 use App\Entities\Sale\SalesOrderDetail;
@@ -36,7 +37,7 @@ class SalesOrderController extends Controller
     public function json(Request $request, SalesOrderTable $datatable)
     {
         // return $datatable->build();
-        return $datatable->with('show', $request->show)->build();
+        return $datatable->with('show', $request->show)->build($request);
     }
 
     public function index()
@@ -718,8 +719,8 @@ class SalesOrderController extends Controller
 
     public function import_template()
     {
-        $filename = 'master-product-import-template.xlsx';
-        return Excel::download(new ProductImportTemplate, $filename);
+        $filename = 'sales-order-import-template.xlsx';
+        return Excel::download(new SalesOrderImportTemplate, $filename);
     }
 
     public function import(Request $request)
@@ -734,8 +735,10 @@ class SalesOrderController extends Controller
 
         if ($validator->passes()) {
             $import = new SalesOrderImport($request->warehouse, $request->marketplace, $request->store_name, $request->store_phone);
+            
             Excel::import($import, $request->import_file);
             
+        // dd($import);
             // if($import->error) {
             //     return redirect()->back()->withErrors($import->error);
             // }

@@ -28,6 +28,12 @@ class MarketplaceReceiptImport implements ToCollection, WithHeadingRow, WithStar
 
     public $error;
 
+    public function  __construct($store_name, $kode_transaksi)
+    {
+        $this->store_name = $store_name;
+        $this->kode_transaksi = $kode_transaksi;
+    }
+
     public function collection(Collection $rows)
     {
         DB::beginTransaction();
@@ -59,6 +65,9 @@ class MarketplaceReceiptImport implements ToCollection, WithHeadingRow, WithStar
                     } else if($find_mr->created_by != $superuser->id) {
                         $collect_error[] = array('INVOICE '.$row['invoice'].' HAS BEEN IMPORTED BY OTHER USER : skipping import');
                         continue;
+                    }else if($row['cost_1'] < 0 || $row['cost_2'] < 0 || $row['cost_3'] < 0){
+                        $collect_error[] = array('INVOICE '.$row['invoice'].' HAS COST MINUS : skipping import');
+                        continue;
                     } else {
                         if($row['tgl_pencairan']) {
                             $find_mr->created_at = $this->transformDate($row['tgl_pencairan']);
@@ -74,6 +83,8 @@ class MarketplaceReceiptImport implements ToCollection, WithHeadingRow, WithStar
 
                 $marketplace_receipt = new MarketplaceReceipt;
                 $marketplace_receipt->code = $row['invoice'];
+                $marketplace_receipt->store_name = $this->store_name;
+                $marketplace_receipt->kode_transaksi = $this->kode_transaksi;
                 $marketplace_receipt->total = $sales_order->grand_total;
                 $marketplace_receipt->payment = $row['payment'];
                 $marketplace_receipt->cost_1 = $row['cost_1'];

@@ -16,6 +16,24 @@
   @endforeach
 </div>
 @endif
+<form id="form" target="_blank" action="{{ route('superuser.inventory.recondition.json') }}" enctype="multipart/form-data" method="POST">
+  @csrf
+  <div class="block">
+    <div class="block-content">
+      <div class="form-group row">
+        <label class="col-md-1 col-form-label text-left" for="period">Period :</label>
+        <div class="col-md-3">
+          <div class="input-group">
+            <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-calendar"
+                  aria-hidden="true"></i></span></div><input type="text" class="form-control pull-right" id="datesearch"
+              name="datesearch" placeholder="Select period"
+              value="{{ \Carbon\Carbon::now()->format('d/m/Y') }} - {{ \Carbon\Carbon::now()->format('d/m/Y') }}">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
 <div class="block">
   <div class="block-content">
     <a href="{{ route('superuser.inventory.recondition.create') }}">
@@ -48,9 +66,28 @@
 @endsection
 
 @push('scripts')
+@include('superuser.asset.plugin.daterangepicker')
 <script type="text/javascript">
 $(document).ready(function() {
   let datatableUrl = '{{ route('superuser.inventory.recondition.json') }}';
+  $('#datesearch').daterangepicker({
+    autoUpdateInput: false
+  });
+
+  $('#datesearch').data('daterangepicker').setStartDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
+  $('#datesearch').data('daterangepicker').setEndDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
+
+  $('#datesearch').on('apply.daterangepicker', function(ev, picker) {
+    $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+    start_date = picker.startDate.format('YYYY-MM-DD');
+    end_date = picker.endDate.format('YYYY-MM-DD');
+
+    if (start_date && end_date) {
+      let newDatatableUrl = datatableUrl + '?from=' + start_date + '&to=' + end_date;
+      $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
+    // alert('aa')
+    }
+  });
 
   $('#datatable').DataTable({
     processing: true,

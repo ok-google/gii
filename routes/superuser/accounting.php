@@ -35,7 +35,7 @@ Route::group([
     Route::resource('setting_profit_loss', 'SettingProfitLossController');
 
     Route::group(['as' => 'daily_report.', 'prefix' => '/daily_report'], function () {
-        Route::get('/create/pdf/{coa?}/{date?}', 'DailyReportController@pdf')->name('pdf');
+        Route::get('/create/pdf/{coa?}/{from?}/{to?}', 'DailyReportController@pdf')->name('pdf');
     });
     Route::resource('daily_report', 'DailyReportController');
 

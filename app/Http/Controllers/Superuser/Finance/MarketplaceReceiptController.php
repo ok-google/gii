@@ -57,7 +57,7 @@ class MarketplaceReceiptController extends Controller
         }
 
         if ($validator->passes()) {
-            $import = new MarketplaceReceiptImport();
+            $import = new MarketplaceReceiptImport($request->store_name, $request->kode_transaksi);
             Excel::import($import, $request->import_file);
 
             if ($import->error) {

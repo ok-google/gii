@@ -25,18 +25,28 @@
             <span style="vertical-align: super;">Period :</span> <span class="h2">{{ \Carbon\Carbon::parse( $journal_periode->from_date )->format('d/m/Y') }} - {{ \Carbon\Carbon::parse( $journal_periode->to_date )->format('d/m/Y') }}</span>
           </div>
           <div class="col-md-4 text-right">
+            <a href="{{ route('superuser.report.balance_sheet.excel', $journal_periode->id) }}" target="_blank">
+              <button type="button" class="btn bg-gd-sea border-0 text-white">
+                <i class="fa fa-file-excel-o"></i>
+              </button>
+            </a>
             <a href="{{ route('superuser.report.balance_sheet.pdf', $journal_periode->id) }}" target="_blank">
               <button type="button" class="btn bg-gd-sea border-0 text-white">
                 Download B/S <i class="fa fa-sticky-note-o ml-10"></i>
               </button>
             </a>
           </div>
-          <div class="col-md-4 text-right">
-            <a href="{{ route('superuser.report.balance_sheet.export', $journal_periode->id) }}" target="_blank">
-              <button type="button" class="btn bg-gd-sea border-0 text-white">
-                Download B/S Excel <i class="fa fa-sticky-note-o ml-10"></i>
-              </button>
-            </a>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-form-label text-left" for="store">Coa :</label>
+          <div class="col-md-10">
+            <select class="js-select2 form-control" id="coa" name="coa[]" data-placeholder="Select Coa" multiple="multiple" required>
+              <option value="all">All</option>
+              @foreach ($coas as $item)
+              <option value="{{ $item->id }}" data-code="{{ $item->code }}">{{ $item->code }} - {{ $item->name }}</option>
+              @endforeach
+            </select>
+            <input type="hidden" value="{{$coa}}" id="coa-sel" />
           </div>
         </div>
       </div>
@@ -53,6 +63,13 @@
               <option value="{{ $periode->id }}" {{ $periode->id == $journal_periode->id ? 'selected':'' }}>{{ \Carbon\Carbon::parse( $periode->from_date )->format('d/m/Y') }} &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp; {{ \Carbon\Carbon::parse( $periode->to_date )->format('d/m/Y') }}</option>
               @endforeach
             </select>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-12 text-center">
+            <a href="#" id="btn-filter" class="btn bg-gd-corporate btn-block border-0 text-white">
+              Filter <i class="fa fa-search ml-10"></i>
+            </a>
           </div>
         </div>
       </div>
@@ -386,9 +403,37 @@ $(document).ready(function() {
     ],
   });
 
-  $('.js-select2').on('select2:select', function (e) {
+  $('#periode').on('select2:select', function (e) {
     window.location.href = '{{ route('superuser.report.balance_sheet.index') }}/'+$(this).val();
   });
+
+$("#btn-filter").click(function(){
+  const coa = $('#coa').val();
+  const per = $('#periode').val();
+  window.location.href = '{{ route('superuser.report.balance_sheet.index') }}/'+per+"?coa="+coa;
+});
+
+let coa_sel = $("#coa-sel").val();
+if(coa_sel == "all"){
+  coa_sel = "all";
+}else{
+  coa_sel = coa_sel.split(",");
+}
+
+$('#coa').val(coa_sel).trigger('change');
+$('#coa').on('select2:select', function (e) {
+    var data = e.params.data.id;
+    if(data == 'all') {
+      $('#coa').val('all').trigger('change');
+    } else {
+      var all = $('#coa').val();
+      const index = all.indexOf('all');
+      if (index > -1) {
+        all.splice(index, 1);
+      }
+      $('#coa').val(all).trigger('change');
+    }
+});
 });
 </script>
 @endpush

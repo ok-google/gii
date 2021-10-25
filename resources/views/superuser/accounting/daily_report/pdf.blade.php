@@ -13,7 +13,8 @@
     <table class="mt-25">
       <tr>
         <td class="text-left" style="font-size: 1em;">{{ $title }}</td>
-        <td class="text-right" style="font-size: 1em;">Date : {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</td>
+        {{-- <td class="text-right" style="font-size: 1em;">Date : {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</td> --}}
+        <td class="text-right" style="font-size: 1em;">Date : {{ $date }}</td>
       </tr>
     </table>
     <table style="border-collapse: collapse;">

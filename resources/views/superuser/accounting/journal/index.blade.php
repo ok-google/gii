@@ -30,6 +30,18 @@
             <input class="form-control" type="date" id="s_to_date" value="{{ $to_date }}" {{ $min_date ? 'min='.$min_date : '' }} {{ $to_date ? 'max='.$to_date : '' }}>
           </div>
         </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-form-label text-left" for="store">Coa :</label>
+          <div class="col-md-10">
+            <select class="js-select2 form-control" id="coa" name="coa[]" data-placeholder="Select Coa" multiple="multiple" required>
+              <option value="all">All</option>
+              @foreach ($coas as $item)
+              <option value="{{ $item->id }}" data-code="{{ $item->code }}">{{ $item->code }} - {{ $item->name }}</option>
+              @endforeach
+            </select>
+            <input type="hidden" value="{{$coa}}" id="coa-sel" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -44,6 +56,14 @@
               <option value="{{ $periode->id }}">{{ \Carbon\Carbon::parse( $periode->from_date )->format('d/m/Y') }} &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp; {{ \Carbon\Carbon::parse( $periode->to_date )->format('d/m/Y') }}</option>
               @endforeach
             </select>
+          </div>
+        </div>
+        
+        <div class="form-group row">
+          <div class="col-md-12 text-center">
+            <a href="#" id="btn-filter" class="btn bg-gd-corporate btn-block border-0 text-white">
+              Filter <i class="fa fa-search ml-10"></i>
+            </a>
           </div>
         </div>
       </div>
@@ -110,6 +130,13 @@ $(document).ready(function() {
   let datatableUrl = '{{ route('superuser.accounting.journal.json') }}';
   let firstDatatableUrl = datatableUrl+'?from_date={{ $from_date }}&to_date={{ $to_date }}';
 
+  let coa_sel = $("#coa-sel").val();
+  if(coa_sel == "all"){
+    coa_sel = "all";
+  }else{
+    coa_sel = coa_sel.split(",");
+  }
+  
   $('#s_from_date,#s_to_date').on('change', function(){
     $('#posting').hide();
     var from_date = $('#s_from_date').val();
@@ -118,6 +145,19 @@ $(document).ready(function() {
       let newDatatableUrl = datatableUrl+'?from_date='+from_date+'&to_date='+to_date;
       $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
     }
+  });
+
+  $("#btn-filter").click(function(){
+    const coa = $('#coa').val();
+    
+    var from_date = $('#s_from_date').val();
+    var to_date   = $('#s_to_date').val();
+    if( from_date && to_date ) {
+      let newDatatableUrl = datatableUrl+'?from_date='+from_date+'&to_date='+to_date+'&coa='+coa;
+      $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
+    }
+
+    // window.location.href = '{{ route('superuser.report.profit_loss_report.index') }}/'+per+"?coa="+coa;
   });
 
   var datatable = $('#datatable').DataTable({
@@ -207,8 +247,25 @@ $(document).ready(function() {
       @endif
       });
 
-  $('.js-select2').on('select2:select', function (e) {
+  $('#periode').on('select2:select', function (e) {
     window.location.href = '{{ route('superuser.accounting.journal.index') }}/'+$(this).val();
+  });
+
+  
+  
+  $('#coa').val(coa_sel).trigger('change');
+  $('#coa').on('select2:select', function (e) {
+      var data = e.params.data.id;
+      if(data == 'all') {
+        $('#coa').val('all').trigger('change');
+      } else {
+        var all = $('#coa').val();
+        const index = all.indexOf('all');
+        if (index > -1) {
+          all.splice(index, 1);
+        }
+        $('#coa').val(all).trigger('change');
+      }
   });
 });
 </script>

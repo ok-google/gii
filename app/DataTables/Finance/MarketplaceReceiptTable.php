@@ -19,7 +19,7 @@ class MarketplaceReceiptTable extends Table
     {
         $superuser = Auth::guard('superuser')->user();
 
-        $model = MarketplaceReceipt::select('id', 'code', 'total', 'payment', 'cost_1', 'cost_2', 'cost_3', 'status', 'paid', 'created_at')
+        $model = MarketplaceReceipt::select('id', 'code', 'total', 'payment', 'cost_1', 'cost_2', 'cost_3', 'status', 'paid', 'created_at', 'store_name')
                     ->where('created_by', $superuser->id)->where('status', 0);
 
         return $model;

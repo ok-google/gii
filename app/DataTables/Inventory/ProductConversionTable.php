@@ -6,6 +6,7 @@ use App\DataTables\Table;
 use App\Entities\Inventory\ProductConversion;
 use App\Repositories\MasterRepo;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class ProductConversionTable extends Table
 {
@@ -13,11 +14,20 @@ class ProductConversionTable extends Table
      * Get query source of dataTable.
      *
      */
-    private function query()
+    private function query(Request $request)
     {
+        $from = date("Y-m-d");
+        $to = date("Y-m-d");
+
+        if($request->from??false){
+            $from = Carbon::parse($request->from)->format('Y-m-d');
+            $to = Carbon::parse($request->to)->format('Y-m-d');
+        }
+
         $model = ProductConversion::select('product_conversion.id', 'product_conversion.code', 'wh.name as warehouse', 'product_conversion.status', 'product_conversion.created_at')
             ->join('master_warehouses as wh', 'product_conversion.warehouse_id', '=', 'wh.id')
             ->whereIn('warehouse_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray());
+        $model = $model->whereBetween("product_conversion.created_at", [$from." 00:00:00",$to." 23:59:59"]);
 
         return $model;
     }
@@ -25,9 +35,9 @@ class ProductConversionTable extends Table
     /**
      * Build DataTable class.
      */
-    public function build()
+    public function build(Request $request)
     {
-        $table = Table::of($this->query());
+        $table = Table::of($this->query($request));
         $table->addIndexColumn();
 
         $table->setRowClass(function (ProductConversion $model) {

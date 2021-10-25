@@ -6,6 +6,7 @@ use App\DataTables\Table;
 use App\Entities\Inventory\Mutation;
 use Carbon\Carbon;
 use App\Repositories\MasterRepo;
+use Illuminate\Http\Request;
 
 class MutationTable extends Table
 {
@@ -13,9 +14,18 @@ class MutationTable extends Table
      * Get query source of dataTable.
      *
      */
-    private function query()
+    private function query(Request $request)
     {
+        $from = date("Y-m-d");
+        $to = date("Y-m-d");
+
+        if($request->from??false){
+            $from = Carbon::parse($request->from)->format('Y-m-d');
+            $to = Carbon::parse($request->to)->format('Y-m-d');
+        }
+
         $model = Mutation::select('id', 'code', 'warehouse_id', 'status', 'created_at')->whereIn('warehouse_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray());
+        $model = $model->whereBetween("created_at", [$from." 00:00:00",$to." 23:59:59"]);
 
         return $model;
     }
@@ -23,9 +33,9 @@ class MutationTable extends Table
     /**
      * Build DataTable class.
      */
-    public function build()
+    public function build(Request $request)
     {
-        $table = Table::of($this->query());
+        $table = Table::of($this->query($request));
         $table->addIndexColumn();
 
         $table->setRowClass(function (Mutation $model) {

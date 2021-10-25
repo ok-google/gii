@@ -28,6 +28,11 @@
           Branch Office
         </a>
       </li>
+      <li>
+        <a href="{{ route('superuser.master.store.index') }}" class="{{ is_active_route('superuser.master.store.index') }}">
+          Store
+        </a>
+      </li>
       @endif
       @if($superuser->can('warehouse-manage'))
       <li>
@@ -415,10 +420,31 @@
         </a>
       </li>
       @endif
+      @if($superuser->can('recondition-manage'))
+      <li>
+        <a href="{{ route('superuser.transaction_report.recondition_report.index') }}" class="{{ is_active_route('superuser.transaction_report.recondition_report.index') }}">
+          Recondition
+        </a>
+      </li>
+      @endif
       @if($superuser->can('stock valuation-manage'))
       <li>
         <a href="{{ route('superuser.transaction_report.stock_valuation.index') }}" class="{{ is_active_route('superuser.transaction_report.stock_valuation.index') }}">
           Stock Valuation
+        </a>
+      </li>
+      @endif
+      {{-- @if($superuser->can('conversion-manage')) --}}
+      <li>
+        <a href="{{ route('superuser.transaction_report.conversion_report.index') }}" class="{{ is_active_route('superuser.transaction_report.conversion_report.index') }}">
+          Product Conversion
+        </a>
+      </li>
+      {{-- @endif --}}
+      @if($superuser->can('sales order-manage'))
+      <li>
+        <a href="{{ route('superuser.transaction_report.order_detail_report.index') }}" class="{{ is_active_route('superuser.transaction_report.order_detail_report.index') }}">
+          Order Detail per SKU
         </a>
       </li>
       @endif

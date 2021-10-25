@@ -9,6 +9,7 @@ Route::group([
 
     Route::group(['as' => 'profit_loss_report.', 'prefix' => '/profit_loss_report'], function () {
         Route::get('/create/pdf/{data?}/{protect?}', 'ProfitLossReportController@pdf')->name('pdf');
+        Route::get('/create/excel/{data?}/{protect?}', 'ProfitLossReportController@excel')->name('excel');
     });
     Route::resource('profit_loss_report', 'ProfitLossReportController');
 
@@ -19,12 +20,14 @@ Route::group([
 
     Route::group(['as' => 'cash_flow_report.', 'prefix' => '/cash_flow_report'], function () {
         Route::get('/create/pdf/{data?}/{protect?}', 'CashFlowReportController@pdf')->name('pdf');
+        Route::get('/create/excel/{data?}/{protect?}', 'CashFlowReportController@excel')->name('excel');
     });
     Route::resource('cash_flow_report', 'CashFlowReportController');
 
     Route::group(['as' => 'balance_sheet.', 'prefix' => '/balance_sheet'], function () {
         Route::get('/create/pdf/{data?}/{protect?}', 'BalanceSheetController@pdf')->name('pdf');
         Route::get('/create/export/{data?}/{protect?}', 'BalanceSheetController@export')->name('export');
+        Route::get('/create/excel/{data?}/{protect?}', 'BalanceSheetController@excel')->name('excel');
     });
     Route::resource('balance_sheet', 'BalanceSheetController');
 
