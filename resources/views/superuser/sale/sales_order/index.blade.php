@@ -251,7 +251,7 @@ $(document).ready(function() {
     });
 
     $('input[name="bulk_acc_ids"]').val(selected);
-    bulkaccConfirmation();
+    bulkaccConfirmation('');
 
   })
 
@@ -269,13 +269,13 @@ $(document).ready(function() {
     
     $('input[name="bulk_acc_ids"]').val(selected);
     $('input[name="bulk_type"]').val(type);
-    bulkaccConfirmation();
+    bulkaccConfirmation(type.toUpperCase());
 
   })
 
-  function bulkaccConfirmation() {
+  function bulkaccConfirmation(position) {
     Swal.fire({
-      title: 'Are you sure?',
+      title: 'Are you sure to '+position+'?',
       type: 'warning',
       showCancelButton: true,
       allowOutsideClick: false,
