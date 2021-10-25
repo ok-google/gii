@@ -20,6 +20,7 @@ use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use DB;
+use Carbon\Carbon;
 
 HeadingRowFormatter::default('none');
 
@@ -47,8 +48,8 @@ class SalesOrderImport implements ToCollection, WithHeadingRow, WithStartRow, Sk
             $collect_error = [];
             $collect_success = [];
             $collect_duplicate = [];
-
-            
+            // dd("asd");
+            // dd($this->convertDate("25-09-2021 09:08"));
             // dd($rows[0]);
             $data = [];
             foreach ($rows as $row) {
@@ -83,7 +84,7 @@ class SalesOrderImport implements ToCollection, WithHeadingRow, WithStartRow, Sk
                                 'description'           => ($row['Catatan dari Pembeli']??''),
                                 'weight'                => $row['total Berat Barang'],
                                 'discount'              => preg_replace('/\D/', '', $row['Voucher']),
-                                'order_date'            => $row['Waktu Pembayaran'].":00",
+                                'order_date'            => $this->convertDate($row['Waktu Pembayaran']),
                             ];
                         }
                     } else {
@@ -153,7 +154,7 @@ class SalesOrderImport implements ToCollection, WithHeadingRow, WithStartRow, Sk
                         $sales_order->marketplace_order = SalesOrder::MARKETPLACE_ORDER[$value['info']["marketplace"]];
                         $sales_order->warehouse_id = $warehouse_id->id;
                         $sales_order->store_name = $store_id->code;
-                        // $sales_order->store_phone = $this->store_phone;
+                        $sales_order->store_phone = $store_id->phone;
                         $sales_order->customer_marketplace = $value['info']['customer_marketplace'];
                         $sales_order->address_marketplace = $value['info']['address_marketplace'];
                         $sales_order->ekspedisi_marketplace = $value['info']['ekspedisi_marketplace'];
@@ -220,11 +221,18 @@ class SalesOrderImport implements ToCollection, WithHeadingRow, WithStartRow, Sk
         return 2;
     }
 
+    public function convertDate($obj){
+        // $ex = explode(" ", $obj);
+            // $to = Carbon::parse($request->to)->format('Y-m-d');
+        return Carbon::parse($obj)->format('Y-m-d H:i:s');
+    }
     public function transformDate($value, $format = 'Y-m-d')
     {
         try {
+            dd(\Carbon\Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value)));
             return \Carbon\Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($value));
         } catch (\ErrorException $e) {
+            dd($e);
             return \Carbon\Carbon::createFromFormat($format, $value);
         }
     }
