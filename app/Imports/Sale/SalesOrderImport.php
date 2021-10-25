@@ -79,7 +79,7 @@ class SalesOrderImport implements ToCollection, WithHeadingRow, WithStartRow, Sk
                                 'ekspedisi_marketplace' => $row['Ekspedisi'],
                                 'no_hp_marketplace'     => $row['No. Telp'],
                                 'resi'                  => $row['Resi / AWB'],
-                                'batas_kirim'           => $row['Batas Waktu Pengiriman'].":00",
+                                'batas_kirim'           => null,
                                 'description'           => ($row['Catatan dari Pembeli']??''),
                                 'weight'                => $row['total Berat Barang'],
                                 'discount'              => preg_replace('/\D/', '', $row['Voucher']),
