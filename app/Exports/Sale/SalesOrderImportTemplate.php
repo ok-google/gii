@@ -27,6 +27,7 @@ class SalesOrderImportTemplate implements FromArray, ShouldAutoSize
                 'Satuan',
                 'Satuan Harga',
                 'Total Harga Produk',
+                'Voucher',
                 'total Berat Barang',
                 'Alamat Penerima',
                 'No. Telp',

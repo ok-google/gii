@@ -121,7 +121,7 @@ class SalesOrderImport implements ToCollection, WithHeadingRow, WithStartRow, Sk
                             $collect_error[] = $key . ' : "Store" is empty';
                             continue;
                         }else{
-                            $store_id = Store::where("name", $value['info']['store'])->first();
+                            $store_id = Store::where("code", $value['info']['store'])->first();
                             // if($key == "ABC124"){ dd($warehouse_id); }
                             if ($store_id == null) {
                                 $collect_error[] = $key . ' : "Store" not found';
@@ -152,7 +152,7 @@ class SalesOrderImport implements ToCollection, WithHeadingRow, WithStartRow, Sk
                         $sales_order->code = $key;
                         $sales_order->marketplace_order = SalesOrder::MARKETPLACE_ORDER[$value['info']["marketplace"]];
                         $sales_order->warehouse_id = $warehouse_id->id;
-                        $sales_order->store_name = $value['info']["store"];
+                        $sales_order->store_name = $store_id->code;
                         // $sales_order->store_phone = $this->store_phone;
                         $sales_order->customer_marketplace = $value['info']['customer_marketplace'];
                         $sales_order->address_marketplace = $value['info']['address_marketplace'];

@@ -17,7 +17,7 @@
       <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="code">Code <span class="text-danger">*</span></label>
         <div class="col-md-7">
-          <input type="text" class="form-control" id="code" name="code" onkeyup="nospaces(this)" value="{{ $store->code }}" readonly>
+          <input type="text" class="form-control" id="code" name="code" onkeyup="nospaces(this)" value="{{ $store->code }}">
         </div>
       </div>
       <div class="form-group row">
