@@ -42,61 +42,67 @@ class MarketplaceReceiptImport implements ToCollection, WithHeadingRow, WithStar
         try {
             $superuser = Auth::guard('superuser')->user();
 
-            foreach ($rows as $row) {
-                if(empty($row['invoice'])) {
-                    $collect_error[] = array('Empty invoce : skipping import');
-                    continue;
-                }
-                
-                $sales_order = SalesOrder::where('code', $row['invoice'])->where('status', SalesOrder::STATUS['ACC'])->first();
-                if($sales_order == null) {
-                    $collect_error[] = array('INVOICE '.$row['invoice'].' NOT FOUND : skipping import');
-                    continue;
-                } else if($sales_order->marketplace_order == 0) {
-                    $collect_error[] = array('INVOICE '.$row['invoice'].' NOT MARKETPLACE ORDER : skipping import');
-                    continue;
-                }
-
-                $find_mr = MarketplaceReceipt::where('code', $row['invoice'])->first();
-                if($find_mr) {
-                    if($find_mr->status == 1) {
-                        $collect_error[] = array('INVOICE '.$row['invoice'].' HAS BEEN PAID OFF : skipping import');
+            // dd($rows[0]);
+            if(count($rows) > 0){
+                foreach ($rows as $row) {
+                    if(empty($row['invoice'])) {
+                        $collect_error[] = array('Empty invoce : skipping import');
                         continue;
-                    } else if($find_mr->created_by != $superuser->id) {
-                        $collect_error[] = array('INVOICE '.$row['invoice'].' HAS BEEN IMPORTED BY OTHER USER : skipping import');
+                    }
+                    
+                    $sales_order = SalesOrder::where('code', $row['invoice'])->where('status', SalesOrder::STATUS['ACC'])->first();
+                    if($sales_order == null) {
+                        $collect_error[] = array('INVOICE '.$row['invoice'].' NOT FOUND : skipping import');
+                        continue;
+                    } else if($sales_order->marketplace_order == 0) {
+                        $collect_error[] = array('INVOICE '.$row['invoice'].' NOT MARKETPLACE ORDER : skipping import');
                         continue;
                     }else if($row['cost_1'] < 0 || $row['cost_2'] < 0 || $row['cost_3'] < 0){
                         $collect_error[] = array('INVOICE '.$row['invoice'].' HAS COST MINUS : skipping import');
                         continue;
-                    } else {
-                        if($row['tgl_pencairan']) {
-                            $find_mr->created_at = $this->transformDate($row['tgl_pencairan']);
-                        }
-                        $find_mr->payment = $row['payment'];
-                        $find_mr->cost_1 = $row['cost_1'];
-                        $find_mr->cost_2 = $row['cost_2'];
-                        $find_mr->cost_3 = $row['cost_3'];
-                        $find_mr->save();
-                        continue;
                     }
+    
+                    $find_mr = MarketplaceReceipt::where('code', $row['invoice'])->first();
+                    if($find_mr) {
+                        if($find_mr->status == 1) {
+                            $collect_error[] = array('INVOICE '.$row['invoice'].' HAS BEEN PAID OFF : skipping import');
+                            continue;
+                        } else if($find_mr->created_by != $superuser->id) {
+                            $collect_error[] = array('INVOICE '.$row['invoice'].' HAS BEEN IMPORTED BY OTHER USER : skipping import');
+                            continue;
+                        } else {
+                            if($row['tgl_pencairan']) {
+                                $find_mr->created_at = $this->transformDate($row['tgl_pencairan']);
+                            }
+                            $find_mr->payment = $row['payment'];
+                            $find_mr->cost_1 = $row['cost_1'];
+                            $find_mr->cost_2 = $row['cost_2'];
+                            $find_mr->cost_3 = $row['cost_3'];
+                            $find_mr->save();
+                            continue;
+                        }
+                    }
+    
+                    $marketplace_receipt = new MarketplaceReceipt;
+                    $marketplace_receipt->code = $row['invoice'];
+                    $marketplace_receipt->store_name = $this->store_name;
+                    $marketplace_receipt->kode_transaksi = $this->kode_transaksi;
+                    $marketplace_receipt->total = $sales_order->grand_total;
+                    $marketplace_receipt->payment = $row['payment'];
+                    $marketplace_receipt->cost_1 = $row['cost_1'];
+                    $marketplace_receipt->cost_2 = $row['cost_2'];
+                    $marketplace_receipt->cost_3 = $row['cost_3'];
+                    $marketplace_receipt->status = 0;
+                    $marketplace_receipt->created_by = $superuser->id;
+                    if($row['tgl_pencairan']) {
+                        $marketplace_receipt->created_at = $this->transformDate($row['tgl_pencairan']);
+                    }
+                    $marketplace_receipt->save();
                 }
-
-                $marketplace_receipt = new MarketplaceReceipt;
-                $marketplace_receipt->code = $row['invoice'];
-                $marketplace_receipt->store_name = $this->store_name;
-                $marketplace_receipt->kode_transaksi = $this->kode_transaksi;
-                $marketplace_receipt->total = $sales_order->grand_total;
-                $marketplace_receipt->payment = $row['payment'];
-                $marketplace_receipt->cost_1 = $row['cost_1'];
-                $marketplace_receipt->cost_2 = $row['cost_2'];
-                $marketplace_receipt->cost_3 = $row['cost_3'];
-                $marketplace_receipt->status = 0;
-                $marketplace_receipt->created_by = $superuser->id;
-                if($row['tgl_pencairan']) {
-                    $marketplace_receipt->created_at = $this->transformDate($row['tgl_pencairan']);
-                }
-                $marketplace_receipt->save();
+            }else{
+                $collect_error[] = array('Empty invoce : skipping import');
             }
+            // dd($collect_error);
             if($collect_error) {
                 $this->error = $collect_error;
             } 
