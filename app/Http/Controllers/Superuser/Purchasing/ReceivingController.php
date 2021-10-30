@@ -44,7 +44,7 @@ class ReceivingController extends Controller
             return abort(403);
         }
 
-        $data['warehouses'] = MasterRepo::warehouses_by_category(2);
+        $data['warehouses'] = MasterRepo::warehouses_by_category(1);
 
         return view('superuser.purchasing.receiving.create', $data);
     }
@@ -215,13 +215,13 @@ class ReceivingController extends Controller
                         if($detail->total_quantity_ri > 0) {
                             $delivery_cost = $detail->delivery_cost / $detail->total_quantity_ri;
 
-                            $hpp                = new Hpp;
-                            $hpp->type          = $superuser->type;
-                            $hpp->branch_office_id = $superuser->branch_office_id;
-                            $hpp->warehouse_id  = $receiving->warehouse_id;
-                            $hpp->product_id    = $detail->product_id;
-                            $hpp->quantity      = $detail->total_quantity_ri;
-                            $hpp->price         = $harga_satuan + $delivery_cost;
+                            $hpp                    = new Hpp;
+                            $hpp->type              = $superuser->type;
+                            $hpp->branch_office_id  = $superuser->branch_office_id;
+                            $hpp->product_id        = $detail->product_id;
+                            $hpp->ppb_detail_id     = $detail->ppb_detail_id;
+                            $hpp->quantity          = $detail->total_quantity_ri;
+                            $hpp->price             = $harga_satuan + $delivery_cost;
                             $hpp->save();
                         }
 

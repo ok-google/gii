@@ -115,7 +115,7 @@ class DOValidateController extends Controller
                                         }
                                         $hpp_total = 0;
                                         for ($i=0; $i < $detail->quantity ; $i++) { 
-                                            $hpp = Hpp::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('product_id', $detail->product_id)->orderBy('created_at', 'ASC')->first();
+                                            $hpp = Hpp::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('product_id', $detail->product_id)->where('warehouse_id', $sales_order->warehouse_id)->orderBy('created_at', 'ASC')->first();
                                             
                                             if( $hpp ) {
                                                 $hpp_total = $hpp_total + $hpp->price;
