@@ -35,14 +35,17 @@ class CBReceiptInvoiceController extends Controller
         if ($request->ajax()) {
             $data = [];
 
-            $customer = Customer::find($request->id);
+            // dd($request->q);
+            $param = $request->q;
+            // $customer = Customer::find($request->id);
 
-            $sales_order = SalesOrder::where('customer_id', $customer->id)
-                                ->where('status', SalesOrder::STATUS['ACC'])
-                                ->where('marketplace_order', SalesOrder::MARKETPLACE_ORDER['Non Marketplace'])
-                                ->whereIn('warehouse_id', MasterRepo::warehouses_by_category(2)->pluck('id')->toArray())
-                                ->get();
-
+            $sales_order = SalesOrder::where('status', SalesOrder::STATUS['ACC'])
+                                // ->where('marketplace_order', SalesOrder::MARKETPLACE_ORDER['Non Marketplace'])
+                                ->whereIn('warehouse_id', MasterRepo::warehouses_by_category(2)->pluck('id')->toArray());
+            if($param != ""){
+                $sales_order = $sales_order->where("code", "LIKE", $param.'%');
+            }                   
+            $sales_order = $sales_order->orderBy('order_date','desc')->limit(30)->get();
             foreach ($sales_order as $key => $value) {
                 $checkIfActive = CBReceiptInvoiceDetail::where('sales_order_id', $value->id)
                                 ->whereHas('receipt_invoice', function($query) {
@@ -64,15 +67,16 @@ class CBReceiptInvoiceController extends Controller
 
                     if($total > 0) {
                         $data[] = [
-                            'so_id'     => $value->id,
+                            'id'     => $value->id,
                             'code'       => $value->code,
-                            'total'      => $total,
+                            'total'      => $total
                         ];
                     }
                 }
             }
+            // dd($request->q);
 
-            return response()->json(['code'=> 200, 'data' => $data, 'address' => $customer->address]);
+            return response()->json($data);
         }
     }
 
@@ -103,7 +107,7 @@ class CBReceiptInvoiceController extends Controller
             $validator = Validator::make($request->all(), [
                 'code' => 'required|string|unique:cb_receipt_invoice,code',
                 'coa'  => 'required|integer',
-                'customer'  => 'required|integer',
+                // 'customer'  => 'required|integer',
                 'select_date' => 'required|date',
             ]);
 
