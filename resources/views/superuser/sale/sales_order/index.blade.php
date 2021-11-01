@@ -167,8 +167,10 @@ $(document).ready(function() {
   let datatableUrl = '{{ route('superuser.sale.sales_order.json') }}';
   
   let showControl = $('input[type=radio][name=show-control]');
+  let valShow = "default";
   showControl.change(function() {
     let newDatatableUrl = datatableUrl+'?show='+this.value;
+    valShow = this.value;
     $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
   });
 
@@ -185,7 +187,7 @@ $(document).ready(function() {
     end_date = picker.endDate.format('YYYY-MM-DD');
 
     if (start_date && end_date) {
-      let newDatatableUrl = datatableUrl + '?from=' + start_date + '&to=' + end_date;
+      let newDatatableUrl = datatableUrl + '?from=' + start_date + '&to=' + end_date +'&show='+valShow;
       $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
     // alert('aa')
     }
