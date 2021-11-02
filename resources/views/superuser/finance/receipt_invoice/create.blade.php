@@ -37,7 +37,7 @@
           </select>
         </div>
       </div>
-      <div class="form-group row">
+      {{-- <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="customer">Select Customer</label>
         <div class="col-md-7">
           <select class="js-select2 form-control" id="customer" name="customer" data-placeholder="Select Customer">
@@ -59,14 +59,14 @@
         <div class="col-md-7">
           <textarea class="form-control" id="note" name="note"></textarea>
         </div>
-      </div>
+      </div> --}}
     </div>
     <hr>
     <div class="block-content">
       <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="select_so">Select Invoice</label>
         <div class="col-md-7">
-          <select class="js-select2 form-control" id="select_so" name="select_so" data-placeholder="Select Invoice">
+          <select class="form-control" id="select_so" name="select_so" data-placeholder="Select Invoice">
           </select>
         </div>
       </div>
@@ -181,40 +181,68 @@
 
     $('#customer').on('select2:select', function (e) {
       table.clear().draw();
-      $.ajax({
-        url: '{{ route('superuser.finance.receipt_invoice.get_sales_order') }}',
-        data: {id:$(this).val() , _token: "{{csrf_token()}}"},
-        type: 'POST',
-        cache: false,
-        dataType: 'json',
-        beforeSend: function () {
-          addLoadSpiner($('#select_so'))
-        },
-        complete: function () {
-          hideLoadSpinner($('#select_so'))
-        },
-        success: function(json) {
-          $('#select_so').empty().trigger('change');
-          $('#address').val('');
+      // $.ajax({
+      //   url: '{{ route('superuser.finance.receipt_invoice.get_sales_order') }}',
+      //   data: {id:$(this).val() , _token: "{{csrf_token()}}"},
+      //   type: 'POST',
+      //   cache: false,
+      //   dataType: 'json',
+      //   beforeSend: function () {
+      //     addLoadSpiner($('#select_so'))
+      //   },
+      //   complete: function () {
+      //     hideLoadSpinner($('#select_so'))
+      //   },
+      //   success: function(json) {
+      //     $('#select_so').empty().trigger('change');
+      //     $('#address').val('');
           
-          if (json.code == 200) {
-            let ph = new Option('', '', false, false);
-            $('#select_so').append(ph).trigger('change');
+      //     if (json.code == 200) {
+      //       let ph = new Option('', '', false, false);
+      //       $('#select_so').append(ph).trigger('change');
 
-            for (i = 0; i < Object.keys(json.data).length; i++) {
-              let newOption = '<option value="'+ json.data[i].so_id +'" data-total="'+ json.data[i].total +'">'+ json.data[i].code +'</option>';
-              $('#select_so').append(newOption).trigger('change');
-            }
+      //       for (i = 0; i < Object.keys(json.data).length; i++) {
+      //         let newOption = '<option value="'+ json.data[i].so_id +'" data-total="'+ json.data[i].total +'">'+ json.data[i].code +'</option>';
+      //         $('#select_so').append(newOption).trigger('change');
+      //       }
 
-            $('#address').val(json.address);
-          }
-        }
-      });
+      //       $('#address').val(json.address);
+      //     }
+      //   }
+      // });
     });
 
-    $('#select_so').on('select2:select', function (e) {
+    $('#select_so').select2({
+    allowClear: true,
+    placeholder: 'Select Invoice',
+    ajax: {
+      url: '{{ route('superuser.finance.receipt_invoice.get_sales_order') }}',
+      type: 'POST',
+      dataType: 'json',
+      data: function(params) {
+        return {
+          q: (params.term??''), 
+          _token: "{{csrf_token()}}"
+        }
+      },
+      processResults: function (data) {
+        // Transforms the top-level key of the response object from 'items' to 'results'
+        return {
+          results: $.map(data, function (item) {
+            //console.log(item)
+              return {
+                text: item.code,
+                id: item.id,
+                total: item.total
+              }
+          })
+        };
+      }
+    }
+  }).on('select2:select', function (e) {
       var data = e.params.data;
-      var total = $(this).find(':selected').data('total');
+      // console.log(data)
+      var total = data.total;
       $('#select_total').val(total);
     });
 

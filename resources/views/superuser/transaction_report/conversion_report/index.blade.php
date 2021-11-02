@@ -22,6 +22,15 @@
       <div class="block">
         <div class="block-content">
           <div class="form-group row">
+            <label class="col-md-2 col-form-label text-left" for="period">Period :</label>
+            <div class="col-md-4">
+              <div class="input-group">
+                <div class="input-group-prepend"><span class="input-group-text"><i class="fa fa-calendar"
+                      aria-hidden="true"></i></span></div><input type="text" class="form-control pull-right" id="datesearch"
+                  name="datesearch" placeholder="Select period"
+                  value="{{ \Carbon\Carbon::now()->format('d/m/Y') }} - {{ \Carbon\Carbon::now()->format('d/m/Y') }}">
+              </div>
+            </div>
             <label class="col-md-2 col-form-label text-left" for="warehouse">Warehouse :</label>
             <div class="col-md-4">
               <select class="js-select2 form-control" id="warehouse" name="warehouse" data-placeholder="Select Warehouse">
@@ -93,6 +102,7 @@
 @endsection
 
 @push('scripts')
+@include('superuser.asset.plugin.daterangepicker')
   <script type="text/javascript">
     $(document).ready(function() {
       $('.js-select2').select2()
@@ -100,6 +110,39 @@
       let datatableUrl = '{{ route('superuser.transaction_report.conversion_report.json') }}';
 
       let firstDatatableUrl = datatableUrl + '?warehouse=all&product=all';
+
+      $('#datesearch').daterangepicker({
+        autoUpdateInput: false
+      });
+
+      $('#datesearch').data('daterangepicker').setStartDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
+      $('#datesearch').data('daterangepicker').setEndDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
+
+      $('#datesearch').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
+        start_date = picker.startDate.format('YYYY-MM-DD');
+        end_date = picker.endDate.format('YYYY-MM-DD');
+
+        if (start_date && end_date) {
+          // let newDatatableUrl = datatableUrl + '?from=' + start_date + '&to=' + end_date+'&product=' + product;
+          // $('#datatable').DataTable().ajax.url(newDatatableUrl).load();
+        // alert('aa')
+        }
+      });
+
+      $('#btn-filter').on('click', function(e) {
+        e.preventDefault();
+
+        // var warehouse = $('#warehouse').val();
+        var warehouse = $('#warehouse').val();
+        var sd = $('#datesearch').data('daterangepicker').startDate._d;
+        var newSD = convertDateToSQL(sd);
+        var ed = $('#datesearch').data('daterangepicker').endDate._d;
+        var newED = convertDateToSQL(ed);
+
+        let newDatatableUrl = datatableUrl + '?warehouse=' + warehouse+'&from=' + newSD + '&to=' + newED;;
+        datatable.ajax.url(newDatatableUrl).load();
+      })
 
       var datatable = $('.datatable').DataTable({
         "language": {
@@ -171,15 +214,15 @@
         @endif
       });
 
-      $('#btn-filter').on('click', function(e) {
-        e.preventDefault();
+      // $('#btn-filter').on('click', function(e) {
+      //   e.preventDefault();
 
-        var warehouse = $('#warehouse').val();
-        var product = $('#product').val();
+      //   var warehouse = $('#warehouse').val();
+      //   var product = $('#product').val();
 
-        let newDatatableUrl = datatableUrl + '?warehouse=' + warehouse + '&product=' + product;
-        datatable.ajax.url(newDatatableUrl).load();
-      })
+      //   let newDatatableUrl = datatableUrl + '?warehouse=' + warehouse + '&product=' + product;
+      //   datatable.ajax.url(newDatatableUrl).load();
+      // })
 
       function newexportaction(e, dt, button, config) {
         var self = this;

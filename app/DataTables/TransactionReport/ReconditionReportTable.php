@@ -19,6 +19,14 @@ class ReconditionReportTable extends Table
      */
     private function query(Request $request)
     {
+        $from = date("Y-m-d");
+        $to = date("Y-m-d");
+
+        if($request->from??false){
+            $from = Carbon::parse($request->from)->format('Y-m-d');
+            $to = Carbon::parse($request->to)->format('Y-m-d');
+        }
+
         $model = ReconditionDetail::select(DB::raw('
         recondition_detail.id, 
                 b.code, 
@@ -64,6 +72,7 @@ class ReconditionReportTable extends Table
         } else {
             $model = $model->whereIn('b.warehouse_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray());
         }
+        $model = $model->whereBetween("b.created_at", [$from." 00:00:00",$to." 23:59:59"]);
         $model = $model->where('b.status', 2);
         // dd($model);
         return $model;

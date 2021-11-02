@@ -3,7 +3,7 @@
 @section('content')
   <nav class="breadcrumb bg-white push">
     <span class="breadcrumb-item">Transaction Report</span>
-    <span class="breadcrumb-item active">Product Conversion</span>
+    <span class="breadcrumb-item active">Order Detail</span>
   </nav>
   @if ($errors->any())
     <div class="alert alert-danger alert-dismissable" role="alert">
@@ -115,14 +115,6 @@
 @push('scripts')
 @include('superuser.asset.plugin.daterangepicker')
   <script type="text/javascript">
-    function convertDateToSQL(obj){
-    
-      var newSD = new Date(obj);
-      var year = newSD.getFullYear();
-      var month = ((parseInt(newSD.getMonth())+1).toString().length == 1 ? "0"+(parseInt(newSD.getMonth())+1) : (parseInt(newSD.getMonth())+1));
-      var date = (newSD.getDate().toString().length == 1 ? "0"+newSD.getDate() : newSD.getDate());
-      return year+"-"+month+"-"+date;
-    }
     $(document).ready(function() {
       $('.js-select2').select2()
 
