@@ -31,6 +31,17 @@
         </div>
       </div>
       <div class="form-group row">
+        <label class="col-md-3 col-form-label text-right" for="warehouse_disp">Warehouse Destination<span class="text-danger">*</span></label>
+        <div class="col-md-7">
+          <select class="js-select2 form-control" id="warehouse_disp" name="warehouse_disp" data-placeholder="Select Warehouse">
+            <option></option>
+            @foreach($warehouses_disp as $warehouse)
+            <option value="{{ $warehouse->id }}">{{ $warehouse->name }}</option>
+            @endforeach
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="pbm_date">PBM Date</span></label>
         <div class="col-md-7">
           <input type="date" class="form-control" id="pbm_date" name="pbm_date">

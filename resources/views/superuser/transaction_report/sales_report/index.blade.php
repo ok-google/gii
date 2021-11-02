@@ -190,11 +190,11 @@
             searchable: false
           },
           {
-            data: 'store_name'
+            data: 'store_name',
+            name: 'sales_order.store_name'
           },
           {
             data: 'customer_name',
-            name: 'sales_order.customer_marketplace'
           },
           {
             data: 'code',

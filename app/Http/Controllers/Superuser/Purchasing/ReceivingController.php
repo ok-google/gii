@@ -46,6 +46,8 @@ class ReceivingController extends Controller
 
         $data['warehouses'] = MasterRepo::warehouses_by_category(1);
 
+        $data['warehouses_disp'] = MasterRepo::warehouses_by_category(2);
+
         return view('superuser.purchasing.receiving.create', $data);
     }
 
@@ -53,8 +55,9 @@ class ReceivingController extends Controller
     {
         if ($request->ajax()) {
             $validator = Validator::make($request->all(), [
-                'code' => 'required|string|unique:receiving,code',
-                'warehouse' => 'required|integer',
+                'code'              => 'required|string|unique:receiving,code',
+                'warehouse'         => 'required|integer',
+                'warehouse_disp'    => 'required|integer',
             ]);
 
             if ($validator->fails()) {
@@ -73,6 +76,7 @@ class ReceivingController extends Controller
 
                 $receiving->code = $request->code;
                 $receiving->warehouse_id = $request->warehouse;
+                $receiving->warehouse_disp = $request->warehouse_disp;
                 $receiving->pbm_date = $request->pbm_date;
                 $receiving->no_container = $request->no_container;
                 $receiving->description = $request->note;
@@ -215,13 +219,13 @@ class ReceivingController extends Controller
                         if($detail->total_quantity_ri > 0) {
                             $delivery_cost = $detail->delivery_cost / $detail->total_quantity_ri;
 
-                            $hpp                    = new Hpp;
-                            $hpp->type              = $superuser->type;
-                            $hpp->branch_office_id  = $superuser->branch_office_id;
-                            $hpp->product_id        = $detail->product_id;
-                            $hpp->ppb_detail_id     = $detail->ppb_detail_id;
-                            $hpp->quantity          = $detail->total_quantity_ri;
-                            $hpp->price             = $harga_satuan + $delivery_cost;
+                            $hpp                        = new Hpp;
+                            $hpp->type                  = $superuser->type;
+                            $hpp->branch_office_id      = $superuser->branch_office_id;
+                            $hpp->product_id            = $detail->product_id;
+                            $hpp->warehouse_id          = $receiving->warehouse_disp;
+                            $hpp->quantity              = $detail->total_quantity_ri;
+                            $hpp->price                 = $harga_satuan + $delivery_cost;
                             $hpp->save();
                         }
 

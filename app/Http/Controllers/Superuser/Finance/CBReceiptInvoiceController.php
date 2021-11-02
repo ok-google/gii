@@ -35,7 +35,7 @@ class CBReceiptInvoiceController extends Controller
         if ($request->ajax()) {
             $data = [];
 
-            $customer = Customer::find($request->id);
+            //$customer = Customer::find($request->id);
 
             $sales_order = SalesOrder::where('customer_id', $customer->id)
                                 ->where('status', SalesOrder::STATUS['ACC'])

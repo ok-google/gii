@@ -29,6 +29,14 @@
         </div>
       </div>
       <div class="form-group row">
+        <label class="col-md-3 col-form-label text-right" for="warehouse_disp">Warehouse <span class="text-danger">*</span></label>
+        <div class="col-md-7">
+          <select class="js-select2 form-control" id="warehouse_disp" name="warehouse_disp" data-placeholder="Select Warehouse" disabled>
+            <option value="{{ $receiving->warehouse_disp }}">{{ $receiving->warehouse->name }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="pbm_date">PBM Date</span></label>
         <div class="col-md-7">
           <input type="date" class="form-control" id="pbm_date" name="pbm_date" value="{{ $receiving->pbm_date ? date('Y-m-d', strtotime($receiving->pbm_date)) : '' }}">
