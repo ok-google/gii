@@ -39,7 +39,7 @@
           </select>
         </div>
       </div>
-      <div class="form-group row">
+      {{-- <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="customer">Select Customer <span class="text-danger">*</span></label>
         <div class="col-md-7">
           <select class="js-select2 form-control" id="customer" name="customer" data-placeholder="Select Customer" data-value="{{ $receipt_invoice->customer_id }}" disabled>
@@ -61,7 +61,7 @@
         <div class="col-md-7">
           <textarea class="form-control" id="note" name="note">{{ $receipt_invoice->description }}</textarea>
         </div>
-      </div>
+      </div> --}}
     </div>
     <hr>
     <div class="block-content">

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Superuser\Finance;
 use App\DataTables\Finance\CBReceiptInvoiceTable;
 use App\Entities\Finance\CBReceiptInvoice;
 use App\Entities\Finance\CBReceiptInvoiceDetail;
+use App\Entities\Finance\MarketplaceReceipt;
+use App\Entities\Finance\MarketplaceReceiptDetail;
 use App\Entities\Master\Company;
 use App\Entities\Accounting\Coa;
 use App\Entities\Accounting\Journal;
@@ -52,7 +54,7 @@ class CBReceiptInvoiceController extends Controller
                                     $query->where('status', CBReceiptInvoice::STATUS['ACTIVE']);
                                 })
                                 ->first();
-                if($checkIfActive == null) {
+                // if($checkIfActive == null) {
                     $total = 0;
                     $total_paid = CBReceiptInvoiceDetail::where('sales_order_id', $value->id)
                                 ->whereHas('receipt_invoice', function($query) {
@@ -65,14 +67,16 @@ class CBReceiptInvoiceController extends Controller
                         $total = $value->grand_total;
                     }
 
-                    if($total > 0) {
+                    // if($total > 0) {
                         $data[] = [
                             'id'     => $value->id,
                             'code'       => $value->code,
-                            'total'      => $total
+                            'total'      => $total,
+                            'grand_total' => $value->grand_total,
+                            'marketplace' => $value->marketplace_order
                         ];
-                    }
-                }
+                    // }
+                // }
             }
             // dd($request->q);
 
@@ -96,8 +100,10 @@ class CBReceiptInvoiceController extends Controller
         }
 
         $data['coa'] = MasterRepo::coas_by_branch();
-        $data['customers'] = MasterRepo::customers();
-                        
+        $data['coas'] = $data['coa'];
+
+        // $data['customers'] = MasterRepo::customers();
+        $data['disable_mr'] = true;
         return view('superuser.finance.receipt_invoice.create', $data);
     }
 
@@ -137,6 +143,7 @@ class CBReceiptInvoiceController extends Controller
 
                 try {
                     $superuser = Auth::guard('superuser')->user();
+                    $soMarketplace = [];
 
                     $receipt_invoice = new CBReceiptInvoice;
 
@@ -144,7 +151,7 @@ class CBReceiptInvoiceController extends Controller
                     $receipt_invoice->type = $superuser->type;
                     $receipt_invoice->branch_office_id = $superuser->branch_office_id;
                     $receipt_invoice->coa_id = $request->coa;
-                    $receipt_invoice->customer_id = $request->customer;
+                    // $receipt_invoice->customer_id = $request->customer;
                     $receipt_invoice->description = $request->note;
 
                     $receipt_invoice->select_date = $request->select_date;
@@ -155,6 +162,8 @@ class CBReceiptInvoiceController extends Controller
 
                         if($request->so_id) {
                             foreach($request->so_id as $key => $value){
+
+
                                 if($request->so_id[$key]) {
                                     $receipt_invoice_detail = new CBReceiptInvoiceDetail;
                                     $receipt_invoice_detail->cb_receipt_invoice_id = $receipt_invoice->id;
@@ -162,7 +171,17 @@ class CBReceiptInvoiceController extends Controller
                                     $receipt_invoice_detail->total = $request->total[$key];
                                     $receipt_invoice_detail->paid = $request->paid[$key];
                                     $receipt_invoice_detail->save();
+
+                                    
+                                    if($request->marketplace[$key] > 0){
+                                        $soMarketplace[] = $key;
+                                    }
                                 }
+                            }
+
+                            if(sizeof($soMarketplace) > 0){
+                                // dd($soMarketplace);
+                                self::storeMR($request, $soMarketplace);
                             }
                         }
 
@@ -180,6 +199,7 @@ class CBReceiptInvoiceController extends Controller
                     }
                 } catch (\Exception $e) {
                     DB::rollback();
+                    dd($e);
                     $response['notification'] = [
                         'alert' => 'block',
                         'type' => 'alert-danger',
@@ -191,6 +211,140 @@ class CBReceiptInvoiceController extends Controller
                 }
             }
         }
+    }
+
+    public function storeMR(Request $request, $key){
+        $superuser = Auth::guard('superuser')->user();
+
+        foreach($key as $k=>$v){
+            $inv = $request->inv_code[$v];
+            $grand_total = $request->grand_total[$v];
+            $type = $request->type[$v];
+            $val = $request->paid[$v];
+            $mp_cp = 0; $mp_c1 = 0; $mp_c2 = 0; $mp_c3 = 0;
+            // ADD MR
+            $marketplace_receipt = new MarketplaceReceipt;
+            $marketplace_receipt->code = $inv;
+            // $marketplace_receipt->store_name = $this->store_name;
+            // $marketplace_receipt->kode_transaksi = $this->kode_transaksi;
+            $marketplace_receipt->total = $grand_total;
+            if($type == "payment"){ $mp_cp = $val; }
+            if($type == "cost_1"){ $mp_c1 = $val; }
+            if($type == "cost_2"){ $mp_c2 = $val; }
+            if($type == "cost_3"){ $mp_c3 = $val; }
+
+            $marketplace_receipt->payment = $mp_cp;
+            $marketplace_receipt->cost_1 = $mp_c1;
+            $marketplace_receipt->cost_2 = $mp_c2;
+            $marketplace_receipt->cost_3 = $mp_c3; 
+            $marketplace_receipt->status = 0;
+            $marketplace_receipt->created_by = $superuser->id;
+            // if($row['tgl_pencairan']) {
+            $marketplace_receipt->created_at = $request->select_date;
+            // }
+            if($marketplace_receipt->save()){
+
+                $total_paid = $marketplace_receipt->payment + $marketplace_receipt->cost_1 + $marketplace_receipt->cost_2 + $marketplace_receipt->cost_3 + $marketplace_receipt->paid;
+                if ($marketplace_receipt->total < $total_paid) {
+                    // $errors[] = array('INVOICE ' . $marketplace_receipt->code . ' EXCEED THE TOTAL PAYMENT : skipping');
+                    // continue;
+                }
+                // ADD JOURNAL DEBET
+                if ($marketplace_receipt->payment) {
+                    $journal = new Journal;
+                    $journal->coa_id = $request->mp_coa_payment;
+                    $journal->name = Journal::PREJOURNAL['MARKETPLACE_RECEIPT'] . $marketplace_receipt->code;
+                    $journal->debet = $marketplace_receipt->payment;
+                    $journal->status = Journal::STATUS['UNPOST'];
+                    $journal->created_at = $marketplace_receipt->created_at;
+                    $journal->save();
+                }
+                if ($marketplace_receipt->cost_1) {
+                    $journal = new Journal;
+                    $journal->coa_id = $request->mp_coa_cost1;
+                    $journal->name = Journal::PREJOURNAL['MARKETPLACE_RECEIPT'] . $marketplace_receipt->code;
+                    $journal->debet = $marketplace_receipt->cost_1;
+                    $journal->status = Journal::STATUS['UNPOST'];
+                    $journal->created_at = $marketplace_receipt->created_at;
+                    $journal->save();
+                }
+                if ($marketplace_receipt->cost_2) {
+                    $journal = new Journal;
+                    $journal->coa_id = $request->mp_coa_cost2;
+                    $journal->name = Journal::PREJOURNAL['MARKETPLACE_RECEIPT'] . $marketplace_receipt->code;
+                    $journal->debet = $marketplace_receipt->cost_2;
+                    $journal->status = Journal::STATUS['UNPOST'];
+                    $journal->created_at = $marketplace_receipt->created_at;
+                    $journal->save();
+                }
+                if ($marketplace_receipt->cost_3) {
+                    $journal = new Journal;
+                    $journal->coa_id = $request->mp_coa_cost3;
+                    $journal->name = Journal::PREJOURNAL['MARKETPLACE_RECEIPT'] . $marketplace_receipt->code;
+                    $journal->debet = $marketplace_receipt->cost_3;
+                    $journal->status = Journal::STATUS['UNPOST'];
+                    $journal->created_at = $marketplace_receipt->created_at;
+                    $journal->save();
+                }
+                // ADD JOURNAL CREDIT
+                $journal = new Journal;
+                $journal->coa_id = $request->mp_coa_credit;
+                $journal->name = Journal::PREJOURNAL['MARKETPLACE_RECEIPT'] . $marketplace_receipt->code;
+                $journal->credit = $marketplace_receipt->payment + $marketplace_receipt->cost_1 + $marketplace_receipt->cost_2 + $marketplace_receipt->cost_3;
+                $journal->status = Journal::STATUS['UNPOST'];
+                $journal->created_at = $marketplace_receipt->created_at;
+                $journal->save();
+
+                // ADD MR-DETAIL
+                $mr_detail = new MarketplaceReceiptDetail;
+                $mr_detail->marketplace_receipt_id = $marketplace_receipt->id;
+                $mr_detail->payment = $marketplace_receipt->payment;
+                $mr_detail->cost = $marketplace_receipt->cost_1 + $marketplace_receipt->cost_2 + $marketplace_receipt->cost_3;
+                if ($marketplace_receipt->payment) {
+                    $mr_detail->payment_coa = $request->coa_payment;
+                }
+                if ($marketplace_receipt->cost_1) {
+                    $mr_detail->cost_1 = $marketplace_receipt->cost_1;
+                    $mr_detail->cost_1_coa = $request->coa_cost_1;
+                }
+                if ($marketplace_receipt->cost_2) {
+                    $mr_detail->cost_2 = $marketplace_receipt->cost_2;
+                    $mr_detail->cost_2_coa = $request->coa_cost_2;
+                }
+                if ($marketplace_receipt->cost_3) {
+                    $mr_detail->cost_3 = $marketplace_receipt->cost_3;
+                    $mr_detail->cost_3_coa = $request->coa_cost_3;
+                }
+                $mr_detail->credit_coa = $request->mp_coa_credit;
+                $mr_detail->created_at = $marketplace_receipt->created_at;
+                $mr_detail->save();
+
+                // UPDATE MR
+                $mr = MarketplaceReceipt::find($marketplace_receipt->id);
+                $mr->paid = $total_paid;
+                if ($total_paid < $marketplace_receipt->total) {
+                    $mr->payment = 0;
+                    $mr->cost_1 = null;
+                    $mr->cost_2 = null;
+                    $mr->cost_3 = null;
+                    $mr->status = 0;
+                } else {
+                    $mr->status = 1;
+                }
+
+                $mr->save();
+
+                // UPDATE KODE PELUNASAN IN SALES ORDER TABLE
+                $sales_order = SalesOrder::where('code', $marketplace_receipt->code)->first();
+                $coa = Coa::find($request->mp_coa_credit);
+                if($sales_order && $coa && $coa->kode_pelunasan) {
+                    $sales_order->kode_pelunasan = $coa->kode_pelunasan . Carbon::parse($marketplace_receipt->created_at)->format('Y/m/d');
+                    $sales_order->save();
+                }
+            }
+        }
+
+
     }
 
     public function show($id)
@@ -377,6 +531,7 @@ class CBReceiptInvoiceController extends Controller
             try {
                 $failed = '';
 
+                // 
                 $customer_coa = CustomerCoa::where('customer_id', $receipt_invoice->customer_id)
                                 ->where('type', $superuser->type)
                                 ->where('branch_office_id', $superuser->branch_office_id)
@@ -404,10 +559,10 @@ class CBReceiptInvoiceController extends Controller
                     }
                 }
 
-                if($failed) {
-                    $response['failed'] = $failed;
-                    return $this->response(200, $response);
-                } else {
+                // if($failed) {
+                //     $response['failed'] = $failed;
+                //     return $this->response(200, $response);
+                // } else {
                     $receipt_invoice->status = CBReceiptInvoice::STATUS['ACC'];
                     $receipt_invoice->save();
                     
@@ -415,7 +570,7 @@ class CBReceiptInvoiceController extends Controller
 
                     $response['redirect_to'] = '#datatable';
                     return $this->response(200, $response);
-                }
+                // }
             } catch (\Exception $e) {
                 DB::rollback();
                 return $this->response(400, $response);

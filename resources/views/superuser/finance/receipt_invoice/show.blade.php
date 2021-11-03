@@ -30,7 +30,7 @@
         <div class="form-control-plaintext">{{ $receipt_invoice->coa->name }}</div>
       </div>
     </div>
-    <div class="form-group row">
+    {{-- <div class="form-group row">
       <label class="col-md-3 col-form-label text-right" for="customer">Customer</label>
       <div class="col-md-7">
         <div class="form-control-plaintext">{{ $receipt_invoice->customer->name }}</div>
@@ -47,7 +47,7 @@
       <div class="col-md-7">
         <div class="form-control-plaintext">{{ $receipt_invoice->description }}</div>
       </div>
-    </div>
+    </div> --}}
     <div class="form-group row">
       <label class="col-md-3 col-form-label text-right" for="status">Status</label>
       <div class="col-md-7">

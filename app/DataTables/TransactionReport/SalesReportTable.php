@@ -39,6 +39,8 @@ class SalesReportTable extends Table
 
 
             ->leftJoin('marketplace_receipt', 'sales_order.code', '=', 'marketplace_receipt.code')
+
+            // ->leftJoin('master_stores', 'master_stores.code', '=', 'sales_order.code')
             ->leftJoin('marketplace_receipt_detail', 'marketplace_receipt.id', '=', 'marketplace_receipt_detail.marketplace_receipt_id')
 
 
@@ -60,7 +62,7 @@ class SalesReportTable extends Table
                 sales_order.order_date as order_date,
                 sales_order.kode_pelunasan,
                 marketplace_order,
-                store_name,
+                sales_order.store_name,
 
                 (
                 CASE 

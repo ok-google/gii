@@ -163,35 +163,35 @@ $(document).ready(function() {
       };
 
       total = api
-          .column( 9 )
-          .data()
-          .reduce( function (a, b) {
-              return intVal(a) + intVal(b);
-          }, 0 );
-
-      payment = api
           .column( 10 )
           .data()
           .reduce( function (a, b) {
               return intVal(a) + intVal(b);
           }, 0 );
 
-      cost_1 = api
+      payment = api
           .column( 11 )
           .data()
           .reduce( function (a, b) {
               return intVal(a) + intVal(b);
           }, 0 );
 
-      cost_2 = api
+      cost_1 = api
           .column( 12 )
           .data()
           .reduce( function (a, b) {
               return intVal(a) + intVal(b);
           }, 0 );
 
-      cost_3 = api
+      cost_2 = api
           .column( 13 )
+          .data()
+          .reduce( function (a, b) {
+              return intVal(a) + intVal(b);
+          }, 0 );
+
+      cost_3 = api
+          .column( 14 )
           .data()
           .reduce( function (a, b) {
               return intVal(a) + intVal(b);

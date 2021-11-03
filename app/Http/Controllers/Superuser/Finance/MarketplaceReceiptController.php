@@ -86,8 +86,8 @@ class MarketplaceReceiptController extends Controller
 
                     $total_paid = $marketplace_receipt->payment + $marketplace_receipt->cost_1 + $marketplace_receipt->cost_2 + $marketplace_receipt->cost_3 + $marketplace_receipt->paid;
                     if ($marketplace_receipt->total < $total_paid) {
-                        $errors[] = array('INVOICE ' . $marketplace_receipt->code . ' EXCEED THE TOTAL PAYMENT : skipping');
-                        continue;
+                        // $errors[] = array('INVOICE ' . $marketplace_receipt->code . ' EXCEED THE TOTAL PAYMENT : skipping');
+                        // continue;
                     }
                     // ADD JOURNAL DEBET
                     if ($marketplace_receipt->payment) {
