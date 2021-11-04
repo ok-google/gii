@@ -233,7 +233,17 @@
               return {
                 text: item.code,
                 id: item.id,
+<<<<<<< Updated upstream
                 total: item.total
+=======
+<<<<<<< HEAD
+                total: item.total,
+                marketplace: item.marketplace,
+                grand_total: item.grand_total
+=======
+                total: item.total
+>>>>>>> main
+>>>>>>> Stashed changes
               }
           })
         };
