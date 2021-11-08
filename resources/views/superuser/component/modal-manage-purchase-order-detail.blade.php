@@ -28,18 +28,6 @@
               <form action="{{ $import_url ?? '' }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 
-                <div class="form-group row">
-                  <label class="col-md-4 col-form-label text-left" for="store_name">Store Name <span class="text-danger">*</span></label>
-                  <div class="col-md-8">
-                    <input type="text" class="form-control" id="store_name" name="store_name" required>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-4 col-form-label text-left" for="store_name">Kode Transaksi <span class="text-danger">*</span></label>
-                  <div class="col-md-8">
-                    <input type="text" class="form-control" id="kode_transaksi" name="kode_transaksi" required>
-                  </div>
-                </div>
                 <div class="custom-file">
                   <input type="file" class="custom-file-input" id="import_file" name="import_file" data-toggle="custom-file-input" required>
                   <label class="custom-file-label" for="import_file">Choose file</label>
