@@ -119,36 +119,26 @@
   <script type="text/javascript">
     var start_date = {{ \Carbon\Carbon::now()->format('Y-m-d') }};
     var end_date = {{ \Carbon\Carbon::now()->format('Y-m-d') }};
-
     var print_date = "SR-{{ \Carbon\Carbon::now()->format('dmy') }}-{{ \Carbon\Carbon::now()->format('dmy') }}";
-
     function format(d) {
       return d['detail'];
     }
-
     $(document).ready(function() {
       $('.js-select2').select2()
-
       $('#datesearch').daterangepicker({
         autoUpdateInput: false
       });
-
       $('#datesearch').data('daterangepicker').setStartDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
       $('#datesearch').data('daterangepicker').setEndDate('{{ \Carbon\Carbon::now()->format('m/d/Y') }}');
-
       $('#datesearch').on('apply.daterangepicker', function(ev, picker) {
         $(this).val(picker.startDate.format('DD/MM/YYYY') + ' - ' + picker.endDate.format('DD/MM/YYYY'));
         start_date = picker.startDate.format('YYYY-MM-DD');
         end_date = picker.endDate.format('YYYY-MM-DD');
-
         print_date = "SR-"+picker.startDate.format('DDMMYY')+"-"+picker.endDate.format('DDMMYY');
       });
-
       let datatableUrl = '{{ route('superuser.transaction_report.sales_report.json') }}';
-
       let firstDatatableUrl = datatableUrl + '?start_date=' + start_date + '&end_date=' + end_date +
         '&marketplace=all&status=all';
-
       var datatable = $('.datatable').DataTable({
         language: {
           processing: "<span class='fa-stack fa-lg'>\n\
@@ -176,7 +166,6 @@
           {
             data: 'create_date',
             searchable: false
-
           },
           {
             data: 'order_date',
@@ -192,9 +181,10 @@
           {
             data: 'store_name',
             name: 'sales_order.store_name'
-          },
+          },          
           {
             data: 'customer_name',
+            name: 'sales_order.customer_marketplace'
           },
           {
             data: 'code',
@@ -273,23 +263,18 @@
           // }
         ]
       });
-
       $('#btn-filter').on('click', function(e) {
         e.preventDefault();
-
         var marketplace = $('#marketplace').val();
         var status = $('#status').val();
-
         let newDatatableUrl = datatableUrl + '?start_date=' + start_date + '&end_date=' + end_date +
           '&marketplace=' + marketplace + '&status=' + status;
         datatable.ajax.url(newDatatableUrl).load();
       })
-
       // Add event listener for opening and closing details
       $('.datatable tbody').on('click', 'td.details-control', function() {
         var tr = $(this).closest('tr');
         var row = datatable.row(tr);
-
         if (row.child.isShown()) {
           // This row is already open - close it
           row.child.hide();
@@ -300,7 +285,6 @@
           tr.addClass('shown');
         }
       });
-
       function newexportaction(e, dt, button, config) {
         var self = this;
         var oldStart = dt.settings()[0]._iDisplayStart;
@@ -342,12 +326,9 @@
         // Requery the server with the new one-time export settings
         dt.ajax.reload();
       }
-
       function getExportFileName(){
         return print_date;
       }
-
     });
-
   </script>
 @endpush

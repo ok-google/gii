@@ -13,7 +13,7 @@
         <div class="block-content pb-20">
           <div class="row">
             <div class="col-md-12">
-              <form class="ajax" data-action="{{ route('superuser.finance.marketplace_receipt.store') }}" data-type="POST" enctype="multipart/form-data">
+              <form class="ajax" id="form-mr" data-action="{{ route('superuser.finance.marketplace_receipt.store') }}" data-type="POST" enctype="multipart/form-data">
                 <span class="font-size-h5">Debet Transaction</span>
                 <div class="form-group row">
                   <label class="col-md-3 col-form-label text-center">Transaction</label>
@@ -87,7 +87,11 @@
                     </select>
                   </div>
                 </div>
+                @if($disable_mr??false)
+                <button type="button" class="btn mt-10 w-100 btn-alt-primary" id="process-mp-receipt">Process</button>
+                @else
                 <button type="submit" class="btn mt-10 w-100 btn-alt-primary">Process</button>
+                @endif
               </form>
             </div>
           </div>
@@ -104,6 +108,26 @@
   $(document).ready(function() {
     $('.js-select2').select2()
     $('.select2-container').css("width","100%")
+    @if($disable_mr??false)
+    $('.js-select2').on('select2:select', function (e) {
+      var name = $(this).attr('name');
+      var val = $(this).select2('data')[0]['id'];
+      
+      //assign to input
+      if(name == 'coa_payment'){
+        $("#mp_coa_payment").val(val);
+      }else if(name == 'coa_cost_1'){
+        $("#mp_coa_cost1").val(val);
+      }else if(name == 'coa_cost_2'){
+        $("#mp_coa_cost2").val(val);
+      }else if(name == 'coa_cost_3'){
+        $("#mp_coa_cost3").val(val);
+      }else if(name == 'coa_total'){
+        $("#mp_coa_credit").val(val);
+      }
+      // console.log(val[0]['id']);
+    });
+    @endif
   });
 </script>
 @endpush

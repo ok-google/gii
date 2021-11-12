@@ -280,8 +280,8 @@ class SalesOrderController extends Controller
             }
 
             $duplicate_product = [];
-            $duplicate = false;
-            $out_of_stock = false;
+            $duplicate = true;
+            $out_of_stock = true;
             foreach ($sales_order->sales_order_details as $detail) {
                 if(in_array($detail->product_id, $duplicate_product)) {
                     $duplicate = true;

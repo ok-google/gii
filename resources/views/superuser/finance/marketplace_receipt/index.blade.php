@@ -106,7 +106,6 @@
 <script type="text/javascript">
 $(document).ready(function() {
   let datatableUrl = '{{ route('superuser.finance.marketplace_receipt.json') }}';
-
   $('#datatable').DataTable({
     processing: true,
     serverSide: true,
@@ -161,45 +160,38 @@ $(document).ready(function() {
               typeof i === 'number' ?
                   i : 0;
       };
-
       total = api
-          .column( 9 )
-          .data()
-          .reduce( function (a, b) {
-              return intVal(a) + intVal(b);
-          }, 0 );
-
-      payment = api
           .column( 10 )
           .data()
           .reduce( function (a, b) {
               return intVal(a) + intVal(b);
           }, 0 );
-
-      cost_1 = api
+      payment = api
           .column( 11 )
           .data()
           .reduce( function (a, b) {
               return intVal(a) + intVal(b);
           }, 0 );
-
-      cost_2 = api
+      cost_1 = api
           .column( 12 )
           .data()
           .reduce( function (a, b) {
               return intVal(a) + intVal(b);
           }, 0 );
-
-      cost_3 = api
+      cost_2 = api
           .column( 13 )
           .data()
           .reduce( function (a, b) {
               return intVal(a) + intVal(b);
           }, 0 );
-
+      cost_3 = api
+          .column( 14 )
+          .data()
+          .reduce( function (a, b) {
+              return intVal(a) + intVal(b);
+          }, 0 );
       var from_date = $('#from_date').val();
       var to_date   = $('#to_date').val();
-
       var numFormat = $.fn.dataTable.render.number( '\.', ',', 2).display;
       // Update footer
       $( '#total' ).html('Rp. '+numFormat(total));
@@ -227,7 +219,6 @@ $(document).ready(function() {
         $('#cost_2_modal').html('Rp. '+numFormat(cost_2));
         $('#cost_3_modal').html('Rp. '+numFormat(cost_3));
         $('#total_modal').html('Rp. '+numFormat(payment+cost_1+cost_2+cost_3));
-
         if(cost_1 == null || cost_1 == 0) {
           $('#coa_cost_1').prop('required',false);
         }
