@@ -531,31 +531,33 @@ class CBReceiptInvoiceController extends Controller
             try {
                 $failed = '';
 
-                // 
-                $customer_coa = CustomerCoa::where('customer_id', $receipt_invoice->customer_id)
+                foreach ($receipt_invoice->details as $detail) {
+                
+                    $customer_coa = CustomerCoa::where('customer_id', $detail->sales_order->customer_id)
                                 ->where('type', $superuser->type)
                                 ->where('branch_office_id', $superuser->branch_office_id)
                                 ->first();
-                if($customer_coa == null OR $customer_coa->coa_id == null) {
-                    $failed = 'Supplier Setting is not set, please contact your Administrator!';
-                } else {
-                    foreach ($receipt_invoice->details as $detail) {
-                        // ADD JOURNAL
-                        $journal = new Journal;
-                        $journal->coa_id = $receipt_invoice->coa_id;
-                        $journal->name = Journal::PREJOURNAL['CB_RECEIPT_INV'].$detail->sales_order->code;
-                        $journal->debet = $detail->paid;
-                        $journal->status = Journal::STATUS['UNPOST'];
-                        $journal->created_at = $receipt_invoice->select_date;
-                        $journal->save();
-
-                        $journal = new Journal;
-                        $journal->coa_id = $customer_coa->coa_id;
-                        $journal->name = Journal::PREJOURNAL['CB_RECEIPT_INV'].$detail->sales_order->code;
-                        $journal->credit = $detail->paid;
-                        $journal->status = Journal::STATUS['UNPOST'];
-                        $journal->created_at = $receipt_invoice->select_date;
-                        $journal->save();
+                    if($customer_coa == null OR $customer_coa->coa_id == null) {
+                        $failed = 'Supplier Setting is not set, please contact your Administrator!';
+                    } else {
+                        if($detail->sales_order->marketplace_order == 0){
+                            // ADD JOURNAL
+                            $journal = new Journal;
+                            $journal->coa_id = $receipt_invoice->coa_id;
+                            $journal->name = Journal::PREJOURNAL['CB_RECEIPT_INV'].$detail->sales_order->code;
+                            $journal->debet = $detail->paid;
+                            $journal->status = Journal::STATUS['UNPOST'];
+                            $journal->created_at = $receipt_invoice->select_date;
+                            $journal->save();
+    
+                            $journal = new Journal;
+                            $journal->coa_id = $customer_coa->coa_id;
+                            $journal->name = Journal::PREJOURNAL['CB_RECEIPT_INV'].$detail->sales_order->code;
+                            $journal->credit = $detail->paid;
+                            $journal->status = Journal::STATUS['UNPOST'];
+                            $journal->created_at = $receipt_invoice->select_date;
+                            $journal->save();
+                        }
                     }
                 }
 

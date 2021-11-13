@@ -171,7 +171,8 @@
 <script src="{{ asset('utility/superuser/js/form.js') }}"></script>
 <script>
   $(document).ready(function () {
-    $('.js-select2').select2()
+    $('.js-select2').select2();
+    let jml_online = 0;
 
     $("#submit-table").click(function(e){
       // e.preventDefault();
@@ -207,7 +208,11 @@
       $("#mp_cost3").val(cost_3);
       $("#mp_total").val(total);
       
-      $("#modal-manage-mr").modal('show');
+      if(jml_online > 0){
+        $("#modal-manage-mr").modal('show');
+      }else{
+        $("#form-ajax").submit();
+      }
     });
 
     $("#form-mr").submit(false);
@@ -293,6 +298,7 @@
         return {
           results: $.map(data, function (item) {
             //console.log(item)
+
               return {
                 text: item.code,
                 id: item.id,
@@ -309,6 +315,7 @@
       // console.log(data)
       var total = data.total;
       $('#select_total').val(total);
+
     });
 
     var table = $('#datatable').DataTable({
@@ -347,6 +354,12 @@
         alert('Invoice is already in the table.')
       } else {
         if(select_so[0]['id']) {
+          
+          if(select_so[0]['marketplace'] > 0){
+            jml_online += parseInt(1);
+            console.log('in', jml_online);
+          }
+
           var type = '<select class="form-control type" name="type[]"><option value=""></option><option value="payment">Payment</option><option value="cost_1">Cost 1</option><option value="cost_2">Cost 2</option><option value="cost_3">Cost 3</option></select>';
           if(select_so[0]['marketplace'] == 0){
             type = '';
@@ -357,7 +370,7 @@
                       '<input type="number" class="form-control" name="total[]" value="'+total+'" required readonly>',
                       '<input type="number" class="form-control paid" name="paid[]" min="1" max="'+total+'" value="" required>',
                       type,
-                      '<a href="#" class="row-delete"><button type="button" class="btn btn-sm btn-circle btn-alt-danger" title="Delete"><i class="fa fa-trash"></i></button></a>'
+                      '<a href="#" class="row-delete" dt-marketplace="'+select_so[0]['marketplace']+'"><button type="button" class="btn btn-sm btn-circle btn-alt-danger" title="Delete"><i class="fa fa-trash"></i></button></a>'
                     ]).draw( false );
           counter++;
 
@@ -370,7 +383,13 @@
 
     $('#datatable tbody').on( 'click', '.row-delete', function (e) {
       e.preventDefault();
+      var mp = $(this).attr('dt-marketplace');
       table.row( $(this).parents('tr') ).remove().draw();
+
+      if(mp > 0){
+        jml_online -= parseInt(1);
+        console.log('out', jml_online);
+      }
 
       grandTotal()
     });
