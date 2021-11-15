@@ -1,4 +1,3 @@
-
 function convertDateToSQL(obj){
 
   var newSD = new Date(obj);
@@ -7,6 +6,7 @@ function convertDateToSQL(obj){
   var date = (newSD.getDate().toString().length == 1 ? "0"+newSD.getDate() : newSD.getDate());
   return year+"-"+month+"-"+date;
 }
+
 function deleteConfirmation(delete_url, quickRedirectBack = false) {
   Swal.fire({
     title: 'Are you sure?',

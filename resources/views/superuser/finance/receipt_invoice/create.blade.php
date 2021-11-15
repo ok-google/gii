@@ -8,7 +8,7 @@
 </nav>
 <div id="alert-block"></div>
 
-<form class="ajax" data-action="{{ route('superuser.finance.receipt_invoice.store') }}" data-type="POST" enctype="multipart/form-data">
+<form class="ajax" id="form-ajax" data-action="{{ route('superuser.finance.receipt_invoice.store') }}" data-type="POST" enctype="multipart/form-data">
   <div class="block">
     <div class="block-header block-header-default">
       <h3 class="block-title">Create Cash/Bank Receipt (Inv)</h3>
@@ -95,15 +95,24 @@
             <th class="text-center">Invoice</th>
             <th class="text-center">Total</th>
             <th class="text-center">Paid</th>
+            <th class="text-center">Type Payment</th>
             <th class="text-center"></th>
           </tr>
         </thead>
         <tbody>
         </tbody>
+        <tbody>
+          <tr>
+            <td >Grand Total</td>
+            <td><input type="text" class="form-control" id="subtotal_total" name="subtotal_total" readonly></td>
+            <td><input type="text" class="form-control" id="subtotal_paid" name="subtotal_paid" readonly></td>
+            <td colspan="2">&nbsp;</td>
+          </tr>
+        </tbody>
       </table>
-      <div class="form-group row justify-content-end">
-        <label class="col-md-3 col-form-label text-right" for="subtotal_total">Grand Total</label>
-        <div class="col-md-3">
+      {{-- <div class="form-group row ">
+        <label class="col-md-2 col-form-label text-right" for="subtotal_total">Grand Total</label>
+        <div class="col-md-3 ml-0">
           <input type="text" class="form-control" id="subtotal_total" name="subtotal_total" readonly>
         </div>
         <div class="col-md-3">
@@ -111,7 +120,7 @@
         </div>
         <div class="col-md-1">
         </div>
-      </div>
+      </div> --}}
       <hr>
       <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="total_receipt">Total Payment</label>
@@ -133,31 +142,84 @@
           </a>
         </div>
         <div class="col-md-6 text-right">
-          <button type="submit" class="btn bg-gd-corporate border-0 text-white" id="submit-table">
+          <button type="button" class="btn bg-gd-corporate border-0 text-white" id="submit-table">
             Submit <i class="fa fa-arrow-right ml-10"></i>
           </button>
         </div>
       </div>
     </div>
   </div>
+  <input type="hidden" id="mp_payment" name="mp_payment" value="">
+  <input type="hidden" id="mp_cost1" name="mp_cost1" value="">
+  <input type="hidden" id="mp_cost2" name="mp_cost2" value="">
+  <input type="hidden" id="mp_cost3" name="mp_cost3" value="">
+  <input type="hidden" id="mp_total" name="mp_total" value=""> 
+  <input type="hidden" id="mp_coa_payment" name="mp_coa_payment" value="">
+  <input type="hidden" id="mp_coa_cost1" name="mp_coa_cost1" value="">
+  <input type="hidden" id="mp_coa_cost2" name="mp_coa_cost2" value="">
+  <input type="hidden" id="mp_coa_cost3" name="mp_coa_cost3" value="">
+  <input type="hidden" id="mp_coa_credit" name="mp_coa_credit" value=""> 
 </form>
 @endsection
 
 @include('superuser.asset.plugin.datatables')
 @include('superuser.asset.plugin.select2')
 
+@include('superuser.component.modal-manage-marketplace-receipt')
+
 @push('scripts')
 <script src="{{ asset('utility/superuser/js/form.js') }}"></script>
 <script>
   $(document).ready(function () {
-    $('.js-select2').select2()
-
+    $('.js-select2').select2();
+    let jml_online = 0;
+    $("#submit-table").click(function(e){
+      // e.preventDefault();
+      // alert("asd");
+      var type_cost = $(".type");
+      let payment = 0; let cost_1 = 0; let cost_2 = 0; let cost_3 = 0;
+      type_cost.each(function(){
+        var ths = $(this).val();
+        var paid = $(this).parent().parent().find(".paid").val();
+        if(ths == "payment"){
+          payment += parseFloat(paid);
+        }else if(ths == "cost_1"){
+          cost_1 += parseFloat(paid);
+        }else if(ths == "cost_2"){
+          cost_2 += parseFloat(paid);
+        }else if(ths == "cost_3"){
+          cost_3 += parseFloat(paid);
+        }
+      });
+      var total = parseFloat(payment)+parseFloat(cost_1)+parseFloat(cost_2)+parseFloat(cost_3);
+      //assign to modal
+      $("#payment_modal").html(payment);
+      $("#cost_1_modal").html(cost_1);
+      $("#cost_2_modal").html(cost_2);
+      $("#cost_3_modal").html(cost_3);
+      $("#total_modal").html(total);
+      //assign to input
+      $("#mp_payment").val(payment);
+      $("#mp_cost1").val(cost_1);
+      $("#mp_cost2").val(cost_2);
+      $("#mp_cost3").val(cost_3);
+      $("#mp_total").val(total);
+      
+      if(jml_online > 0){
+        $("#modal-manage-mr").modal('show');
+      }else{
+        $("#form-ajax").submit();
+      }
+    });
+    $("#form-mr").submit(false);
+    $("#process-mp-receipt").click(function(){
+      $("#form-ajax").submit();
+    })
     function addLoadSpiner(el) {
       if (el.length > 0) {
         if ($("#img_" + el[0].id).length > 0) {
           $("#img_" + el[0].id).css('display', 'block');
-        }               
-        else {
+        }else {
           var img = $('<img class="ddloading">');
           img.attr('id', "img_" + el[0].id);
           img.attr('src', 'http://ajaxloadingimages.net/gif/image?imageid=aero-spinner&forecolor=000000&backcolor=ffffff&transparent=true');
@@ -167,7 +229,6 @@
         el.prop("disabled", true);               
       }
     }
-
     function hideLoadSpinner(el) {
       if (el.length > 0) {
         if ($("#img_" + el[0].id).length > 0) {
@@ -178,7 +239,6 @@
         }
       }
     }
-
     $('#customer').on('select2:select', function (e) {
       table.clear().draw();
       // $.ajax({
@@ -200,18 +260,15 @@
       //     if (json.code == 200) {
       //       let ph = new Option('', '', false, false);
       //       $('#select_so').append(ph).trigger('change');
-
       //       for (i = 0; i < Object.keys(json.data).length; i++) {
       //         let newOption = '<option value="'+ json.data[i].so_id +'" data-total="'+ json.data[i].total +'">'+ json.data[i].code +'</option>';
       //         $('#select_so').append(newOption).trigger('change');
       //       }
-
       //       $('#address').val(json.address);
       //     }
       //   }
       // });
     });
-
     $('#select_so').select2({
     allowClear: true,
     placeholder: 'Select Invoice',
@@ -233,17 +290,9 @@
               return {
                 text: item.code,
                 id: item.id,
-<<<<<<< Updated upstream
-                total: item.total
-=======
-<<<<<<< HEAD
                 total: item.total,
                 marketplace: item.marketplace,
                 grand_total: item.grand_total
-=======
-                total: item.total
->>>>>>> main
->>>>>>> Stashed changes
               }
           })
         };
@@ -255,7 +304,6 @@
       var total = data.total;
       $('#select_total').val(total);
     });
-
     var table = $('#datatable').DataTable({
         paging: false,
         bInfo : false,
@@ -265,6 +313,7 @@
           {name: 'invoice', orderable: false},
           {name: 'total', orderable: false, searcable: false, width: "25%"},
           {name: 'paid', orderable: false, searcable: false, width: "25%"},
+          {name: 'type', orderable: false, searcable: false, width: "25%"},
           {name: 'action', orderable: false, searcable: false, width: "9%"}
         ],
         'order' : [[0,'desc']]
@@ -275,55 +324,63 @@
     $('#add').on( 'click', function (e) {
       e.preventDefault();
       var select_so = $('#select_so').select2('data');
-
+      // console.log('aaa',select_so[0]['marketplace'])
+      // return;
       var name_credit = $('#name_credit').val() ?? '';
       var total = $('#select_total').val() ?? '';
-
       var duplicate = 0;
       $('input[name="so_id[]"]').each( function  () {
         if($(this).val() == select_so[0]['id']) {
           duplicate = 1;
         } 
       });
-
       if(duplicate == 1) {
         alert('Invoice is already in the table.')
       } else {
         if(select_so[0]['id']) {
+          
+          if(select_so[0]['marketplace'] > 0){
+            jml_online += parseInt(1);
+            console.log('in', jml_online);
+          }
+          var type = '<select class="form-control type" name="type[]"><option value=""></option><option value="payment">Payment</option><option value="cost_1">Cost 1</option><option value="cost_2">Cost 2</option><option value="cost_3">Cost 3</option></select>';
+          if(select_so[0]['marketplace'] == 0){
+            type = '';
+          }
           table.row.add([
                       counter,
-                      '<input type="hidden" name="so_id[]" value="'+select_so[0]['id']+'"><span>'+select_so[0]['text']+'</span>',
+                      '<input type="hidden" name="grand_total[]" value="'+select_so[0]['grand_total']+'"><input type="hidden" name="inv_code[]" value="'+select_so[0]['text']+'"><input type="hidden" name="marketplace[]" value="'+select_so[0]['marketplace']+'"><input type="hidden" name="so_id[]" value="'+select_so[0]['id']+'"><span>'+select_so[0]['text']+'</span>',
                       '<input type="number" class="form-control" name="total[]" value="'+total+'" required readonly>',
-                      '<input type="number" class="form-control" name="paid[]" min="1" max="'+total+'" value="" required>',
-                      '<a href="#" class="row-delete"><button type="button" class="btn btn-sm btn-circle btn-alt-danger" title="Delete"><i class="fa fa-trash"></i></button></a>'
+                      '<input type="number" class="form-control paid" name="paid[]" min="1" max="'+total+'" value="" required>',
+                      type,
+                      '<a href="#" class="row-delete" dt-marketplace="'+select_so[0]['marketplace']+'"><button type="button" class="btn btn-sm btn-circle btn-alt-danger" title="Delete"><i class="fa fa-trash"></i></button></a>'
                     ]).draw( false );
           counter++;
-
           $('#select_total').val('')
           $('#select_so').val(null).trigger("change")
           grandTotal()
         }
       } 
     });
-
     $('#datatable tbody').on( 'click', '.row-delete', function (e) {
       e.preventDefault();
+      var mp = $(this).attr('dt-marketplace');
       table.row( $(this).parents('tr') ).remove().draw();
-
+      if(mp > 0){
+        jml_online -= parseInt(1);
+        console.log('out', jml_online);
+      }
       grandTotal()
     });
-
     $('#datatable tbody').on( 'keyup', 'input[name="paid[]"]', function (e) {
       grandTotal();
     });
-
     function grandTotal() {
       var subtotal_total = 0;
       $('input[name="total[]"]').each(function(){
         subtotal_total += Number($(this).val());
       });
       $('#subtotal_total').val(subtotal_total);
-
       var subtotal_paid = 0;
       $('input[name="paid[]"]').each(function(){
         subtotal_paid += Number($(this).val());
@@ -332,7 +389,6 @@
       $('#total_receipt').val('Rp. '+subtotal_paid.toLocaleString('id-ID', {maximumFractionDigits:2}));
       
     }
-
   })
 </script>
 @endpush
