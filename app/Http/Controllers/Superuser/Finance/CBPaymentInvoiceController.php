@@ -12,6 +12,7 @@ use App\Entities\Accounting\JournalPeriode;
 use App\Entities\Master\SupplierCoa;
 use App\Entities\Master\Supplier;
 use App\Entities\Purchasing\PurchaseOrder;
+use App\Entities\Purchasing\Receiving;
 use App\Repositories\MasterRepo;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -38,7 +39,7 @@ class CBPaymentInvoiceController extends Controller
 
             $ppb = PurchaseOrder::where('supplier_id', $supplier->id)
                                 ->where('status', PurchaseOrder::STATUS['ACC'])
-                                ->where('transaction_type', PurchaseOrder::TRANSACTION_TYPE['Non Tunai'])
+                                
                                 ->whereIn('warehouse_id', MasterRepo::warehouses_by_category(1)->pluck('id')->toArray())
                                 ->get();
 
@@ -70,8 +71,90 @@ class CBPaymentInvoiceController extends Controller
                     }
                 }
             }
-
+            
+            // $pbm = DB::table('receiving')
+            //         ->leftJoin(DB::raw('(select aa.receiving_id, cc.supplier_id, sum(aa.total_quantity_ri*bb.unit_price) as total
+            //         from receiving_detail aa
+            //         left join ppb_detail bb on aa.ppb_detail_id=bb.id    
+            //         left join ppb cc on bb.ppb_id=cc.id
+            //         group by aa.receiving_id, cc.supplier_id) as b'), 
+            //         function($join)
+            //         {
+            //             $join->on('receiving.id', '=', 'b.receiving_id');
+            //         })->where('b.supplier_id', $request->id)->select(DB::raw('receiving.id, receiving.code, b.total'));
+            
+            // foreach($pbm as $v){
+            //     $data[] = [
+            //         'pbm_id'     => $v->id,
+            //         'code'       => $v->code,
+            //         'total'      => $v->total,
+            //     ];
+            // }
             return response()->json(['code'=> 200, 'data' => $data, 'address' => $supplier->address]);
+        }
+    }
+
+    public function get_pbm(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = [];
+// dd($request->id);
+            // $supplier = Supplier::find($request->id);
+
+            // $ppb = PurchaseOrder::where('supplier_id', $supplier->id)
+            //                     ->where('status', PurchaseOrder::STATUS['ACC'])
+                                
+            //                     ->whereIn('warehouse_id', MasterRepo::warehouses_by_category(1)->pluck('id')->toArray())
+            //                     ->get();
+
+            // foreach ($ppb as $key => $value) {
+            //     $checkIfActive = CBPaymentInvoiceDetail::where('ppb_id', $value->id)
+            //                     ->whereHas('payment_invoice', function($query) {
+            //                         $query->where('status', CBPaymentInvoice::STATUS['ACTIVE']);
+            //                     })
+            //                     ->first();
+            //     if($checkIfActive == null) {
+            //         $total = 0;
+            //         $total_paid = CBPaymentInvoiceDetail::where('ppb_id', $value->id)
+            //                     ->whereHas('payment_invoice', function($query) {
+            //                         $query->where('status', CBPaymentInvoice::STATUS['ACC']);
+            //                     })
+            //                     ->sum('paid');
+            //         if($total_paid) {
+            //             $total = $value->grand_total_idr - $total_paid;
+            //         } else {
+            //             $total = $value->grand_total_idr;
+            //         }
+
+            //         if($total > 0) {
+            //             $data[] = [
+            //                 'ppb_id'     => $value->id,
+            //                 'code'       => $value->code,
+            //                 'total'      => $total,
+            //             ];
+            //         }
+            //     }
+            // }
+            $pbm = DB::table('receiving')
+            ->leftJoin(DB::raw('(select aa.receiving_id, cc.supplier_id, sum(aa.total_quantity_ri*bb.unit_price) as total
+            from receiving_detail aa
+            left join ppb_detail bb on aa.ppb_detail_id=bb.id    
+            left join ppb cc on bb.ppb_id=cc.id
+            group by aa.receiving_id, cc.supplier_id) as b'), 
+            function($join)
+            {
+                $join->on('receiving.id', '=', 'b.receiving_id');
+            })->where('b.supplier_id', $request->id)->select(DB::raw('receiving.id, receiving.code, b.total'))->get();
+            // dd($pbm);
+            foreach($pbm as $v){
+                $data[] = [
+                    'pbm_id'     => $v->id,
+                    'code'       => $v->code,
+                    'total'      => $v->total,
+                ];
+            }
+            
+            return response()->json(['code'=> 200, 'data' => $data]);
         }
     }
 

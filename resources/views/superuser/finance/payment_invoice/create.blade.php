@@ -64,9 +64,9 @@
     <hr>
     <div class="block-content">
       <div class="form-group row">
-        <label class="col-md-3 col-form-label text-right" for="select_ppb">Select PPB No.</label>
+        <label class="col-md-3 col-form-label text-right" for="select_pbm">Select PPB No.</label>
         <div class="col-md-7">
-          <select class="js-select2 form-control" id="select_ppb" name="select_ppb" data-placeholder="Select PPB No.">
+          <select class="js-select2 form-control" id="select_pbm" name="select_pbm" data-placeholder="Select PPB No.">
           </select>
         </div>
       </div>
@@ -182,28 +182,28 @@
     $('#supplier').on('select2:select', function (e) {
       table.clear().draw();
       $.ajax({
-        url: '{{ route('superuser.finance.payment_invoice.get_ppb') }}',
+        url: '{{ route('superuser.finance.payment_invoice.get_pbm') }}',
         data: {id:$(this).val() , _token: "{{csrf_token()}}"},
         type: 'POST',
         cache: false,
         dataType: 'json',
         beforeSend: function () {
-          addLoadSpiner($('#select_ppb'))
+          addLoadSpiner($('#select_pbm'))
         },
         complete: function () {
-          hideLoadSpinner($('#select_ppb'))
+          hideLoadSpinner($('#select_pbm'))
         },
         success: function(json) {
-          $('#select_ppb').empty().trigger('change');
+          $('#select_pbm').empty().trigger('change');
           $('#address').val('');
           
           if (json.code == 200) {
             let ph = new Option('', '', false, false);
-            $('#select_ppb').append(ph).trigger('change');
+            $('#select_pbm').append(ph).trigger('change');
 
             for (i = 0; i < Object.keys(json.data).length; i++) {
-              let newOption = '<option value="'+ json.data[i].ppb_id +'" data-total="'+ json.data[i].total +'">'+ json.data[i].code +'</option>';
-              $('#select_ppb').append(newOption).trigger('change');
+              let newOption = '<option value="'+ json.data[i].pbm_id +'" data-total="'+ json.data[i].total +'">'+ json.data[i].code +'</option>';
+              $('#select_pbm').append(newOption).trigger('change');
             }
 
             $('#address').val(json.address);
@@ -212,7 +212,7 @@
       });
     });
 
-    $('#select_ppb').on('select2:select', function (e) {
+    $('#select_pbm').on('select2:select', function (e) {
       var data = e.params.data;
       var total = $(this).find(':selected').data('total');
       $('#select_total').val(total);
@@ -237,14 +237,14 @@
     $('#add').on( 'click', function (e) {
       e.preventDefault();
 
-      var select_ppb = $('#select_ppb').select2('data');
+      var select_pbm = $('#select_pbm').select2('data');
 
       var name_credit = $('#name_credit').val() ?? '';
       var total = $('#select_total').val() ?? '';
 
       var duplicate = 0;
-      $('input[name="ppb_id[]"]').each( function  () {
-        if($(this).val() == select_ppb[0]['id']) {
+      $('input[name="pbm_id[]"]').each( function  () {
+        if($(this).val() == select_pbm[0]['id']) {
           duplicate = 1;
         } 
       });
@@ -252,10 +252,10 @@
       if(duplicate == 1) {
         alert('PPB is already in the table.')
       } else {
-        if(select_ppb[0]['id']) {
+        if(select_pbm[0]['id']) {
           table.row.add([
                       counter,
-                      '<input type="hidden" name="ppb_id[]" value="'+select_ppb[0]['id']+'"><span>'+select_ppb[0]['text']+'</span>',
+                      '<input type="hidden" name="pbm_id[]" value="'+select_pbm[0]['id']+'"><span>'+select_pbm[0]['text']+'</span>',
                       '<input type="number" class="form-control" name="total[]" value="'+total+'" required readonly>',
                       '<input type="number" class="form-control" name="paid[]" min="1" max="'+total+'" value="" required>',
                       '<a href="#" class="row-delete"><button type="button" class="btn btn-sm btn-circle btn-alt-danger" title="Delete"><i class="fa fa-trash"></i></button></a>'
@@ -263,7 +263,7 @@
           counter++;
 
           $('#select_total').val('')
-          $('#select_ppb').val(null).trigger("change")
+          $('#select_pbm').val(null).trigger("change")
           grandTotal()
         }
       }

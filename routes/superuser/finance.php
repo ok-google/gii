@@ -16,6 +16,7 @@ Route::group([
     Route::group(['as' => 'payment_invoice.', 'prefix' => '/payment_invoice'], function () {
         Route::get('{id}/acc', 'CBPaymentInvoiceController@acc')->name('acc');
         Route::post('get_ppb', 'CBPaymentInvoiceController@get_ppb')->name('get_ppb');
+        Route::post('get_pbm', 'CBPaymentInvoiceController@get_pbm')->name('get_pbm');
         Route::get('{id}/pdf', 'CBPaymentInvoiceController@pdf')->name('pdf');
     });
     Route::resource('payment_invoice', 'CBPaymentInvoiceController');
