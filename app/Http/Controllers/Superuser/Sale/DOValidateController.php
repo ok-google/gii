@@ -36,7 +36,7 @@ class DOValidateController extends Controller
                         if($delivery_order_detail->status_validate != 1) {
                             $piutang_coa = null;
                             $penjualan_coa = null;
-                            if($sales_order->marketplace_order == SalesOrder::MARKETPLACE_ORDER['Non Marketplace']) {
+                            if($sales_order->marketplace_order == SalesOrder::MARKETPLACE_ORDER['Offline']) {
                                 $customer_coa = CustomerCoa::where('customer_id', $sales_order->customer_id)->where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->first();
                                 if($customer_coa != null AND $customer_coa->coa_id != null) {
                                     $piutang_coa = $customer_coa->coa_id;
@@ -86,6 +86,16 @@ class DOValidateController extends Controller
                                 if($penjualan_blibli != null AND $penjualan_blibli->coa_id != null) {
                                     $penjualan_coa = $penjualan_blibli->coa_id;
                                 }
+                            } elseif ($sales_order->marketplace_order == SalesOrder::MARKETPLACE_ORDER['Non Marketplace']) {
+                                $piutang_offline = SettingFinance::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('key', 'piutang_offline')->first();
+                                if($piutang_offline != null AND $piutang_offline->coa_id != null) {
+                                    $piutang_coa = $piutang_offline->coa_id;
+                                }
+
+                                $penjualan_offline = SettingFinance::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('key', 'penjualan_offline')->first();
+                                if($penjualan_offline != null AND $penjualan_offline->coa_id != null) {
+                                    $penjualan_coa = $penjualan_offline->coa_id;
+                                }
                             }
 
                             $do_hpp_debet = SettingFinance::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('key', 'do_hpp_debet')->first();
@@ -115,7 +125,7 @@ class DOValidateController extends Controller
                                         }
                                         $hpp_total = 0;
                                         for ($i=0; $i < $detail->quantity ; $i++) { 
-                                            $hpp = Hpp::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('product_id', $detail->product_id)->where('warehouse_id', $sales_order->warehouse_id)->orderBy('created_at', 'ASC')->first();
+                                            $hpp = Hpp::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('product_id', $detail->product_id)->orderBy('created_at', 'ASC')->first();
                                             
                                             if( $hpp ) {
                                                 $hpp_total = $hpp_total + $hpp->price;

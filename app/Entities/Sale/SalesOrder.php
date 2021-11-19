@@ -29,11 +29,12 @@ class SalesOrder extends Model
     ];
 
     const MARKETPLACE_ORDER = [
-        'Non Marketplace' => 0,
+        'Offline' => 0,
         'Shopee' => 1,
         'Tokopedia' => 2,
         'Lazada' => 3,
         'Blibli' => 4,
+        'Non Marketplace' => 5,
     ];
 
     public function marketplace_order()

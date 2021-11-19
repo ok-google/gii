@@ -261,6 +261,25 @@
               </select>
             </div>
           </div>
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label text-right">Non Marketplace</label>
+            <div class="col-md-3">
+              <select class="js-select2 form-control" id="piutang_offline" name="piutang_offline" data-placeholder="Select COA">
+                @foreach($coa as $item)
+                  <option></option>
+                  <option value="{{ $item->id }}" {{ $piutang_offline == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-md-3">
+              <select class="js-select2 form-control" id="penjualan_offline" name="penjualan_offline" data-placeholder="Select COA">
+                @foreach($coa as $item)
+                  <option></option>
+                  <option value="{{ $item->id }}" {{ $penjualan_offline == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                @endforeach
+              </select>
+            </div>
+          </div>
         </div>
       </div>
     </div>
