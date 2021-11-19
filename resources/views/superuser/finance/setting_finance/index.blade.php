@@ -280,6 +280,25 @@
               </select>
             </div>
           </div>
+          <div class="form-group row">
+            <label class="col-md-3 col-form-label text-right">Tik Tok</label>
+            <div class="col-md-3">
+              <select class="js-select2 form-control" id="piutang_tiktok" name="piutang_tiktok" data-placeholder="Select COA">
+                @foreach($coa as $item)
+                  <option></option>
+                  <option value="{{ $item->id }}" {{ $piutang_tiktok == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="col-md-3">
+              <select class="js-select2 form-control" id="penjualan_tiktok" name="penjualan_tiktok" data-placeholder="Select COA">
+                @foreach($coa as $item)
+                  <option></option>
+                  <option value="{{ $item->id }}" {{ $penjualan_tiktok == $item->id ? 'selected' : '' }}>{{ $item->name }}</option>
+                @endforeach
+              </select>
+            </div>
+          </div>
         </div>
       </div>
     </div>

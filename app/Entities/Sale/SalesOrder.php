@@ -35,6 +35,7 @@ class SalesOrder extends Model
         'Lazada' => 3,
         'Blibli' => 4,
         'Non Marketplace' => 5,
+        'Tiktok' => 6,
     ];
 
     public function marketplace_order()

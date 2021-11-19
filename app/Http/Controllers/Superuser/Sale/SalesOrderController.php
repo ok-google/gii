@@ -203,7 +203,7 @@ class SalesOrderController extends Controller
 
                 $sales_order->resi = $request->resi;
 
-                if(SalesOrder::MARKETPLACE_ORDER[$request->marketplace_order] == SalesOrder::MARKETPLACE_ORDER['Non Marketplace']) {
+                if(SalesOrder::MARKETPLACE_ORDER[$request->marketplace_order] == SalesOrder::MARKETPLACE_ORDER['Offline']) {
                     $sales_order->customer_id = $request->customer;
                     $sales_order->ekspedisi_id = $request->ekspedisi;
                 } else {

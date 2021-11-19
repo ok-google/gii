@@ -31,12 +31,14 @@ class SettingFinance extends Model
         'piutang_shopee',
         'piutang_blibli',
         'piutang_offline',
+        'piutang_tiktok',
 
         'penjualan_tokopedia',
         'penjualan_lazada',
         'penjualan_shopee',
         'penjualan_blibli',
         'penjualan_offline',
+        'penjualan_tiktok',
 
         'return_transaction_debet',
         'return_transaction_credit',

@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      @if ($sales_order->marketplace_order == \App\Entities\Sale\SalesOrder::MARKETPLACE_ORDER['Non Marketplace'])
+      @if ($sales_order->marketplace_order == \App\Entities\Sale\SalesOrder::MARKETPLACE_ORDER['Offline'])
       <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="customer">Customer <span class="text-danger">*</span></label>
         <div class="col-md-7">
@@ -61,7 +61,7 @@
       </div>
       @endif
 
-      @if ($sales_order->marketplace_order != \App\Entities\Sale\SalesOrder::MARKETPLACE_ORDER['Non Marketplace'])
+      @if ($sales_order->marketplace_order != \App\Entities\Sale\SalesOrder::MARKETPLACE_ORDER['Offline'])
       <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="address_marketplace">Address</label>
         <div class="col-md-7">
@@ -70,7 +70,7 @@
       </div>
       @endif
 
-      @if ($sales_order->marketplace_order == \App\Entities\Sale\SalesOrder::MARKETPLACE_ORDER['Non Marketplace'])
+      @if ($sales_order->marketplace_order == \App\Entities\Sale\SalesOrder::MARKETPLACE_ORDER['Offline'])
       <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="ekspedisi">Ekspedisi</label>
         <div class="col-md-7">

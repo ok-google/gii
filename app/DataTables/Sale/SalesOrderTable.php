@@ -61,7 +61,7 @@ class SalesOrderTable extends Table
         
 
         $table->editColumn('customer_marketplace', function (SalesOrder $model) {
-            if($model::MARKETPLACE_ORDER['Non Marketplace'] == $model->marketplace_order) {
+            if($model::MARKETPLACE_ORDER['Offline'] == $model->marketplace_order) {
                 return $model->customer->name;
             } else {
                 return $model->customer_marketplace;
@@ -74,7 +74,7 @@ class SalesOrderTable extends Table
         });
 
         $table->editColumn('ekspedisi_marketplace', function (SalesOrder $model) {
-            if($model::MARKETPLACE_ORDER['Non Marketplace'] == $model->marketplace_order) {
+            if($model::MARKETPLACE_ORDER['Offline'] == $model->marketplace_order) {
                 return $model->ekspedisi->name ?? '-';
             } else {
                 return $model->ekspedisi_marketplace ?? '-';

@@ -96,6 +96,16 @@ class DOValidateController extends Controller
                                 if($penjualan_offline != null AND $penjualan_offline->coa_id != null) {
                                     $penjualan_coa = $penjualan_offline->coa_id;
                                 }
+                            } elseif ($sales_order->marketplace_order == SalesOrder::MARKETPLACE_ORDER['Tiktok']) {
+                                $piutang_tiktok = SettingFinance::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('key', 'piutang_tiktok')->first();
+                                if($piutang_tiktok != null AND $piutang_tiktok->coa_id != null) {
+                                    $piutang_coa = $piutang_tiktok->coa_id;
+                                }
+
+                                $penjualan_tiktok = SettingFinance::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('key', 'penjualan_tiktok')->first();
+                                if($penjualan_tiktok != null AND $penjualan_tiktok->coa_id != null) {
+                                    $penjualan_coa = $penjualan_tiktok->coa_id;
+                                }
                             }
 
                             $do_hpp_debet = SettingFinance::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('key', 'do_hpp_debet')->first();

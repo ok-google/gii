@@ -64,13 +64,13 @@
       <section class="mt-10">
         <div class="border-full" style="overflow: hidden; height: 41px; padding-left: 2px; padding-right: 2px;">
           <b>Penerima :</b> 
-          @if ($detail->sales_order->marketplace_order == $detail->sales_order::MARKETPLACE_ORDER['Non Marketplace'])
+          @if ($detail->sales_order->marketplace_order == $detail->sales_order::MARKETPLACE_ORDER['Offline'])
             {{ $detail->sales_order->customer->name }}
           @else
             {{ $detail->sales_order->customer_marketplace }}
           @endif
           <br>
-          @if ($detail->sales_order->marketplace_order == $detail->sales_order::MARKETPLACE_ORDER['Non Marketplace'])
+          @if ($detail->sales_order->marketplace_order == $detail->sales_order::MARKETPLACE_ORDER['Offline'])
             {{ $detail->sales_order->customer->address }}
           @else
             {{ $detail->sales_order->address_marketplace }}

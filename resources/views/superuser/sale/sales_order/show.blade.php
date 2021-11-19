@@ -34,13 +34,13 @@
     <div class="form-group row">
       <label class="col-md-3 col-form-label text-right" for="customer">Customer</label>
       <div class="col-md-7">
-        <div class="form-control-plaintext">{{ $sales_order->marketplace_order == \App\Entities\Sale\SalesOrder::MARKETPLACE_ORDER['Non Marketplace'] ? $sales_order->customer->name : $sales_order->customer_marketplace }}</div>
+        <div class="form-control-plaintext">{{ $sales_order->marketplace_order == \App\Entities\Sale\SalesOrder::MARKETPLACE_ORDER['Offline'] ? $sales_order->customer->name : $sales_order->customer_marketplace }}</div>
       </div>
     </div>
     <div class="form-group row">
       <label class="col-md-3 col-form-label text-right" for="ekspedisi">Ekspedisi</label>
       <div class="col-md-7">
-        <div class="form-control-plaintext">{{ $sales_order->marketplace_order == \App\Entities\Sale\SalesOrder::MARKETPLACE_ORDER['Non Marketplace'] ? $sales_order->ekspedisi->name : $sales_order->ekspedisi_marketplace }}</div>
+        <div class="form-control-plaintext">{{ $sales_order->marketplace_order == \App\Entities\Sale\SalesOrder::MARKETPLACE_ORDER['Offline'] ? $sales_order->ekspedisi->name : $sales_order->ekspedisi_marketplace }}</div>
       </div>
     </div>
     <hr class="my-20">
