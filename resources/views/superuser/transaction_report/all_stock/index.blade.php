@@ -87,6 +87,14 @@ $(document).ready(function() {
       "type": "GET",
       "data":{ _token: "{{csrf_token()}}"}
     },
+    columnDefs: [ {
+        orderable: false,
+        searcable: false,
+        // data: null,
+        defaultContent: '',
+        //className: 'select-checkbox',
+        targets:   0
+    } ],
     order: [
       [0, 'asc']
     ],

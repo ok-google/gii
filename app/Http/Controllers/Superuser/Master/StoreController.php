@@ -18,7 +18,7 @@ class StoreController extends Controller
 
     public function index()
     {
-        if(!Auth::guard('superuser')->user()->can('branch office-manage')) {
+        if(!Auth::guard('superuser')->user()->can('store-manage')) {
             return abort(403);
         }
 
@@ -27,7 +27,7 @@ class StoreController extends Controller
 
     public function create()
     {
-        if(!Auth::guard('superuser')->user()->can('branch office-create')) {
+        if(!Auth::guard('superuser')->user()->can('store-create')) {
             return abort(403);
         }
 
@@ -80,7 +80,7 @@ class StoreController extends Controller
 
     public function show($id)
     {
-        if(!Auth::guard('superuser')->user()->can('branch office-show')) {
+        if(!Auth::guard('superuser')->user()->can('store-show')) {
             return abort(403);
         }
 
@@ -151,7 +151,7 @@ class StoreController extends Controller
     public function destroy(Request $request, $id)
     {
         if ($request->ajax()) {
-            if(!Auth::guard('superuser')->user()->can('branch office-delete')) {
+            if(!Auth::guard('superuser')->user()->can('store-delete')) {
                 return abort(403);
             }
 

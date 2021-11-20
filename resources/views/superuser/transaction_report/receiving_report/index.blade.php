@@ -150,7 +150,8 @@
           },
           {
             data: 'unit_price',
-            name: 'ppb_detail.unit_price'
+            render: $.fn.dataTable.render.number('.', ',', 2, 'RMB. '),
+            searchable: false
           },
           {
             data: 'ppb_qty',
@@ -170,15 +171,18 @@
           },
           {
             data: 'domestic_cost',
-            name: 'ppb_detail.local_freight_cost'
+            render: $.fn.dataTable.render.number('.', ',', 2, 'RMB. '),
+            searchable: false
           },
           {
             data: 'komisi',
-            name: 'ppb_detail.komisi'
+            render: $.fn.dataTable.render.number('.', ',', 2, 'RMB. '),
+            searchable: false
           },
           {
             data: 'total_price_rmb',
-            name: 'ppb_detail.total_price_rmb'
+            render: $.fn.dataTable.render.number('.', ',', 2, 'RMB. '),
+            searchable: false
           },
           {
             data: 'kurs',
@@ -186,7 +190,8 @@
           },
           {
             data: 'delivery_cost',
-            name: 'ppb_detail.delivery_cost'
+            render: $.fn.dataTable.render.number('.', ',', 2, 'Rp. '),
+            searchable: false
           },
           {
             data: 'description',

@@ -30,7 +30,7 @@
           </select>
         </div>
       </div>
-      <div class="form-group row">
+      {{--<div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="warehouse_disp">Warehouse Destination<span class="text-danger">*</span></label>
         <div class="col-md-7">
           <select class="js-select2 form-control" id="warehouse_disp" name="warehouse_disp" data-placeholder="Select Warehouse">
@@ -40,7 +40,7 @@
             @endforeach
           </select>
         </div>
-      </div>
+      </div>--}}
       <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="pbm_date">PBM Date</span></label>
         <div class="col-md-7">

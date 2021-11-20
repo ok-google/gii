@@ -40,7 +40,23 @@ class ReceivingReportTable extends Table
             ->join('master_supplier', 'ppb.supplier_id', '=', 'master_supplier.id')
             ->join('master_products', 'receiving_detail.product_id', '=', 'master_products.id')
             ->join('ppb_detail', 'receiving_detail.ppb_detail_id', '=', 'ppb_detail.id')
-            ->selectRaw('master_supplier.name as supplier, ppb.code as ppb, receiving.code as pbm, master_products.code as sku, ppb_detail.unit_price as unit_price, ppb_detail.quantity as ppb_qty, receiving_detail.total_quantity_ri as ri_qty, (ppb_detail.quantity - receiving_detail.total_quantity_ri) as incoming, receiving_detail.total_quantity_colly as colly_qty, ppb_detail.local_freight_cost as domestic_cost, ppb_detail.komisi as komisi, ppb_detail.total_price_rmb as total_price_rmb, ppb_detail.kurs as kurs, receiving_detail.delivery_cost as delivery_cost, receiving_detail.description, ppb_detail.no_container as container, ((ppb_detail.total_price_idr / ppb_detail.quantity) + (receiving_detail.delivery_cost / receiving_detail.total_quantity_ri)) as hpp');
+            ->selectRaw('master_supplier.name as supplier,
+             ppb.code as ppb, 
+             receiving.code as pbm, 
+             master_products.code as sku, 
+             ppb_detail.unit_price as unit_price, 
+             ppb_detail.quantity as ppb_qty, 
+             receiving_detail.total_quantity_ri as ri_qty, 
+             (ppb_detail.quantity - receiving_detail.total_quantity_ri) as incoming, 
+             receiving_detail.total_quantity_colly as colly_qty, 
+             ((ppb_detail.local_freight_cost * receiving_detail.total_quantity_ri) / ppb_detail.quantity) as domestic_cost, 
+             ((ppb_detail.komisi * receiving_detail.total_quantity_ri) / ppb_detail.quantity) as komisi, 
+             ((ppb_detail.total_price_rmb * receiving_detail.total_quantity_ri) / ppb_detail.quantity) as total_price_rmb, 
+             ppb_detail.kurs as kurs, 
+             receiving_detail.delivery_cost as delivery_cost, 
+             receiving_detail.description, 
+             receiving.no_container as container, 
+             ((ppb_detail.total_price_idr / ppb_detail.quantity) + (receiving_detail.delivery_cost / receiving_detail.total_quantity_ri)) as hpp');
 
         return $model;
     }
