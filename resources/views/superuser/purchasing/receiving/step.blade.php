@@ -41,12 +41,12 @@
         <div class="form-control-plaintext">{{ $receiving->pbm_date ? date('d/m/Y', strtotime($receiving->pbm_date)) : '' }}</div>
       </div>
     </div>
-    <div class="row">
+    {{--<div class="row">
       <label class="col-md-3 col-form-label text-right">No container</label>
       <div class="col-md-7">
         <div class="form-control-plaintext">{{ $receiving->no_container }}</div>
       </div>
-    </div>
+    </div>--}}
     <div class="row">
       <label class="col-md-3 col-form-label text-right">Note</label>
       <div class="col-md-7">
@@ -109,6 +109,8 @@
           <th class="text-center">PPB Quantity</th>
           <th class="text-center">RI Quantity</th>
           <th class="text-center">Colly Quantity</th>
+          <th class="text-center">Sea Freight</th>
+          <th class="text-center">No Container</th>
           <th class="text-center">Note</th>
           <th class="text-center">Action</th>
         </tr>
@@ -123,6 +125,8 @@
           <td class="text-center">{{ $receiving->price_format($detail->quantity) }}</td>
           <td class="text-center">{{ $receiving->price_format($detail->total_quantity_ri) }}{{ $detail->total_reject_ri($detail->id) ? ' [RE '.$receiving->price_format($detail->total_reject_ri($detail->id)).']' : '' }}</td>
           <td class="text-center">{{ $receiving->price_format($detail->total_quantity_colly) }}{{ $detail->total_reject_colly($detail->id) ? ' [RE '.$receiving->price_format($detail->total_reject_colly($detail->id)).']' : '' }}</td>
+          <td class="text-center">{{ $detail->delivery_cost }}</td>
+          <td class="text-center">{{ $detail->no_container }}</td>
           <td class="text-center">{{ $detail->description }}</td>
           <td class="text-center" style="white-space: nowrap;">
             <a href="{{ route('superuser.purchasing.receiving.detail.edit', [$receiving->id, $detail->id]) }}">

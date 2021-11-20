@@ -53,6 +53,12 @@
         </div>
       </div>
       <div class="form-group row">
+        <label class="col-md-3 col-form-label text-right" for="no_container">No Container</label>
+        <div class="col-md-4">
+          <input type="text" class="form-control" id="no_container" name="no_container">
+        </div>
+      </div>
+      <div class="form-group row">
         <label class="col-md-3 col-form-label text-right" for="description">Note</label>
         <div class="col-md-4">
           <textarea class="form-control" id="description" name="description"></textarea>
