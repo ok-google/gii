@@ -35,6 +35,12 @@ class SalesOrderTable extends Table
                   $model = $model->whereDate("created_at", ">=", $request->from)->whereDate("created_at", "<=", $request->to);
               }
               break;
+            case 'Not DO':
+                $model = SalesOrder::select('id', 'code', 'marketplace_order', 'customer_id', 'customer_marketplace', 'store_name', 'ekspedisi_id', 'ekspedisi_marketplace', 'status', 'status_sales_order', 'created_at')->whereIn('warehouse_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray())->where('status_sales_order', 0)->where('status', 2);
+                if($request->from??false){
+                    $model = $model->whereDate("created_at", ">=", $request->from)->whereDate("created_at", "<=", $request->to);
+                }
+                break;
             default:
               $model = SalesOrder::select('id', 'code', 'marketplace_order', 'customer_id', 'customer_marketplace', 'store_name', 'ekspedisi_id', 'ekspedisi_marketplace', 'status', 'status_sales_order', 'created_at')->whereIn('warehouse_id', MasterRepo::warehouses_by_branch()->pluck('id')->toArray())->where('status', 1);
               if($request->from??false){

@@ -6,6 +6,7 @@ use App\DataTables\Table;
 use App\Entities\Purchasing\Receiving;
 use App\Repositories\MasterRepo;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ReceivingReportTable extends Table
 {
@@ -40,7 +41,8 @@ class ReceivingReportTable extends Table
             ->join('master_supplier', 'ppb.supplier_id', '=', 'master_supplier.id')
             ->join('master_products', 'receiving_detail.product_id', '=', 'master_products.id')
             ->join('ppb_detail', 'receiving_detail.ppb_detail_id', '=', 'ppb_detail.id')
-            ->selectRaw('master_supplier.name as supplier,
+            ->selectRaw(' receiving.pbm_date as pbm_date,
+             master_supplier.name as supplier,
              ppb.code as ppb, 
              receiving.code as pbm, 
              master_products.code as sku, 
@@ -67,6 +69,13 @@ class ReceivingReportTable extends Table
     public function build(Request $request)
     {
         $table = Table::of($this->query($request));
+        
+        $table->editColumn('pbm_date', function (Receiving $model) {
+            return [
+              'display' => Carbon::parse($model->pbm_date)->format('d-m-Y'),
+              'timestamp' => $model->pbm_date
+            ];
+        });
 
         return $table->make(true);
     }

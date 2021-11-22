@@ -75,9 +75,9 @@
 <div class="block">
   <div class="block-content">
     @if($superuser->can('sales order-create'))
-    <a href="{{ route('superuser.sale.sales_order.create') }}">
+   {{-- <a href="{{ route('superuser.sale.sales_order.create') }}">
       <button type="button" class="btn btn-outline-primary min-width-125">Create</button>
-    </a>
+    </a> --}}
     <button type="button" class="btn btn-outline-info ml-10" data-toggle="modal" data-target="#modal-manage">Manage</button>
     @endif
     <div class="pull-right">
@@ -92,6 +92,10 @@
       <label class="css-control css-control-warning css-radio">
         <input type="radio" class="css-control-input" name="show-control" value="all">
         <span class="css-control-indicator"></span> All
+      </label>
+      <label class="css-control css-control-warning css-radio">
+        <input type="radio" class="css-control-input" name="show-control" value="Not DO">
+        <span class="css-control-indicator"></span> Not DO
       </label>
     </div>
   </div>

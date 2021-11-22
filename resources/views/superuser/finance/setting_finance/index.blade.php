@@ -242,7 +242,7 @@
               </select>
             </div>
           </div>
-          <div class="form-group row">
+          {{--<div class="form-group row">
             <label class="col-md-3 col-form-label text-right">Blibli</label>
             <div class="col-md-3">
               <select class="js-select2 form-control" id="piutang_blibli" name="piutang_blibli" data-placeholder="Select COA">
@@ -260,7 +260,7 @@
                 @endforeach
               </select>
             </div>
-          </div>
+          </div>--}}
           <div class="form-group row">
             <label class="col-md-3 col-form-label text-right">Non Marketplace</label>
             <div class="col-md-3">

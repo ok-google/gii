@@ -69,6 +69,7 @@
       <table class="datatable table table-striped table-vcenter table-responsive display nowrap">
         <thead>
           <tr>
+            <th class="text-center">Created At</th>
             <th class="text-center">Supplier</th>
             <th class="text-center">PPB No</th>
             <th class="text-center">PBM No</th>
@@ -132,6 +133,13 @@
           }
         },
         columns: [
+          {
+        data: 'pbm_date',
+        render: {
+          _: 'display',
+          sort: 'timestamp'
+        }
+      },
           {
             data: 'supplier',
             name: 'master_supplier.name'
