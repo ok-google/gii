@@ -81,6 +81,7 @@
           <th class="text-center">Date</th>
           <th class="text-left">Chart of Account</th>
           <th class="text-left">Transaction</th>
+          <th class="text-left">description</th>
           <th class="text-center">Debet</th>
           <th class="text-center">Credit</th>
         </tr>
@@ -159,6 +160,10 @@
         {
           data: 'transaction',
           name: 'journal.name'
+        },
+        {
+          data: 'note',
+          name: 'journal.description'
         },
         {
           data: 'debet'

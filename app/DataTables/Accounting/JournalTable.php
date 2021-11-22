@@ -17,7 +17,7 @@ class JournalTable extends Table
     private function query(Request $request)
     {
         $coa = $request->coa;
-        $model = Journal::selectRaw('journal.created_at as created_date, master_coa.code as code, master_coa.name as name, journal.name as transaction, journal.debet, journal.credit')
+        $model = Journal::selectRaw('journal.created_at as created_date, master_coa.code as code, master_coa.name as name, journal.name as transaction, journal.description as note, journal.debet, journal.credit')
             ->join('master_coa', 'journal.coa_id', '=', 'master_coa.id')
             ->whereBetween('journal.created_at', [$request->from_date . " 00:00:00", $request->to_date . " 23:59:59"]);
 

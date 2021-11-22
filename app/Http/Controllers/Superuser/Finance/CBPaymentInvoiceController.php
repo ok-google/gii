@@ -145,7 +145,6 @@ class CBPaymentInvoiceController extends Controller
             {
                 $join->on('receiving.id', '=', 'b.receiving_id');
             })->where('b.supplier_id', $request->id)->select(DB::raw('receiving.id, receiving.code, b.total'))->get();
-            // dd($pbm);
             foreach($pbm as $v){
                 $data[] = [
                     'pbm_id'     => $v->id,

@@ -162,6 +162,7 @@ class DOValidateController extends Controller
                                     $journal = new Journal;
                                     $journal->coa_id = $piutang_coa;
                                     $journal->name = Journal::PREJOURNAL['DO_VALIDATE'].$sales_order->code;
+                                    $journal->description = $sales_order->store_name;
                                     $journal->debet = $sales_order->grand_total;
                                     $journal->status = Journal::STATUS['UNPOST'];
                                     $journal->save();
@@ -170,6 +171,7 @@ class DOValidateController extends Controller
                                     $journal = new Journal;
                                     $journal->coa_id = $penjualan_coa;
                                     $journal->name = Journal::PREJOURNAL['DO_VALIDATE'].$sales_order->code;
+                                    $journal->description = $sales_order->store_name;
                                     $journal->credit = $sales_order->grand_total;
                                     $journal->status = Journal::STATUS['UNPOST'];
                                     $journal->save();
@@ -178,6 +180,7 @@ class DOValidateController extends Controller
                                     $journal = new Journal;
                                     $journal->coa_id = $do_hpp_debet->coa_id;
                                     $journal->name = Journal::PREJOURNAL['DO_VALIDATE'].$sales_order->code;
+                                    $journal->description = $sales_order->store_name;
                                     $journal->debet = $hpp_grand_total;
                                     $journal->status = Journal::STATUS['UNPOST'];
                                     $journal->save();
@@ -186,6 +189,7 @@ class DOValidateController extends Controller
                                     $journal = new Journal;
                                     $journal->coa_id = $do_hpp_credit->coa_id;
                                     $journal->name = Journal::PREJOURNAL['DO_VALIDATE'].$sales_order->code;
+                                    $journal->description = $sales_order->store_name;
                                     $journal->credit = $hpp_grand_total;
                                     $journal->status = Journal::STATUS['UNPOST'];
                                     $journal->save();

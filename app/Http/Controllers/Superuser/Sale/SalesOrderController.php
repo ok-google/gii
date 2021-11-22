@@ -113,6 +113,7 @@ class SalesOrderController extends Controller
                     if($request->sku) {
                         foreach($request->sku as $key => $value){
                             if($request->sku[$key]) {
+
                                 $sales_order_detail = new SalesOrderDetail;
                                 $sales_order_detail->sales_order_id = $sales_order->id;
                                 $sales_order_detail->product_id = $request->sku[$key];
@@ -524,10 +525,10 @@ class SalesOrderController extends Controller
     
                             $out_of_stock = false;
                             foreach ($sales_order->sales_order_details as $detail) {
-                                if($detail->product->non_stock == '0') {
+                                //if($detail->product->non_stock == '0') {
                                     $stock_sales_order = StockSalesOrder::where('warehouse_id', $sales_order->warehouse_id)->where('product_id', $detail->product_id)->first();
                                     if($stock_sales_order) {
-                                        $sum_multiple_product_quantity = SalesOrderDetail::where('sales_order_id', $id)->where('product_id', $detail->product_id)->sum('quantity');
+                                        $sum_multiple_product_quantity = SalesOrderDetail::where('sales_order_id', $id)->where('product_id', $detail->product_id)->sum('quantity', $detail->quantity);
                                         
                                         if($stock_sales_order->stock < $sum_multiple_product_quantity) {
                                             $out_of_stock = true;
@@ -537,7 +538,7 @@ class SalesOrderController extends Controller
                                         $out_of_stock = true;
                                         break;
                                     }
-                                }
+                               // }
                             }
     
                             if($out_of_stock) {
@@ -559,7 +560,7 @@ class SalesOrderController extends Controller
                                 $sales_order->acc_by = Auth::guard('superuser')->id();
                                 $sales_order->acc_at = Carbon::now()->toDateTimeString();
     
-                                if( $sales_order->marketplace_order == SalesOrder::MARKETPLACE_ORDER['Non Marketplace'] ) {
+                                if( $sales_order->marketplace_order == SalesOrder::MARKETPLACE_ORDER['Offline'] ) {
                                     $delivery_order = new DeliveryOrder;
     
                                     $delivery_order->code = DeliveryOrderRepo::generateCode();
