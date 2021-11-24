@@ -136,8 +136,8 @@ class StockAdjusmentImport implements ToCollection, WithHeadingRow, WithStartRow
                                         $stock_adjustment_detail->stock_adjusment_id = $stock_adjustment2->id;
                                         $stock_adjustment_detail->product_id = $cek_product->id;
                                         $stock_adjustment_detail->qty = $value_product['qty'];
-                                        $stock_adjustment_detail->price = 0;
-                                       $stock_adjustment_detail->total = 0;
+                                        $stock_adjustment_detail->price = $value_product['price'];
+                                        $stock_adjustment_detail->total = $value_product['price'] * $value_product['qty'];
                                         $stock_adjustment_detail->save();
                                     }
                                 }
