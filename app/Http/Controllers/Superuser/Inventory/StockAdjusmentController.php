@@ -508,6 +508,7 @@ class StockAdjusmentController extends Controller
             
             // return redirect()->back()->with(['message' => 'Import success']);
 
+            // dd($import->success);
             return redirect()->back()->with(['collect_success' => $import->success, 'collect_error' => $import->error]);
         }
     }

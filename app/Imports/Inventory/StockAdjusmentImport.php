@@ -19,6 +19,7 @@ use Maatwebsite\Excel\Concerns\SkipsErrors;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 use DB;
+use Auth;
 use Carbon\Carbon;
 
 HeadingRowFormatter::default('none');
@@ -44,7 +45,10 @@ class StockAdjusmentImport implements ToCollection, WithHeadingRow, WithStartRow
             $collect_error = [];
             $collect_success = [];
             $data = [];
+            // dd($rows);
             foreach ($rows as $row) {
+                // foreach($rowTmp as $row){
+                    
                 if($row['Sku'] != ""){
                         if (array_key_exists($row['Code'], $data)) {
                             if (array_key_exists($row['Sku'], $data[$row['Code']]['product'])) {
@@ -69,15 +73,17 @@ class StockAdjusmentImport implements ToCollection, WithHeadingRow, WithStartRow
                             ];
                         }
                 }
+            // }
             }
 
-            // dd($data);
             if ($data) {
+                // dd($data);
                 foreach ($data as $key => $value) {
+                    // foreach($value as )
+                    
+                    $stock_adjustment = StockAdjusment::where('code', $key)->first();
 
-                    $stock_adjusment = StockAdjusment::where('code', $key)->first();
-
-                    if ($stock_adjustment == '') {
+                    if (is_null($stock_adjustment)) {
                         // VERIFIED DATA
 
                         if ($value['info']['warehouse'] == null) {
@@ -110,31 +116,38 @@ class StockAdjusmentImport implements ToCollection, WithHeadingRow, WithStartRow
                             continue;
                         }
 
-                        $stock_adjusment = new StockAdjusment;
-                        $stock_adjusment->code = $key;
-                        $stock_adjusment->warehouse_id = $warehouse_id->id;
-                        $stock_adjusment->minus = $value['info']['Minus'];
-                        $stock_adjusment->description = $value['info']['description'];
+                        $superuser = Auth::guard('superuser')->user();
+                        $stock_adjustment2 = new StockAdjusment;
+                        $stock_adjustment2->code = $key;
+                        $stock_adjustment2->type = $superuser->type;
+                        $stock_adjustment2->warehouse_id = $warehouse_id->id;
+                        $stock_adjustment2->branch_office_id = $superuser->branch_office_id;
+                        $stock_adjustment2->minus = $value['info']['minus'];
+                        $stock_adjustment2->description = $value['info']['description'];
 
-                        $stock_adjusment->status = StockAdjusment::STATUS['ACTIVE'];
-                        $stock_adjusment->save();
+                        $stock_adjustment2->status = StockAdjusment::STATUS['ACTIVE'];
+                        if($stock_adjustment2->save()){
 
-                        if ($value['product']) {
-                            foreach ($value['product'] as $key_product => $value_product) {
-                                $cek_product = Product::where('code', $key_product)->first();
-
-                                $stock_adjusment_detail = new StockAdjusmentDetail;
-                                $stock_adjusment_detail->stock_adjusment_id = $stock_adjustment->id;
-                                $stock_adjusment_detail->product_id = $cek_product->id;
-                                $stock_adjusment_detail->quantity = $value_product['qty'];
-                                //$stock_adjusment_detail->price = $value_product['price'];
-                               // $stock_adjusment_detail->total = $value_product['price'] * $value_product['qty'];
-                                $stock_adjusment_detail->save();
+                            if ($value['product']) {
+                                foreach ($value['product'] as $key_product => $value_product) {
+                                    $cek_product = Product::where('code', trim($key_product))->first();
+                                    if($cek_product){
+                                        $stock_adjustment_detail = new StockAdjusmentDetail;
+                                        $stock_adjustment_detail->stock_adjusment_id = $stock_adjustment2->id;
+                                        $stock_adjustment_detail->product_id = $cek_product->id;
+                                        $stock_adjustment_detail->qty = $value_product['qty'];
+                                        $stock_adjustment_detail->price = 0;
+                                       $stock_adjustment_detail->total = 0;
+                                        $stock_adjustment_detail->save();
+                                    }
+                                }
                             }
+
                         }
 
                         $collect_success[] = $key;
                     } else {
+                        // dd("as");
                         $collect_error[] = $key . ' : Duplicate Code';
                     }
                 }
@@ -153,6 +166,7 @@ class StockAdjusmentImport implements ToCollection, WithHeadingRow, WithStartRow
 
             DB::commit();
         } catch (\Exception $e) {
+            // dd($e);
             $this->error = $e->getMessage();
             DB::rollBack();
         }
