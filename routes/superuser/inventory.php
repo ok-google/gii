@@ -30,6 +30,9 @@ Route::group([
     Route::group(['as' => 'stock_adjusment.', 'prefix' => '/stock_adjusment'], function () {
         Route::post('get_sku', 'StockAdjusmentController@get_sku')->name('get_sku');
         Route::get('{id}/acc', 'StockAdjusmentController@acc')->name('acc');
+        Route::get('/import_template', 'StockAdjusmentController@import_template')->name('import_template');
+        Route::post('/import', 'StockAdjusmentController@import')->name('import');
+        Route::get('/export', 'StockAdjusmentController@export')->name('export');
     });
     Route::resource('stock_adjusment', 'StockAdjusmentController');
 

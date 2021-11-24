@@ -10,8 +10,11 @@ use App\Entities\Inventory\StockAdjusment;
 use App\Entities\Inventory\StockAdjusmentDetail;
 use App\Entities\Sale\StockSalesOrder;
 use App\Http\Controllers\Controller;
+use App\Imports\Inventory\StockAdjusmentImport;
+use App\Exports\Inventory\StockAdjustmentImportTemplate;
 use App\Repositories\MasterRepo;
 use Carbon\Carbon;
+use Excel;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -474,6 +477,38 @@ class StockAdjusmentController extends Controller
                 $response['redirect_to'] = '#datatable';
                 return $this->response(200, $response);
             }
+        }
+    }
+
+    public function import_template()
+    {
+        $filename = 'stock-adjustment-import-template.xlsx';
+        return Excel::download(new StockAdjustmentImportTemplate, $filename);
+    }
+
+    public function import(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'import_file' => 'required|file|mimes:xls,xlsx|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator->errors()->all());
+        }
+
+        if ($validator->passes()) {
+            $import = new StockAdjusmentImport($request->warehouse);
+            
+            Excel::import($import, $request->import_file);
+            
+        // dd($import);
+            // if($import->error) {
+            //     return redirect()->back()->withErrors($import->error);
+            // }
+            
+            // return redirect()->back()->with(['message' => 'Import success']);
+
+            return redirect()->back()->with(['collect_success' => $import->success, 'collect_error' => $import->error]);
         }
     }
 

@@ -166,6 +166,7 @@ class PurchaseOrderDetailController extends Controller
 
                 $purchase_order_detail->total_tax = $tax;
                 $purchase_order_detail->total_price_idr = $total_price_after_tax;
+                $purchase_order_detail->unit_price_idr = $total_price_after_tax / $request->quantity;
 
                 if ($purchase_order_detail->save()) {
                     $purchase_order->grand_total_rmb = PurchaseOrderDetail::where('ppb_id', $id)->sum('total_price_rmb');
