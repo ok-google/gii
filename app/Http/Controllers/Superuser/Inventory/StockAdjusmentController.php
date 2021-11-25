@@ -321,7 +321,7 @@ class StockAdjusmentController extends Controller
                     foreach ($stock_adjusment->details as $item) {
 
                         // SAVE STOCK SALES ORDER
-                        if ($stock_adjusment->minus == '0') {
+                        if ($stock_adjusment->minus == '1') {
                             $hpp = Hpp::where('type', $superuser->type)->where('branch_office_id', $superuser->branch_office_id)->where('product_id', $item->product_id)->orderBy('created_at', 'ASC')->first();
 
                             if ($hpp == null && $item->price == 0) {
